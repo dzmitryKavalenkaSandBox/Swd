@@ -58,8 +58,11 @@ public:
 
 	USceneComponent* GetWeaponEnd();
 
+	/**
+	 *	Area upon entering which Character can interact with weapon
+	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	USphereComponent* SphereCollision;
+	USphereComponent* InteractionSphere;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	USkeletalMeshComponent* WeaponSkeletalMesh;
@@ -67,19 +70,29 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	FWeaponState WeaponState;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Collision", meta=(AllowPrivateAccess=true))
-	UBoxComponent* CollisionBox;
-
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnInteractionSphereOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+										 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+										 const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnInteractionSphereOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+									   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void OnCollisionBoxOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+									UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+									const FHitResult& SweepResult);
 
 private:
 	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	float BaseDamage = 10.f;
 
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"))
-	USceneComponent* WeaponStart;
-
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"))
-	USceneComponent* WeaponEnd;
+	/**
+	*	'Damaging' area of the weapon
+	*/	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Collision", meta=(AllowPrivateAccess=true))
+	UBoxComponent* CollisionBox;
 };

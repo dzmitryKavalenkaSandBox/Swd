@@ -3,6 +3,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "Swd/Swd.h"
+#include "Swd/Utils/Logger.h"
 
 AWeaponBase::AWeaponBase()
 {
@@ -17,20 +18,15 @@ AWeaponBase::AWeaponBase()
 	 */
 	WeaponSkeletalMesh->SetCollisionProfileName(CollisionProfile::NoCollision);
 	WeaponSkeletalMesh->SetSimulatePhysics(true);
-	
-	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collision"));
-	SphereCollision->SetupAttachment(WeaponSkeletalMesh);
-	SphereCollision->SetCollisionProfileName("OverlapAllDynamics");
-	SphereCollision->SetGenerateOverlapEvents(true);
+
+	InteractionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collision"));
+	InteractionSphere->SetupAttachment(WeaponSkeletalMesh);
+	InteractionSphere->SetCollisionProfileName("OverlapAllDynamics");
+	InteractionSphere->SetGenerateOverlapEvents(true);
 
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision Box"));
 	CollisionBox->SetupAttachment(WeaponSkeletalMesh);
 	CollisionBox->SetCollisionProfileName(CollisionProfile::NoCollision);
-
-	WeaponStart = CreateDefaultSubobject<USceneComponent>(TEXT("Sword Start"));
-	WeaponStart->SetupAttachment(WeaponSkeletalMesh);
-	WeaponEnd = CreateDefaultSubobject<USceneComponent>(TEXT("Sword End"));
-	WeaponEnd->SetupAttachment(WeaponSkeletalMesh);
 }
 
 float AWeaponBase::GetWeaponBaseDamage()
@@ -38,18 +34,42 @@ float AWeaponBase::GetWeaponBaseDamage()
 	return BaseDamage;
 }
 
-USceneComponent* AWeaponBase::GetWeaponStart()
-{
-	return WeaponStart;
-}
-
-USceneComponent* AWeaponBase::GetWeaponEnd()
-{
-	return WeaponEnd;
-}
-
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	InteractionSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnInteractionSphereOverlapBegin);
+	InteractionSphere->OnComponentEndOverlap.AddDynamic(this, &AWeaponBase::OnInteractionSphereOverlapEnd);
+	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnCollisionBoxOverlapBegin);
+
+	CollisionBox->AttachToComponent(
+		WeaponSkeletalMesh,
+		FAttachmentTransformRules(
+			EAttachmentRule::KeepWorld,
+			EAttachmentRule::KeepWorld,
+			EAttachmentRule::KeepWorld,
+			false
+		),
+		BoneSockets::CollisionBoxSocket
+	);
+}
+
+void AWeaponBase::OnInteractionSphereOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                                  const FHitResult& SweepResult)
+{
+	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
+}
+
+void AWeaponBase::OnInteractionSphereOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
+}
+
+void AWeaponBase::OnCollisionBoxOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                             UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                             const FHitResult& SweepResult)
+{
+	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
 }
