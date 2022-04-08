@@ -3,3 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+namespace CollisionProfile
+{
+	TCHAR const* const Weapon = TEXT("Weapon");
+	TCHAR const* const NoCollision = TEXT("NoCollision");
+}

@@ -1,7 +1,5 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "SwdGameMode.h"
-#include "SwdCharacter.h"
+#include "Character/SwdCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 ASwdGameMode::ASwdGameMode()
