@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -14,9 +12,20 @@ class ASwdCharacter : public ACharacter
 public:
 	ASwdCharacter();
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	class UEquipmentComponent* EquipmentComponent;
+	
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Animation")
+	bool bIsAnimationBlended;
+	
+	float GetSpeed();
+
+	UFUNCTION(BlueprintCallable)
+	void EquipSheathWeapon();
 
 protected:
 

@@ -1,10 +1,10 @@
-
 #include "PlayerCharacter.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Swd/Components/EquipmentComponent.h"
 #include "Swd/UI/HUDWidget.h"
 
 
@@ -25,7 +25,8 @@ APlayerCharacter::APlayerCharacter()
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	SetUpHUDWidget();
@@ -47,10 +48,12 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &APlayerCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &APlayerCharacter::LookUpAtRate);
-	
+
 	// handle touch devices
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &APlayerCharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &APlayerCharacter::TouchStopped);
+
+	PlayerInputComponent->BindAction(TEXT("EquipSheath"), IE_Pressed, this, &APlayerCharacter::EquipSheathWeapon);
 }
 
 // Called when the game starts or when spawned

@@ -43,5 +43,4 @@ private:
 	class UWidgetComponent* HUDWidgetComponent;
 
 	void SetUpHUDWidget();
-
 };

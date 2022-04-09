@@ -12,9 +12,21 @@ namespace CollisionProfile
 
 namespace BoneSockets
 {
-	FName const HolstedSwordSocket = FName("HolstedSword");
+	FName const HipWeaponSocket = FName("HipWeaponSocket");
 	FName const LeftFootSocket = FName("LeftFootSocket");
 	FName const RightFootSocket = FName("RightFootSocket");
-	FName const SwordHandleSocket = FName("Sword_Handle");
+	FName const WeaponHandle = FName("WeaponHandle");
 	FName const CollisionBoxSocket = FName("CollisionBoxSocket");
+}
+
+namespace AM_DataTableReference
+{
+	TCHAR const* const EquipSheathWeapon = TEXT("DataTable'/Game/Assets/DataTables/DT_EquipSword.DT_EquipSword'");
+	TCHAR const* const Attacks = TEXT("");
+}
+
+namespace AnimAction
+{
+	TCHAR const* const Equip = TEXT("Equip");
+	TCHAR const* const Sheath = TEXT("Sheath");
 }

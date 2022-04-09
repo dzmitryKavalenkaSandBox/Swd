@@ -3,6 +3,8 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Swd/Components/EquipmentComponent.h"
+#include "Swd/Utils/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASwdCharacter
@@ -27,6 +29,8 @@ ASwdCharacter::ASwdCharacter()
 	
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("Equipment Component"));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -48,6 +52,19 @@ void ASwdCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * TurnRateGamepad * GetWorld()->GetDeltaSeconds());
+}
+
+float ASwdCharacter::GetSpeed()
+{
+	return GetVelocity().Size();
+}
+
+void ASwdCharacter::EquipSheathWeapon()
+{
+	if (EquipmentComponent->ActualWeaponOnTheHip)
+	{
+		EquipmentComponent->EquipWeapon();
+	}
 }
 
 void ASwdCharacter::MoveForward(float Value)
