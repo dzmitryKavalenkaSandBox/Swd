@@ -2,8 +2,10 @@
 #include "PlayerCharacter.h"
 
 #include "Camera/CameraComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Swd/UI/HUDWidget.h"
 
 
 APlayerCharacter::APlayerCharacter()
@@ -26,6 +28,7 @@ APlayerCharacter::APlayerCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	SetUpHUDWidget();
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -41,7 +44,11 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (auto Widget = Cast<UHUDWidget>(HUDWidgetComponent->GetWidget()))
+	{
+		Widget->AddToViewport();
+	}
 }
 
 void APlayerCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
@@ -52,4 +59,11 @@ void APlayerCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Locat
 void APlayerCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
 	// StopJumping();
+}
+
+void APlayerCharacter::SetUpHUDWidget()
+{
+	HUDWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HUD Widget Component"));
+	HUDWidgetComponent->SetupAttachment(RootComponent);
+	HUDWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
 }
