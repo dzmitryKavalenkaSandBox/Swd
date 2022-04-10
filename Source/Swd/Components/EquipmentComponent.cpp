@@ -14,15 +14,33 @@ UEquipmentComponent::UEquipmentComponent()
 
 bool UEquipmentComponent::CanEquipWeapon()
 {
-	return WeaponOnTheHipSlot && WeaponOnTheHipSlot.GetDefaultObject()->WeaponState.CanActOnWeapon();
+	return ActualWeaponOnTheHip && ActualWeaponOnTheHip->WeaponState.CanActOnWeapon();
+}
+
+bool UEquipmentComponent::CanSheathWeapon()
+{
+	return WeaponInHands && WeaponInHands->WeaponState.CanActOnWeapon();
 }
 
 void UEquipmentComponent::EquipWeapon()
 {
 	if (CanEquipWeapon())
 	{
-		WeaponOnTheHipSlot.GetDefaultObject()->WeaponState.StartInteraction();
+		ActualWeaponOnTheHip->WeaponState.StartInteraction();
 		PlayDataTableAnimation(GetOwnerCharacter(), EquipSwordAnimMontageDataTable, false, AnimAction::Equip);
+	}
+}
+
+void UEquipmentComponent::SheathWeapon()
+{
+	if(WeaponInHands)
+	{
+	ULogger::Log(ELogLevel::WARNING, FString(("HAS STARTED INTERACTION: ") + FString(WeaponInHands->WeaponState.IsStartedInteraction ? "true" : "false")));
+	}
+	if (CanSheathWeapon())
+	{
+		WeaponInHands->WeaponState.StartInteraction();
+		PlayDataTableAnimation(GetOwnerCharacter(), EquipSwordAnimMontageDataTable, false, AnimAction::Sheath);
 	}
 }
 
@@ -42,7 +60,27 @@ void UEquipmentComponent::AttachWeaponToHand()
 			),
 			BoneSockets::WeaponHandle
 		);
+		WeaponInHands = ActualWeaponOnTheHip;
 		ActualWeaponOnTheHip = nullptr;
+	}
+}
+
+void UEquipmentComponent::AttachWeaponToThy()
+{
+	if (WeaponInHands)
+	{
+		WeaponInHands->AttachToComponent(
+			GetOwnerCharacter()->GetMesh(),
+			FAttachmentTransformRules(
+				EAttachmentRule::SnapToTarget,
+				EAttachmentRule::SnapToTarget,
+				EAttachmentRule::SnapToTarget,
+				true
+			),
+			BoneSockets::HipWeaponSocket
+		);
+		ActualWeaponOnTheHip = WeaponInHands;
+		WeaponInHands = nullptr;
 	}
 }
 
@@ -50,9 +88,9 @@ void UEquipmentComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (WeaponOnTheHipSlot)
+	if (HipSlotForWeapon)
 	{
-		ActualWeaponOnTheHip = GetWorld()->SpawnActor<AWeaponBase>(WeaponOnTheHipSlot);
+		ActualWeaponOnTheHip = GetWorld()->SpawnActor<AWeaponBase>(HipSlotForWeapon);
 		ActualWeaponOnTheHip->WeaponSkeletalMesh->SetSimulatePhysics(false);
 		ActualWeaponOnTheHip->AttachToComponent(
 			GetOwnerCharacter()->GetMesh(),

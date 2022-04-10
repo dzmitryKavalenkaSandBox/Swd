@@ -16,20 +16,27 @@ public:
 	UEquipmentComponent();
 
 	bool CanEquipWeapon();
+	
+	bool CanSheathWeapon();
 
 	void EquipWeapon();
+	
+	void SheathWeapon();
 
 	void AttachWeaponToHand();
+	
+	void AttachWeaponToThy();
 
 protected:
 	virtual void BeginPlay() override;
 
 public:
 
-
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true))
 	AWeaponBase* ActualWeaponOnTheHip = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true))
+	AWeaponBase* WeaponInHands = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	class UDataTable* EquipSwordAnimMontageDataTable = nullptr;
@@ -39,5 +46,5 @@ public:
 private:
 	ASwdCharacter* GetOwnerCharacter();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true))
-	TSubclassOf<AWeaponBase> WeaponOnTheHipSlot = nullptr;
+	TSubclassOf<AWeaponBase> HipSlotForWeapon = nullptr;
 };

@@ -35,11 +35,11 @@ struct FWeaponState
 		return !IsSwinging && !IsBeingActedUpon;
 	}
 
+	UPROPERTY(VisibleAnywhere)
+	bool IsStartedInteraction = false;
 private:
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess= true))
 	bool IsBeingActedUpon = false;
-	UPROPERTY(VisibleAnywhere)
-	bool IsStartedInteraction = false;
 	UPROPERTY(VisibleAnywhere)
 	bool IsFinishedInteraction = true;
 };

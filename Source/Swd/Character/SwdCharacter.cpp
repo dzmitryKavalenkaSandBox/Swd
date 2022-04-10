@@ -16,7 +16,7 @@ ASwdCharacter::ASwdCharacter()
 
 	// set our turn rate for input
 	TurnRateGamepad = 50.f;
-	
+
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
@@ -26,7 +26,7 @@ ASwdCharacter::ASwdCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
-	
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
@@ -65,6 +65,10 @@ void ASwdCharacter::EquipSheathWeapon()
 	{
 		EquipmentComponent->EquipWeapon();
 	}
+	else
+	{
+		EquipmentComponent->SheathWeapon();
+	}
 }
 
 void ASwdCharacter::MoveForward(float Value)
@@ -83,12 +87,12 @@ void ASwdCharacter::MoveForward(float Value)
 
 void ASwdCharacter::MoveRight(float Value)
 {
-	if ( (Controller != nullptr) && (Value != 0.0f) )
+	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
+
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction

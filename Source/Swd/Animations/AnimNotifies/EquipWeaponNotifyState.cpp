@@ -2,7 +2,6 @@
 
 #include "Swd/Character/SwdCharacter.h"
 #include "Swd/Components/EquipmentComponent.h"
-#include "Swd/Utils/Logger.h"
 
 void UEquipWeaponNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                           float TotalDuration)
@@ -17,8 +16,7 @@ void UEquipWeaponNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 	}
 	else
 	{
-		ULogger::Log(ELogLevel::INFO, TEXT("Logic to sheath weapon"));
-		// Character->EquipmentComponent->AttachWeaponToThy();
+		Character->EquipmentComponent->AttachWeaponToThy();
 		// Character->EquipmentComponent->EquippedWeapon->PlaySheathWeaponSound();
 	}
 }
@@ -26,8 +24,16 @@ void UEquipWeaponNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 void UEquipWeaponNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	Super::NotifyEnd(MeshComp, Animation);
-	// auto Character = Cast<ASwdCharacter>(MeshComp->GetOwner());
-	// if (!Character) return;
+	auto Character = Cast<ASwdCharacter>(MeshComp->GetOwner());
+	if (!Character) return;
+	if (Character->EquipmentComponent->ActualWeaponOnTheHip)
+	{
+		Character->EquipmentComponent->ActualWeaponOnTheHip->WeaponState.FinishInteraction();
+	}
+	else
+	{
+		Character->EquipmentComponent->WeaponInHands->WeaponState.FinishInteraction();
+	}
 	// if (Character->EquipmentComponent->bIsWeaponSheathed)
 	// {
 	// 	Character->ManageCombatState(false);
