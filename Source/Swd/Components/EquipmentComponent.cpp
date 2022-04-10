@@ -27,20 +27,16 @@ void UEquipmentComponent::EquipWeapon()
 	if (CanEquipWeapon())
 	{
 		ActualWeaponOnTheHip->WeaponState.StartInteraction();
-		PlayDataTableAnimation(GetOwnerCharacter(), EquipSwordAnimMontageDataTable, false, AnimAction::Equip);
+		PlayDataTableAnimation(GetOwnerCharacter(), EquipSwordAnimMontageDataTable, true, AnimAction::Equip);
 	}
 }
 
 void UEquipmentComponent::SheathWeapon()
 {
-	if(WeaponInHands)
-	{
-	ULogger::Log(ELogLevel::WARNING, FString(("HAS STARTED INTERACTION: ") + FString(WeaponInHands->WeaponState.IsStartedInteraction ? "true" : "false")));
-	}
 	if (CanSheathWeapon())
 	{
 		WeaponInHands->WeaponState.StartInteraction();
-		PlayDataTableAnimation(GetOwnerCharacter(), EquipSwordAnimMontageDataTable, false, AnimAction::Sheath);
+		PlayDataTableAnimation(GetOwnerCharacter(), EquipSwordAnimMontageDataTable, true, AnimAction::Sheath);
 	}
 }
 

@@ -23,6 +23,7 @@ void IAMDataTablePlayable::PlayDataTableAnimation(
 		}
 		else if (Character->GetSpeed() > 0 && HasBlendedAnim)
 		{
+			ULogger::Log(ELogLevel::WARNING, TEXT("Playing Blended animation"));
 			Character->bIsAnimationBlended = true;
 			RowName = FName(AnimActionName + FString("UpperBody"));
 		}
