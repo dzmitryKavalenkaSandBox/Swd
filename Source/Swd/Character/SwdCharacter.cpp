@@ -64,11 +64,39 @@ void ASwdCharacter::EquipSheathWeapon()
 	if (EquipmentComponent->ActualWeaponOnTheHip)
 	{
 		EquipmentComponent->EquipWeapon();
+		ManageCombatState(true);
 	}
 	else
 	{
 		EquipmentComponent->SheathWeapon();
+		ManageCombatState(false);
 	}
+}
+
+void ASwdCharacter::ManageCombatState(bool bEnableCombat)
+{
+	bIsInCombat = bEnableCombat;
+	if (bEnableCombat)
+	{
+		if (!GetCharacterMovement()->bUseControllerDesiredRotation)
+		{
+			GetCharacterMovement()->bUseControllerDesiredRotation = true;
+			GetCharacterMovement()->bOrientRotationToMovement = false;
+		}
+	}
+	else
+	{
+		if (GetCharacterMovement()->bUseControllerDesiredRotation)
+		{
+			GetCharacterMovement()->bUseControllerDesiredRotation = false;
+			GetCharacterMovement()->bOrientRotationToMovement = true;
+		}
+	}
+}
+
+bool ASwdCharacter::GetIsInCombat() const
+{
+	return bIsInCombat;
 }
 
 void ASwdCharacter::MoveForward(float Value)

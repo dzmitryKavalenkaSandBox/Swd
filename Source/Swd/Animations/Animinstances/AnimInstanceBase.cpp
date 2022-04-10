@@ -30,7 +30,7 @@ void UAnimInstanceBase::NativeUpdateAnimation(float DeltaSeconds)
 		bIsInAir = Character->GetMovementComponent()->IsFalling();
 		Speed = Character->GetSpeed();
 		bIsAnimationBlended = Character->bIsAnimationBlended;
-		bIsInCombat = Character->bIsInCombat;
+		bIsInCombat = Character->GetIsInCombat();
 		Direction = CalculateDirection(Character->GetVelocity(), Character->GetActorRotation());
 		bIsWeaponSheathed = Character->EquipmentComponent->ActualWeaponOnTheHip;
 	}

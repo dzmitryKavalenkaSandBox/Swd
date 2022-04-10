@@ -15,23 +15,26 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	class UEquipmentComponent* EquipmentComponent;
-	
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Animation")
 	bool bIsAnimationBlended;
-	
+
 	float GetSpeed();
 
 	UFUNCTION(BlueprintCallable)
 	void EquipSheathWeapon();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Combat")
-	bool bIsInCombat = false;
+	UFUNCTION()
+	void ManageCombatState(bool bEnableCombat);
+
+	UFUNCTION(BlueprintPure)
+	bool GetIsInCombat() const;
 
 protected:
-
 	void MoveForward(float Value);
 
 	void MoveRight(float Value);
@@ -48,8 +51,9 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
-protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess=true))
+	bool bIsInCombat = false;
 };
-
