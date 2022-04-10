@@ -27,6 +27,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EquipSheathWeapon();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Combat")
+	bool bIsInCombat = false;
+
 protected:
 
 	void MoveForward(float Value);

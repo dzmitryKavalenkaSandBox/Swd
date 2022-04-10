@@ -48,8 +48,6 @@ void UEquipmentComponent::AttachWeaponToHand()
 {
 	if (ActualWeaponOnTheHip)
 	{
-		// AWeaponBase* Weapon = Cast<AWeaponBase>(WeaponOnTheHip->GetDefaultObject());
-		ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
 		ActualWeaponOnTheHip->AttachToComponent(
 			GetOwnerCharacter()->GetMesh(),
 			FAttachmentTransformRules(
