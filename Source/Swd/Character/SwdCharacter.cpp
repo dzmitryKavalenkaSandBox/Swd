@@ -4,6 +4,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "Swd/Components/EquipmentComponent.h"
+#include "Swd/Components/HealthComponent.h"
 #include "Swd/Utils/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -31,6 +32,7 @@ ASwdCharacter::ASwdCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
 	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("Equipment Component"));
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -97,6 +99,15 @@ void ASwdCharacter::ManageCombatState(bool bEnableCombat)
 bool ASwdCharacter::GetIsInCombat() const
 {
 	return bIsInCombat;
+}
+
+void ASwdCharacter::HandleDeathBehavior()
+{
+	GetMesh()->SetSimulatePhysics(true);
+	GetMovementComponent()->StopActiveMovement();
+	GetMesh()->SetCollisionProfileName("Ragdoll");
+	GetController()->DisableInput(Cast<APlayerController>(GetController()));
+	// PlayDeathAnim();
 }
 
 void ASwdCharacter::MoveForward(float Value)

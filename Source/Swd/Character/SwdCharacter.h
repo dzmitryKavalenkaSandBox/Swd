@@ -2,10 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Swd/Interfacces/Killable.h"
 #include "SwdCharacter.generated.h"
 
 UCLASS(config=Game)
-class ASwdCharacter : public ACharacter
+class ASwdCharacter : public ACharacter, public IKillable
 {
 	GENERATED_BODY()
 
@@ -13,8 +14,11 @@ public:
 	ASwdCharacter();
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UEquipmentComponent* EquipmentComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UHealthComponent* HealthComponent;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
@@ -33,6 +37,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	bool GetIsInCombat() const;
+
+	UFUNCTION()
+	virtual void HandleDeathBehavior() override;
 
 protected:
 	void MoveForward(float Value);
