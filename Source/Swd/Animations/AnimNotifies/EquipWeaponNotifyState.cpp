@@ -2,6 +2,7 @@
 
 #include "Swd/Character/SwdCharacter.h"
 #include "Swd/Components/EquipmentComponent.h"
+#include "Swd/Utils/Logger.h"
 
 void UEquipWeaponNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                           float TotalDuration)
@@ -28,15 +29,14 @@ void UEquipWeaponNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimS
 	if (!Character) return;
 	if (Character->EquipmentComponent->ActualWeaponOnTheHip)
 	{
+		ULogger::Log(ELogLevel::WARNING, TEXT("FINISHED SHEATHING"));
 		Character->EquipmentComponent->ActualWeaponOnTheHip->WeaponState.FinishInteraction();
+		Character->ManageCombatState(false);
 	}
 	else
 	{
+		ULogger::Log(ELogLevel::WARNING, TEXT("FINISHED EQUIPING"));
 		Character->EquipmentComponent->WeaponInHands->WeaponState.FinishInteraction();
+		Character->ManageCombatState(true);
 	}
-	// if (Character->EquipmentComponent->bIsWeaponSheathed)
-	// {
-	// 	Character->ManageCombatState(false);
-	// }
-	// Character->EquipmentComponent->GetEquippedWeapon()->WeaponState.FinishInteraction();
 }

@@ -7,9 +7,6 @@
 #include "Swd/Components/HealthComponent.h"
 #include "Swd/Utils/Logger.h"
 
-//////////////////////////////////////////////////////////////////////////
-// ASwdCharacter
-
 ASwdCharacter::ASwdCharacter()
 {
 	// Set size for collision capsule
@@ -18,15 +15,7 @@ ASwdCharacter::ASwdCharacter()
 	// set our turn rate for input
 	TurnRateGamepad = 50.f;
 
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
-
-	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
-	// instead of recompiling to adjust them
-	GetCharacterMovement()->JumpZVelocity = 700.f;
-	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+	InitialMovementSetUp();
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -66,12 +55,10 @@ void ASwdCharacter::EquipSheathWeapon()
 	if (EquipmentComponent->ActualWeaponOnTheHip)
 	{
 		EquipmentComponent->EquipWeapon();
-		ManageCombatState(true);
 	}
 	else
 	{
 		EquipmentComponent->SheathWeapon();
-		ManageCombatState(false);
 	}
 }
 
@@ -80,6 +67,7 @@ void ASwdCharacter::ManageCombatState(bool bEnableCombat)
 	bIsInCombat = bEnableCombat;
 	if (bEnableCombat)
 	{
+		GetCharacterMovement()->MaxWalkSpeed = RunSpeedCombat;
 		if (!GetCharacterMovement()->bUseControllerDesiredRotation)
 		{
 			GetCharacterMovement()->bUseControllerDesiredRotation = true;
@@ -88,6 +76,7 @@ void ASwdCharacter::ManageCombatState(bool bEnableCombat)
 	}
 	else
 	{
+		GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 		if (GetCharacterMovement()->bUseControllerDesiredRotation)
 		{
 			GetCharacterMovement()->bUseControllerDesiredRotation = false;
@@ -137,4 +126,17 @@ void ASwdCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void ASwdCharacter::InitialMovementSetUp()
+{
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
+	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
+	// instead of recompiling to adjust them
+	GetCharacterMovement()->JumpZVelocity = 700.f;
+	GetCharacterMovement()->AirControl = 0.35f;
+	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
+	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+	
 }

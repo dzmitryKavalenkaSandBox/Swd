@@ -10,9 +10,6 @@ UCLASS(minimalapi)
 class ASwdGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-
-public:
-	ASwdGameMode();
 };
 
 

@@ -101,12 +101,12 @@ void UEquipmentComponent::BeginPlay()
 
 void UEquipmentComponent::SetUpAnimations()
 {
-	static ConstructorHelpers::FObjectFinder<UDataTable> EquipWeaponDataObject(
+	/*static ConstructorHelpers::FObjectFinder<UDataTable> EquipWeaponDataObject(
 		AM_DataTableReference::EquipSheathWeapon);
 	if (EquipWeaponDataObject.Succeeded())
 	{
 		EquipSwordAnimMontageDataTable = EquipWeaponDataObject.Object;
-	}
+	}*/
 }
 
 ASwdCharacter* UEquipmentComponent::GetOwnerCharacter()

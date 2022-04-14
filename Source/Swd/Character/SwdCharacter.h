@@ -63,4 +63,16 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess=true))
 	bool bIsInCombat = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
+	float RunSpeed = 500.f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
+	float RunSpeedCombat = 350.f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
+	float WalkSpeed = 200.f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
+	float WalkSpeedCombat = 180.f;
+
+	UFUNCTION()
+	void InitialMovementSetUp();
 };
