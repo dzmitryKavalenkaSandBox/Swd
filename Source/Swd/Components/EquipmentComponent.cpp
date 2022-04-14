@@ -3,7 +3,6 @@
 #include "Swd/Swd.h"
 #include "Swd/Character/SwdCharacter.h"
 #include "Engine/DataTable.h"
-#include "Swd/Utils/Logger.h"
 
 UEquipmentComponent::UEquipmentComponent()
 {
@@ -55,6 +54,7 @@ void UEquipmentComponent::AttachWeaponToHand()
 			BoneSockets::WeaponHandle
 		);
 		WeaponInHands = ActualWeaponOnTheHip;
+		WeaponInHands->PlayDrawWeaponSound();
 		ActualWeaponOnTheHip = nullptr;
 	}
 }
@@ -74,6 +74,7 @@ void UEquipmentComponent::AttachWeaponToThy()
 			BoneSockets::HipWeaponSocket
 		);
 		ActualWeaponOnTheHip = WeaponInHands;
+		ActualWeaponOnTheHip->PlaySheathWeaponSound();
 		WeaponInHands = nullptr;
 	}
 }

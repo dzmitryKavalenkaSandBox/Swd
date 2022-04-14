@@ -1,7 +1,9 @@
 #include "WeaponBase.h"
 
+#include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
+#include "Sound/SoundCue.h"
 #include "Swd/Swd.h"
 #include "Swd/Utils/Logger.h"
 
@@ -27,6 +29,9 @@ AWeaponBase::AWeaponBase()
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision Box"));
 	CollisionBox->SetupAttachment(WeaponSkeletalMesh);
 	CollisionBox->SetCollisionProfileName(CollisionProfile::NoCollision);
+
+	DrawWeaponSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Draw Weapon Audio cpmponent"));
+	SheathWeaponSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Sheath Weapon Audio cpmponent"));
 }
 
 float AWeaponBase::GetWeaponBaseDamage()
@@ -72,4 +77,30 @@ void AWeaponBase::OnCollisionBoxOverlapBegin(UPrimitiveComponent* OverlappedComp
                                              const FHitResult& SweepResult)
 {
 	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
+}
+
+void AWeaponBase::PlayDrawWeaponSound()
+{
+	if (DrawWeaponSoundComponent && !DrawWeaponSoundComponent->IsPlaying())
+	{
+		// default pitch value is 1.f
+		DrawWeaponSoundComponent->SetPitchMultiplier(FMath::RandRange(1.0f, 1.3f));
+		DrawWeaponSoundComponent->SetSound(DrawWeaponSoundCue);
+		DrawWeaponSoundComponent->SetVolumeMultiplier(0.3);
+
+		DrawWeaponSoundComponent->Play(0.f);
+	}
+}
+
+void AWeaponBase::PlaySheathWeaponSound()
+{
+	if (SheathWeaponSoundComponent && !SheathWeaponSoundComponent->IsPlaying())
+	{
+		// default pitch value is 1.f
+		SheathWeaponSoundComponent->SetPitchMultiplier(FMath::RandRange(1.0f, 1.3f));
+		SheathWeaponSoundComponent->SetSound(SheathWeaponSoundCue);
+		SheathWeaponSoundComponent->SetVolumeMultiplier(0.3);
+
+		SheathWeaponSoundComponent->Play(0.f);
+	}
 }
