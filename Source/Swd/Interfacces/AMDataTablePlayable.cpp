@@ -13,11 +13,13 @@ void IAMDataTablePlayable::PlayDataTableAnimation(
 {
 	if (Character && DataTable)
 	{
+		ULogger::Log(ELogLevel::WARNING, FString("Attack Action Name ") + AnimActionName);
 		static const FString ContextString(TEXT("Data table anim montage context"));
 		FPlayerAnimMontage* AminMontage;
 		FName RowName;
 		if (Character->GetSpeed() <= 0 || !HasBlendedAnim)
 		{
+			ULogger::Log(ELogLevel::WARNING, TEXT("Playing Root Motion Animation"));
 			Character->bIsAnimationBlended = false;
 			RowName = FName(AnimActionName + FString("FullBody"));
 		}

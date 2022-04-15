@@ -3,6 +3,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Swd/Components/AttackComponent.h"
 #include "Swd/Components/EquipmentComponent.h"
 #include "Swd/Components/HealthComponent.h"
 #include "Swd/Utils/Logger.h"
@@ -22,6 +23,7 @@ ASwdCharacter::ASwdCharacter()
 
 	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("Equipment Component"));
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
+	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("Attack Component"));
 }
 
 //////////////////////////////////////////////////////////////////////////

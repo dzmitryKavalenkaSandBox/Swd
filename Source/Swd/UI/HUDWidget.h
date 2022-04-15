@@ -20,13 +20,9 @@ public:
 	// UProgressBar* StaminaBar; 
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	UButton* A;
+	UButton* LeftLeg;
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	UButton* B;
-	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	UButton* X;
-	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	UButton* Y;
+	UButton* RightLeg;
 
 protected:
 	virtual void NativeConstruct() override;

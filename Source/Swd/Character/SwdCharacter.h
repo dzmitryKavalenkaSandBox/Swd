@@ -20,6 +20,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UHealthComponent* HealthComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAttackComponent* AttackComponent;
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
