@@ -14,11 +14,9 @@ void UAttackComponent::Attack()
 {
 	if (auto Character = Cast<ASwdCharacter>(GetOwner()))
 	{
-		auto Attack = AttackToPreform;
 		if (AttackToPreform)
 		{
-			ULogger::Log(ELogLevel::WARNING, FString("Attack name: ") + Attack->GetName());
-			Attack->PerformAttack(Character);
+			AttackToPreform->PerformAttack(Character);
 		}
 	}
 }
@@ -101,6 +99,9 @@ UBoxComponent* UAttackComponent::GetAttackSourceCollisionBox()
 					return Character->EquipmentComponent->WeaponInHands->CollisionBox;
 				}
 			}
+		default: ULogger::Log(ELogLevel::ERROR, FString("Attack '") +
+		                      AttackToPreform->AttackName() + FString("' has non AttackSource set"));
+			break;
 		}
 	}
 	return nullptr;

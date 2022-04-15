@@ -1,4 +1,3 @@
-
 #include "LeftLegKickAttack.h"
 
 ULeftLegKickAttack::ULeftLegKickAttack()
@@ -14,6 +13,11 @@ ULeftLegKickAttack::ULeftLegKickAttack()
 float ULeftLegKickAttack::AttackDamageFactor()
 {
 	return .4f;
+}
+
+float ULeftLegKickAttack::AttackStaminaFactor()
+{
+	return 15.f;
 }
 
 FString ULeftLegKickAttack::AttackName()

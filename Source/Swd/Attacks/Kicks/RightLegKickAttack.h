@@ -1,10 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AttackBase.h"
-#include "UObject/Object.h"
+#include "Swd/Attacks/AttackBase.h"
 #include "RightLegKickAttack.generated.h"
 
 /**
@@ -18,4 +15,5 @@ class SWD_API URightLegKickAttack : public UAttackBase
 	URightLegKickAttack();
 	virtual FString AttackName() override;
 	virtual float AttackDamageFactor() override;
+	virtual float AttackStaminaFactor() override;
 };

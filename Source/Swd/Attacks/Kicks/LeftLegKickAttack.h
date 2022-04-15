@@ -1,8 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AttackBase.h"
-#include "UObject/Object.h"
+#include "Swd/Attacks/AttackBase.h"
 #include "LeftLegKickAttack.generated.h"
 
 /**
@@ -16,4 +15,5 @@ class SWD_API ULeftLegKickAttack: public UAttackBase
 	ULeftLegKickAttack();
 	virtual FString AttackName() override;
 	virtual float AttackDamageFactor() override;
+	virtual float AttackStaminaFactor() override;
 };

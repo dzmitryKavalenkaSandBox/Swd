@@ -24,6 +24,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	UButton* RightLeg;
 
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UButton* LeftHand;
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UButton* RightHand;
+
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeOnInitialized() override;

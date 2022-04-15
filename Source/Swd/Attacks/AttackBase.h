@@ -8,6 +8,7 @@
 UENUM(BlueprintType)
 enum class EAttackSource: uint8
 {
+	NONE UMETA(DisplayName = "NONE"),
 	RIGHT_LEG UMETA(DisplayName = "Right Leg"),
 	LEFT_LEG UMETA(DisplayName = "Left Leg"),
 	WEAPON UMETA(DisplayName = "Weapon"),
