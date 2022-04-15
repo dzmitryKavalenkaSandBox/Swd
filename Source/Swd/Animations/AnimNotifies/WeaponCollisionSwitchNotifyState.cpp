@@ -10,8 +10,7 @@ void UWeaponCollisionSwitchNotifyState::NotifyBegin(USkeletalMeshComponent* Mesh
 
 	if (auto Character = Cast<ASwdCharacter>(MeshComp->GetOwner()))
 	{
-		auto CurrentAttack = Character->AttackComponent->GetCurrentAttack();
-		Character->AttackComponent->SwitchCollisionProfile(CurrentAttack->AttackSource, FName("Weapon"));
+		Character->AttackComponent->AttackStart();
 	}
 }
 
@@ -20,7 +19,6 @@ void UWeaponCollisionSwitchNotifyState::NotifyEnd(USkeletalMeshComponent* MeshCo
 	Super::NotifyEnd(MeshComp, Animation);
 	if (auto Character = Cast<ASwdCharacter>(MeshComp->GetOwner()))
 	{
-		auto CurrentAttack = Character->AttackComponent->GetCurrentAttack();
-		Character->AttackComponent->SwitchCollisionProfile(CurrentAttack->AttackSource, FName("NoCollision"));
+		Character->AttackComponent->AttackEnd();
 	}
 }

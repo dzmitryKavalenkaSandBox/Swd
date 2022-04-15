@@ -47,6 +47,9 @@ void ASwdCharacter::BeginPlay()
 		);
 	LeftLegCollisionBox->AttachToComponent(GetMesh(), AttachmentRules, BoneSockets::LeftFoodKickSocket);
 	RightLegCollisionBox->AttachToComponent(GetMesh(), AttachmentRules, BoneSockets::RightFoodKickSocket);
+
+	// LeftLegCollisionBox->OnComponentHit.AddDynamic(this, ASwdCharacter::OnAttackHit);
+	// RightLegCollisionBox->OnComponentHit.AddDynamic(this, ASwdCharacter::OnAttackHit);
 }
 
 void ASwdCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -119,6 +122,12 @@ void ASwdCharacter::HandleDeathBehavior()
 	GetMesh()->SetCollisionProfileName("Ragdoll");
 	GetController()->DisableInput(Cast<APlayerController>(GetController()));
 	// PlayDeathAnim();
+}
+
+void ASwdCharacter::OnAttackHit(UPrimitiveComponent OnComponentHit, UPrimitiveComponent* HitComponent,
+	AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	
 }
 
 void ASwdCharacter::MoveForward(float Value)

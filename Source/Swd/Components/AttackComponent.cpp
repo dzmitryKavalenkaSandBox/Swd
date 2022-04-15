@@ -1,5 +1,6 @@
 #include "AttackComponent.h"
 
+#include "EquipmentComponent.h"
 #include "Components/BoxComponent.h"
 #include "Swd/Utils/Logger.h"
 
@@ -13,8 +14,8 @@ void UAttackComponent::Attack()
 {
 	if (auto Character = Cast<ASwdCharacter>(GetOwner()))
 	{
-		auto Attack = Cast<UAttackBase>(AttackToPreform->GetDefaultObject());
-		if (Attack)
+		auto Attack = AttackToPreform;
+		if (AttackToPreform)
 		{
 			ULogger::Log(ELogLevel::WARNING, FString("Attack name: ") + Attack->GetName());
 			Attack->PerformAttack(Character);
@@ -22,12 +23,10 @@ void UAttackComponent::Attack()
 	}
 }
 
-
 void UAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
 }
-
 
 void UAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                      FActorComponentTickFunction* ThisTickFunction)
@@ -37,7 +36,26 @@ void UAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UAttackComponent::SetAttackToPerform(TSubclassOf<UAttackBase> Attack)
 {
-	AttackToPreform = Attack;
+	AttackToPreform = Attack.GetDefaultObject();
+	AttackToPreform->Attacker = Cast<ASwdCharacter>(GetOwner());
+}
+
+void UAttackComponent::AttackStart()
+{
+	SwitchCollisionProfile(GetCurrentAttack()->AttackSource, "Weapon");
+	if (auto CollisionBox = GetAttackSourceCollisionBox())
+	{
+		CollisionBox->SetNotifyRigidBodyCollision(true);
+	}
+}
+
+void UAttackComponent::AttackEnd()
+{
+	SwitchCollisionProfile(GetCurrentAttack()->AttackSource, "NoCollision");
+	if (auto CollisionBox = GetAttackSourceCollisionBox())
+	{
+		CollisionBox->SetNotifyRigidBodyCollision(false);
+	}
 }
 
 void UAttackComponent::SwitchCollisionProfile(EAttackSource AttackSource, FName CollisionProfileName)
@@ -48,13 +66,11 @@ void UAttackComponent::SwitchCollisionProfile(EAttackSource AttackSource, FName 
 		{
 		case EAttackSource::LEFT_LEG:
 			{
-				ULogger::Log(ELogLevel::WARNING, "Setting collision to Left leg to " + CollisionProfileName.ToString());
 				Character->LeftLegCollisionBox->SetCollisionProfileName(CollisionProfileName);
 				break;
 			}
 		case EAttackSource::RIGHT_LEG:
 			{
-				ULogger::Log(ELogLevel::WARNING, "Setting collision to Right leg to " + CollisionProfileName.ToString());
 				Character->RightLegCollisionBox->SetCollisionProfileName(CollisionProfileName);
 				break;
 			}
@@ -63,7 +79,34 @@ void UAttackComponent::SwitchCollisionProfile(EAttackSource AttackSource, FName 
 	}
 }
 
+UBoxComponent* UAttackComponent::GetAttackSourceCollisionBox()
+{
+	auto Character = Cast<ASwdCharacter>(GetOwner());
+	if (Character && AttackToPreform)
+	{
+		switch (AttackToPreform->AttackSource)
+		{
+		case EAttackSource::LEFT_LEG:
+			{
+				return Character->LeftLegCollisionBox;
+			}
+		case EAttackSource::RIGHT_LEG:
+			{
+				return Character->RightLegCollisionBox;
+			}
+		case EAttackSource::WEAPON:
+			{
+				if (Character->EquipmentComponent->WeaponInHands)
+				{
+					return Character->EquipmentComponent->WeaponInHands->CollisionBox;
+				}
+			}
+		}
+	}
+	return nullptr;
+}
+
 UAttackBase* UAttackComponent::GetCurrentAttack()
 {
-	return AttackToPreform.GetDefaultObject();
+	return AttackToPreform/*.GetDefaultObject()*/;
 }

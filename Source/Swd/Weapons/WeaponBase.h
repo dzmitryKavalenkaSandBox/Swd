@@ -84,6 +84,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Sounds")
 	USoundCue* SheathWeaponSoundCue = nullptr;
 
+	/**
+	*	'Damaging' area of the weapon
+	*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Collision", meta=(AllowPrivateAccess=true))
+	UBoxComponent* CollisionBox;
+
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -103,12 +110,6 @@ protected:
 private:
 	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	float BaseDamage = 10.f;
-
-	/**
-	*	'Damaging' area of the weapon
-	*/
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Collision", meta=(AllowPrivateAccess=true))
-	UBoxComponent* CollisionBox;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Sounds", meta = (AllowPrivateAccess = "true"))
 	UAudioComponent* DrawWeaponSoundComponent = nullptr;

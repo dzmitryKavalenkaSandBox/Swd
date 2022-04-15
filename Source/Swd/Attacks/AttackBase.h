@@ -9,15 +9,15 @@ UENUM(BlueprintType)
 enum class EAttackSource: uint8
 {
 	RIGHT_LEG UMETA(DisplayName = "Right Leg"),
-	LEFT_LEG UMETA(DisplayName = "Left Leg")
+	LEFT_LEG UMETA(DisplayName = "Left Leg"),
+	WEAPON UMETA(DisplayName = "Weapon"),
 };
 
 class USoundCue;
 class UAudioComponent;
 class UDataTable;
-/**
- * 
- */
+class ASwdCharacter;
+
 UCLASS()
 class SWD_API UAttackBase : public UObject
 {
@@ -31,10 +31,16 @@ public:
 	virtual bool HasBlendedAnim();
 	virtual FString AttackName();
 
+	/*
+	 * The Weapon or part of the body attack is performed by
+	 */
 	EAttackSource AttackSource;
+	/*
+	 * The Character that performs the attack
+	 */
+	UPROPERTY()
+	ASwdCharacter* Attacker = nullptr;
 
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	// USoundCue* SwingSoundCue = nullptr;
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UDataTable* AttackAnimMontageDataTable = nullptr;

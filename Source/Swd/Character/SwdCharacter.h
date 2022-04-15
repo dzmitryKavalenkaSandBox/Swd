@@ -50,6 +50,8 @@ public:
 	UFUNCTION()
 	virtual void HandleDeathBehavior() override;
 
+	void OnAttackHit(UPrimitiveComponent OnComponentHit, UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit );
+
 	virtual void BeginPlay() override;
 
 protected:

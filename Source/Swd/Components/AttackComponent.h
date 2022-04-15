@@ -20,8 +20,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetAttackToPerform(TSubclassOf<UAttackBase> Attack);
 	
-	UFUNCTION()
-	void SwitchCollisionProfile(EAttackSource AttackSource, FName CollisionProfileName);
+	void AttackStart();
+
+	void AttackEnd();
 
 	UFUNCTION()
 	UAttackBase* GetCurrentAttack();
@@ -35,5 +36,10 @@ public:
 
 private:
 	UPROPERTY()
-	TSubclassOf<UAttackBase> AttackToPreform = nullptr;
+	UAttackBase* AttackToPreform = nullptr;
+
+	UFUNCTION()
+	void SwitchCollisionProfile(EAttackSource AttackSource, FName CollisionProfileName);
+	
+	UBoxComponent* GetAttackSourceCollisionBox();
 };
