@@ -17,6 +17,8 @@ namespace BoneSockets
 	FName const RightFootSocket = FName("RightFootSocket");
 	FName const WeaponHandle = FName("WeaponHandle");
 	FName const CollisionBoxSocket = FName("CollisionBoxSocket");
+	FName const RightFoodKickSocket = FName("RightFoodKickSocket");
+	FName const LeftFoodKickSocket = FName("LeftFoodKickSocket");
 }
 
 namespace AM_DataTableReference

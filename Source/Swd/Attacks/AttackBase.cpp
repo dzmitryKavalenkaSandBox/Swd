@@ -2,6 +2,7 @@
 
 #include "Sound/SoundCue.h"
 #include "Swd/Swd.h"
+#include "Swd/Components/AttackComponent.h"
 
 
 UAttackBase::UAttackBase()
@@ -15,7 +16,8 @@ UAttackBase::UAttackBase()
 
 void UAttackBase::PerformAttack(ASwdCharacter* Character)
 {
-	PlayDataTableAnimation(Character, AttackAnimMontageDataTable, HasBlendedAnim(), AttackName());
+	Character->AttackComponent->PlayDataTableAnimation(Character, AttackAnimMontageDataTable, HasBlendedAnim(),
+	                                                   AttackName());
 }
 
 float UAttackBase::AttackDamageFactor()
@@ -37,4 +39,3 @@ FString UAttackBase::AttackName()
 {
 	return this->StaticClass()->GetFName().ToString();
 }
-

@@ -3,6 +3,7 @@
 
 ULeftLegKickAttack::ULeftLegKickAttack()
 {
+	AttackSource = EAttackSource::LEFT_LEG;
 	// static ConstructorHelpers::FObjectFinder<USoundCue> SwingSoundCueObject(AttackSound::BasicSwingSound);
 	// if (SwingSoundCueObject.Succeeded())
 	// {

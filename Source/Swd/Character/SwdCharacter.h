@@ -23,6 +23,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UAttackComponent* AttackComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UBoxComponent* LeftLegCollisionBox;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UBoxComponent* RightLegCollisionBox;
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
@@ -43,6 +49,8 @@ public:
 
 	UFUNCTION()
 	virtual void HandleDeathBehavior() override;
+
+	virtual void BeginPlay() override;
 
 protected:
 	void MoveForward(float Value);

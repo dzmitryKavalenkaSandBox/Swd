@@ -11,6 +11,7 @@ void IAMDataTablePlayable::PlayDataTableAnimation(
 	FString AnimActionName
 )
 {
+	
 	if (Character && DataTable)
 	{
 		ULogger::Log(ELogLevel::WARNING, FString("Attack Action Name ") + AnimActionName);

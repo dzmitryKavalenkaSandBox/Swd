@@ -1,8 +1,11 @@
 #include "SwdCharacter.h"
+
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Swd/Swd.h"
 #include "Swd/Components/AttackComponent.h"
 #include "Swd/Components/EquipmentComponent.h"
 #include "Swd/Components/HealthComponent.h"
@@ -24,10 +27,27 @@ ASwdCharacter::ASwdCharacter()
 	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("Equipment Component"));
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("Attack Component"));
+	LeftLegCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Left Leg Collosing Box"));
+	LeftLegCollisionBox->SetupAttachment(RootComponent);
+	LeftLegCollisionBox->SetCollisionProfileName(TEXT("NoCollision"));
+	
+	RightLegCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Leg Collosing Box"));
+	RightLegCollisionBox->SetupAttachment(RootComponent);
+	RightLegCollisionBox->SetCollisionProfileName(TEXT("NoCollision"));
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
+void ASwdCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	const FAttachmentTransformRules AttachmentRules(
+		EAttachmentRule::SnapToTarget,
+		EAttachmentRule::SnapToTarget,
+		EAttachmentRule::KeepWorld,
+		false
+		);
+	LeftLegCollisionBox->AttachToComponent(GetMesh(), AttachmentRules, BoneSockets::LeftFoodKickSocket);
+	RightLegCollisionBox->AttachToComponent(GetMesh(), AttachmentRules, BoneSockets::RightFoodKickSocket);
+}
 
 void ASwdCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
@@ -140,5 +160,4 @@ void ASwdCharacter::InitialMovementSetUp()
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
-	
 }

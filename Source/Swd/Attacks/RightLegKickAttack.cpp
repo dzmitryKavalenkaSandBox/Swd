@@ -2,6 +2,7 @@
 
 URightLegKickAttack::URightLegKickAttack()
 {
+	AttackSource = EAttackSource::RIGHT_LEG;
 }
 
 float URightLegKickAttack::AttackDamageFactor()

@@ -7,7 +7,7 @@
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class SWD_API UAttackComponent : public UActorComponent
+class SWD_API UAttackComponent : public UActorComponent, public IAMDataTablePlayable
 {
 	GENERATED_BODY()
 
@@ -19,6 +19,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetAttackToPerform(TSubclassOf<UAttackBase> Attack);
+	
+	UFUNCTION()
+	void SwitchCollisionProfile(EAttackSource AttackSource, FName CollisionProfileName);
+
+	UFUNCTION()
+	UAttackBase* GetCurrentAttack();
 
 protected:
 	virtual void BeginPlay() override;
