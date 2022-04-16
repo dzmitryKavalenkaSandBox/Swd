@@ -42,4 +42,6 @@ private:
 	void SwitchCollisionProfile(EAttackSource AttackSource, FName CollisionProfileName);
 	
 	UBoxComponent* GetAttackSourceCollisionBox();
+
+	ASwdCharacter* GetCharacter();
 };

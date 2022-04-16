@@ -2,7 +2,9 @@
 
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
+#include "Swd/Character/SwdCharacter.h"
 #include "Swd/Interfacces/Killable.h"
+#include "Swd/Utils/Logger.h"
 
 UHealthComponent::UHealthComponent()
 {
@@ -41,6 +43,10 @@ void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDa
 		{
 			DeadActor->HandleDeathBehavior();
 		}
+	}
+	if(auto HitCharacter = Cast<ASwdCharacter>(DamagedActor))
+	{
+		ULogger::Log(ELogLevel::WARNING, FString("Health of hit actor: ") + FString::FromInt(HitCharacter->HealthComponent->Health));
 	}
 }
 

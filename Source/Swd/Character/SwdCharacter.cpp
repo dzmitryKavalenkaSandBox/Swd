@@ -5,6 +5,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Kismet/GameplayStatics.h"
 #include "Swd/Swd.h"
 #include "Swd/Components/AttackComponent.h"
 #include "Swd/Components/EquipmentComponent.h"
@@ -47,10 +48,23 @@ void ASwdCharacter::BeginPlay()
 		);
 	LeftLegCollisionBox->AttachToComponent(GetMesh(), AttachmentRules, BoneSockets::LeftFoodKickSocket);
 	RightLegCollisionBox->AttachToComponent(GetMesh(), AttachmentRules, BoneSockets::RightFoodKickSocket);
-
-	// LeftLegCollisionBox->OnComponentHit.AddDynamic(this, ASwdCharacter::OnAttackHit);
-	// RightLegCollisionBox->OnComponentHit.AddDynamic(this, ASwdCharacter::OnAttackHit);
+	RightLegCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ASwdCharacter::OnKickOverlapBegin);
+	LeftLegCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ASwdCharacter::OnKickOverlapBegin);
 }
+
+void ASwdCharacter::OnKickOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
+	UGameplayStatics::ApplyDamage(
+		OtherActor,
+		5.f * AttackComponent->GetCurrentAttack()->AttackDamageFactor(),
+		OtherActor->GetInstigatorController(),
+		this,
+		UDamageType::StaticClass()
+	);
+}
+
 
 void ASwdCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
@@ -122,12 +136,6 @@ void ASwdCharacter::HandleDeathBehavior()
 	GetMesh()->SetCollisionProfileName("Ragdoll");
 	GetController()->DisableInput(Cast<APlayerController>(GetController()));
 	// PlayDeathAnim();
-}
-
-void ASwdCharacter::OnAttackHit(UPrimitiveComponent OnComponentHit, UPrimitiveComponent* HitComponent,
-	AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-{
-	
 }
 
 void ASwdCharacter::MoveForward(float Value)

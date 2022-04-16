@@ -2,6 +2,7 @@
 
 #include "EquipmentComponent.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Swd/Utils/Logger.h"
 
 
@@ -45,9 +46,11 @@ void UAttackComponent::SetAttackToPerform(TSubclassOf<UAttackBase> Attack)
 void UAttackComponent::AttackStart()
 {
 	SwitchCollisionProfile(GetCurrentAttack()->AttackSource, "Weapon");
+	
 	if (auto CollisionBox = GetAttackSourceCollisionBox())
 	{
 		CollisionBox->SetNotifyRigidBodyCollision(true);
+		CollisionBox->SetGenerateOverlapEvents(true);
 	}
 }
 
@@ -57,12 +60,13 @@ void UAttackComponent::AttackEnd()
 	if (auto CollisionBox = GetAttackSourceCollisionBox())
 	{
 		CollisionBox->SetNotifyRigidBodyCollision(false);
+		CollisionBox->SetGenerateOverlapEvents(false);
 	}
 }
 
 void UAttackComponent::SwitchCollisionProfile(EAttackSource AttackSource, FName CollisionProfileName)
 {
-	if (auto Character = Cast<ASwdCharacter>(GetOwner()))
+	if (auto Character = GetCharacter())
 	{
 		switch (AttackSource)
 		{
@@ -83,7 +87,7 @@ void UAttackComponent::SwitchCollisionProfile(EAttackSource AttackSource, FName 
 
 UBoxComponent* UAttackComponent::GetAttackSourceCollisionBox()
 {
-	auto Character = Cast<ASwdCharacter>(GetOwner());
+	auto Character = GetCharacter();
 	if (Character && AttackToPreform)
 	{
 		switch (AttackToPreform->AttackSource)
@@ -114,4 +118,9 @@ UBoxComponent* UAttackComponent::GetAttackSourceCollisionBox()
 UAttackBase* UAttackComponent::GetCurrentAttack()
 {
 	return AttackToPreform/*.GetDefaultObject()*/;
+}
+
+ASwdCharacter* UAttackComponent::GetCharacter()
+{
+	return Cast<ASwdCharacter>(GetOwner());
 }
