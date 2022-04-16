@@ -12,8 +12,7 @@ class ASwdCharacter : public ACharacter, public IKillable
 
 public:
 	ASwdCharacter();
-
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UEquipmentComponent* EquipmentComponent;
 

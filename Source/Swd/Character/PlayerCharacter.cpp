@@ -1,11 +1,13 @@
 #include "PlayerCharacter.h"
 
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Swd/Components/EquipmentComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Swd/UI/HUDWidget.h"
+#include "Swd/Utils/Logger.h"
 
 
 APlayerCharacter::APlayerCharacter()
@@ -49,8 +51,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &APlayerCharacter::LookUpAtRate);
 
 	// handle touch devices
-	// PlayerInputComponent->BindTouch(IE_Pressed, this, &APlayerCharacter::TouchStarted);
-	// PlayerInputComponent->BindTouch(IE_Released, this, &APlayerCharacter::TouchStopped);
+	// PlayerInputComponent->BindTouch(IE_Pressed, this, &APlayerCharacter::OnTouchBegin);
+	// PlayerInputComponent->BindTouch(IE_Released, this, &APlayerCharacter::OnTouchEnd);
 
 	PlayerInputComponent->BindAction(TEXT("EquipSheath"), IE_Pressed, this, &APlayerCharacter::EquipSheathWeapon);
 }
@@ -64,16 +66,6 @@ void APlayerCharacter::BeginPlay()
 	{
 		Widget->AddToViewport();
 	}
-}
-
-void APlayerCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
-{
-	// Jump();
-}
-
-void APlayerCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
-{
-	// StopJumping();
 }
 
 void APlayerCharacter::SetUpHUDWidget()
