@@ -3,8 +3,10 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
+#include "Swd/Character/SwdCharacter.h"
 #include "HUDWidget.generated.h"
 
+class UAttackBase;
 class UProgressBar;
 
 UCLASS()
@@ -28,9 +30,27 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	UButton* RightHand;
 
-	// void OnLeftLegClicked();
+	UFUNCTION()
+	void OnLeftLegPressed();
+	UFUNCTION()
+	void OnRightLegPressed();
+	UFUNCTION()
+	void OnRightHandPressed();
+	UFUNCTION()
+	void OnLeftHandPressed();
 
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeOnInitialized() override;
+
+private:
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
+	ASwdCharacter* OwningPlayer;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	TSubclassOf<UAttackBase> LeftLegKickAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	TSubclassOf<UAttackBase> RightLegKickAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	TSubclassOf<UAttackBase> RightHandAttack;
 };

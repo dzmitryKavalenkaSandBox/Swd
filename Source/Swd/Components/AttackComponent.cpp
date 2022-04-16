@@ -34,8 +34,12 @@ void UAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UAttackComponent::SetAttackToPerform(TSubclassOf<UAttackBase> Attack)
 {
-	AttackToPreform = Attack.GetDefaultObject();
-	AttackToPreform->Attacker = Cast<ASwdCharacter>(GetOwner());
+	if (Attack)
+	{
+		ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
+		AttackToPreform = Attack.GetDefaultObject();
+		AttackToPreform->Attacker = Cast<ASwdCharacter>(GetOwner());
+	}
 }
 
 void UAttackComponent::AttackStart()
