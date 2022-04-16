@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
-#include "UObject/Object.h"
 #include "HUDWidget.generated.h"
 
 class UProgressBar;
@@ -28,6 +27,8 @@ public:
 	UButton* LeftHand;
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	UButton* RightHand;
+
+	// void OnLeftLegClicked();
 
 protected:
 	virtual void NativeConstruct() override;
