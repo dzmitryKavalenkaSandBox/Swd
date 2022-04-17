@@ -44,7 +44,7 @@ public:
 	void SetUpAnimations();
 
 private:
-	ASwdCharacter* GetOwnerCharacter();
+	ASwdCharacter* GetCharacter();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true))
 	TSubclassOf<AWeaponBase> HipSlotForWeapon = nullptr;
 };

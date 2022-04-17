@@ -5,6 +5,8 @@
 #include "Components/SphereComponent.h"
 #include "Sound/SoundCue.h"
 #include "Swd/Swd.h"
+#include "Swd/Components/AttackComponent.h"
+#include "Swd/Components/DamageInflictorComponent.h"
 #include "Swd/Utils/Logger.h"
 
 AWeaponBase::AWeaponBase()
@@ -37,6 +39,11 @@ AWeaponBase::AWeaponBase()
 float AWeaponBase::GetWeaponBaseDamage()
 {
 	return BaseDamage;
+}
+
+void AWeaponBase::SetOwnerCharacter(ASwdCharacter* NewOwner)
+{
+	SetOwner(NewOwner);
 }
 
 void AWeaponBase::BeginPlay()
@@ -76,7 +83,20 @@ void AWeaponBase::OnCollisionBoxOverlapBegin(UPrimitiveComponent* OverlappedComp
                                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                              const FHitResult& SweepResult)
 {
-	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
+	if (OtherActor != GetCharacter())
+	{
+		if (auto Attack = GetCharacter()->AttackComponent->GetCurrentAttack())
+		{
+			float DamageToInflict = Attack->GetAttackDamageFactor() + GetWeaponBaseDamage();
+			GetCharacter()->DamageInflictorComponent->InflictDamage(OtherActor, DamageToInflict);
+		}
+		else ULogger::Log(ELogLevel::ERROR, TEXT("Trying inflict damage on not set attack"));
+	}
+}
+
+ASwdCharacter* AWeaponBase::GetCharacter()
+{
+	return Cast<ASwdCharacter>(GetOwner());
 }
 
 void AWeaponBase::PlayDrawWeaponSound()

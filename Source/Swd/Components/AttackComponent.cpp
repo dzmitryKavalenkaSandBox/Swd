@@ -4,6 +4,7 @@
 #include "StaminaComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Swd/Swd.h"
 #include "Swd/Utils/Logger.h"
 
 
@@ -38,7 +39,6 @@ void UAttackComponent::SetAttackToPerform(TSubclassOf<UAttackBase> Attack)
 {
 	if (Attack)
 	{
-		ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
 		AttackToPreform = Attack.GetDefaultObject();
 		AttackToPreform->Attacker = Cast<ASwdCharacter>(GetOwner());
 	}
@@ -46,8 +46,8 @@ void UAttackComponent::SetAttackToPerform(TSubclassOf<UAttackBase> Attack)
 
 void UAttackComponent::AttackStart()
 {
-	SwitchCollisionProfile(GetCurrentAttack()->AttackSource, "Weapon");
-	
+	SwitchCollisionProfile(CollisionProfile::Weapon);
+
 	if (auto CollisionBox = GetAttackSourceCollisionBox())
 	{
 		CollisionBox->SetNotifyRigidBodyCollision(true);
@@ -57,7 +57,7 @@ void UAttackComponent::AttackStart()
 
 void UAttackComponent::AttackEnd()
 {
-	SwitchCollisionProfile(GetCurrentAttack()->AttackSource, "NoCollision");
+	SwitchCollisionProfile(CollisionProfile::NoCollision);
 	if (auto CollisionBox = GetAttackSourceCollisionBox())
 	{
 		CollisionBox->SetNotifyRigidBodyCollision(false);
@@ -66,24 +66,11 @@ void UAttackComponent::AttackEnd()
 	GetCharacter()->StaminaComponent->DrainStamina(GetCurrentAttack()->GetAttackStaminaFactor());
 }
 
-void UAttackComponent::SwitchCollisionProfile(EAttackSource AttackSource, FName CollisionProfileName)
+void UAttackComponent::SwitchCollisionProfile(FName CollisionProfileName)
 {
-	if (auto Character = GetCharacter())
+	if (auto CollisionBox = GetAttackSourceCollisionBox())
 	{
-		switch (AttackSource)
-		{
-		case EAttackSource::LEFT_LEG:
-			{
-				Character->LeftLegCollisionBox->SetCollisionProfileName(CollisionProfileName);
-				break;
-			}
-		case EAttackSource::RIGHT_LEG:
-			{
-				Character->RightLegCollisionBox->SetCollisionProfileName(CollisionProfileName);
-				break;
-			}
-		default: Character->LeftLegCollisionBox->SetCollisionProfileName(CollisionProfileName);
-		}
+		CollisionBox->SetCollisionProfileName(CollisionProfileName);
 	}
 }
 
@@ -108,6 +95,9 @@ UBoxComponent* UAttackComponent::GetAttackSourceCollisionBox()
 				{
 					return Character->EquipmentComponent->WeaponInHands->CollisionBox;
 				}
+				ULogger::Log(ELogLevel::ERROR,
+				             TEXT("Trying to perfrom attach with weapon having no Weapon in Hands"));
+				return nullptr;
 			}
 		default: ULogger::Log(ELogLevel::ERROR, FString("Attack '") +
 		                      AttackToPreform->AttackName() + FString("' has non AttackSource set"));

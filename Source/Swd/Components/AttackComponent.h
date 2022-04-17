@@ -39,7 +39,7 @@ private:
 	UAttackBase* AttackToPreform = nullptr;
 
 	UFUNCTION()
-	void SwitchCollisionProfile(EAttackSource AttackSource, FName CollisionProfileName);
+	void SwitchCollisionProfile(FName CollisionProfileName);
 	
 	UBoxComponent* GetAttackSourceCollisionBox();
 

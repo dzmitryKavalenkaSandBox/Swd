@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Swd/Character/SwdCharacter.h"
 #include "WeaponBase.generated.h"
 
 class USphereComponent;
@@ -90,6 +91,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Collision", meta=(AllowPrivateAccess=true))
 	UBoxComponent* CollisionBox;
 
+	UFUNCTION()
+	void SetOwnerCharacter(ASwdCharacter* NewOwner);
 
 protected:
 	virtual void BeginPlay() override;
@@ -116,4 +119,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Sounds", meta = (AllowPrivateAccess = "true"))
 	UAudioComponent* SheathWeaponSoundComponent = nullptr;
+
+	ASwdCharacter* GetCharacter();
 };
