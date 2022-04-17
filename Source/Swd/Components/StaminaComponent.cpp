@@ -48,7 +48,7 @@ void UStaminaComponent::UpdateStaminaOnWidgets()
 {
 	if (auto AICharacter = Cast<AAICharacterBase>(GetOwner()))
 	{
-		AICharacter->UpdateHealthStaminaWidget();
+		AICharacter->UpdateStaminaOnWidget();
 	}
 	// if (auto PlayerCharacter = Cast<APlayerCharacter>(GetOwner()))
 	// {

@@ -11,14 +11,14 @@ FString UFastSwingFromRight::AttackName()
 	return TEXT("FastSwingFromRight");
 }
 
-float UFastSwingFromRight::AttackDamageFactor()
+float UFastSwingFromRight::GetAttackDamageFactor()
 {
-	return .5;
+	return AttackDamageFactor;
 }
 
-float UFastSwingFromRight::AttackStaminaFactor()
+float UFastSwingFromRight::GetAttackStaminaFactor()
 {
-	return 10.f;
+	return AttackStaminaFactor;
 }
 
 bool UFastSwingFromRight::HasBlendedAnim()

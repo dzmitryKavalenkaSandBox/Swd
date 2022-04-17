@@ -20,7 +20,11 @@ class SWD_API AAICharacterBase : public ASwdCharacter
 
 	virtual void BeginPlay() override;
 public:
-	void UpdateHealthStaminaWidget() const;
+	virtual void UpdateCurrentHealth(float NewValue) override;
+
+	virtual void UpdateHealthOnWidget() const override;
+
+	virtual void UpdateStaminaOnWidget() const override;
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	UWidgetComponent* HealthStaminaWidgetComponent;

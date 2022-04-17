@@ -117,7 +117,7 @@ UBoxComponent* UAttackComponent::GetAttackSourceCollisionBox()
 
 UAttackBase* UAttackComponent::GetCurrentAttack()
 {
-	return AttackToPreform/*.GetDefaultObject()*/;
+	return AttackToPreform;
 }
 
 ASwdCharacter* UAttackComponent::GetCharacter()

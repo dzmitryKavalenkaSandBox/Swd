@@ -2,10 +2,13 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/ProgressBar.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Swd/Components/StaminaComponent.h"
+#include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/UI/HUDWidget.h"
 #include "Swd/Utils/Logger.h"
 
@@ -31,6 +34,7 @@ APlayerCharacter::APlayerCharacter()
 	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 	SetUpHUDWidget();
+	SetUpHealthStaminaWidget();
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -66,6 +70,8 @@ void APlayerCharacter::BeginPlay()
 	{
 		Widget->AddToViewport();
 	}
+	UpdateHealthOnWidget();
+	UpdateStaminaOnWidget();
 }
 
 void APlayerCharacter::SetUpHUDWidget()
@@ -73,4 +79,37 @@ void APlayerCharacter::SetUpHUDWidget()
 	HUDWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HUD Widget Component"));
 	HUDWidgetComponent->SetupAttachment(RootComponent);
 	HUDWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+}
+
+void APlayerCharacter::SetUpHealthStaminaWidget()
+{
+	HealthStaminaWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Stamina Widget Component"));
+	HealthStaminaWidgetComponent->SetupAttachment(RootComponent);
+	HealthStaminaWidgetComponent->SetDrawSize(FVector2D(80, 20));
+	HealthStaminaWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	HealthStaminaWidgetComponent->SetVisibility(true);
+}
+
+void APlayerCharacter::UpdateHealthOnWidget() const
+{
+	if (auto Widget = Cast<UHealthStaminaWidget>(HealthStaminaWidgetComponent->GetWidget()))
+	{
+		Widget->HealthBar->SetPercent(GetCurrentHealth() / 100);
+	}
+	else
+	{
+		ULogger::Log(ELogLevel::ERROR, FString("Widget for Stamina/Health not set on " + this->GetName()));
+	}
+}
+
+void APlayerCharacter::UpdateStaminaOnWidget() const
+{
+	if (auto Widget = Cast<UHealthStaminaWidget>(HealthStaminaWidgetComponent->GetWidget()))
+	{
+		Widget->StaminaBar->SetPercent(StaminaComponent->CurrentStamina / 100);
+	}
+	else
+	{
+		ULogger::Log(ELogLevel::ERROR, FString("Widget for Stamina/Health not set on " + this->GetName()));
+	}
 }

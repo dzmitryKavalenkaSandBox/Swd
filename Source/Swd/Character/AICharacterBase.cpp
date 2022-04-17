@@ -4,7 +4,6 @@
 #include "Components/ProgressBar.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
-#include "Swd/Components/HealthComponent.h"
 #include "Swd/Components/StaminaComponent.h"
 #include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/Utils/Logger.h"
@@ -23,7 +22,8 @@ AAICharacterBase::AAICharacterBase()
 void AAICharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	UpdateHealthStaminaWidget();
+	UpdateHealthOnWidget();
+	UpdateStaminaOnWidget();
 	SphereAroundAI->OnComponentBeginOverlap.AddDynamic(this, &AAICharacterBase::OnSphereOverlapBegin);
 	SphereAroundAI->OnComponentEndOverlap.AddDynamic(this, &AAICharacterBase::OnSphereOverlapEnd);
 }
@@ -37,11 +37,22 @@ void AAICharacterBase::SetUpHealthStaminaWidget()
 	HealthStaminaWidgetComponent->SetVisibility(false);
 }
 
-void AAICharacterBase::UpdateHealthStaminaWidget() const
+void AAICharacterBase::UpdateHealthOnWidget() const
 {
 	if (auto Widget = Cast<UHealthStaminaWidget>(HealthStaminaWidgetComponent->GetWidget()))
 	{
-		Widget->HealthBar->SetPercent(HealthComponent->Health / 100);
+		Widget->HealthBar->SetPercent(GetCurrentHealth() / 100);
+	}
+	else
+	{
+		ULogger::Log(ELogLevel::ERROR, FString("Widget for Stamina/Health not set on " + this->GetName()));
+	}
+}
+
+void AAICharacterBase::UpdateStaminaOnWidget() const
+{
+	if (auto Widget = Cast<UHealthStaminaWidget>(HealthStaminaWidgetComponent->GetWidget()))
+	{
 		Widget->StaminaBar->SetPercent(StaminaComponent->CurrentStamina / 100);
 	}
 	else
@@ -68,3 +79,11 @@ void AAICharacterBase::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComp, A
 		HealthStaminaWidgetComponent->SetVisibility(false);
 	}
 }
+
+void AAICharacterBase::UpdateCurrentHealth(float NewValue)
+{
+	Super::UpdateCurrentHealth(NewValue);
+	ULogger::Log(ELogLevel::INFO, TEXT("Calling Update Health on AI"));
+	UpdateHealthOnWidget();
+}
+

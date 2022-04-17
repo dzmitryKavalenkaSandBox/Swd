@@ -10,14 +10,14 @@ ULeftLegKickAttack::ULeftLegKickAttack()
 	// }
 }
 
-float ULeftLegKickAttack::AttackDamageFactor()
+float ULeftLegKickAttack::GetAttackDamageFactor()
 {
-	return .4f;
+	return AttackDamageFactor;
 }
 
-float ULeftLegKickAttack::AttackStaminaFactor()
+float ULeftLegKickAttack::GetAttackStaminaFactor()
 {
-	return 15.f;
+	return AttackStaminaFactor;
 }
 
 FString ULeftLegKickAttack::AttackName()

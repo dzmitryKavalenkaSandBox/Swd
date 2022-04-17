@@ -20,6 +20,10 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	virtual void UpdateHealthOnWidget() const override;
+	
+	virtual void UpdateStaminaOnWidget() const override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -42,5 +46,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	class UWidgetComponent* HUDWidgetComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	UWidgetComponent* HealthStaminaWidgetComponent;
+
 	void SetUpHUDWidget();
+
+	void SetUpHealthStaminaWidget();
 };

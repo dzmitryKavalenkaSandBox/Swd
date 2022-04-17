@@ -10,8 +10,18 @@ class SWD_API UFastSwingFromRight : public UAttackBase
 	GENERATED_BODY()
 
 	UFastSwingFromRight();
+
 	virtual FString AttackName() override;
-	virtual float AttackDamageFactor() override;
-	virtual float AttackStaminaFactor() override;
+
+	virtual float GetAttackDamageFactor() override;
+
+	virtual float GetAttackStaminaFactor() override;
+	
 	virtual bool HasBlendedAnim() override;
+	
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
+	float AttackDamageFactor = 1.f;
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
+	float AttackStaminaFactor = 10.f;
 };

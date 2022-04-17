@@ -8,10 +8,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "Swd/Swd.h"
 #include "Swd/Components/AttackComponent.h"
+#include "Swd/Components/DamageConsumerComponent.h"
+#include "Swd/Components/DamageInflictorComponent.h"
 #include "Swd/Components/EquipmentComponent.h"
-#include "Swd/Components/HealthComponent.h"
 #include "Swd/Components/StaminaComponent.h"
-#include "Swd/Utils/Logger.h"
 
 ASwdCharacter::ASwdCharacter()
 {
@@ -23,17 +23,20 @@ ASwdCharacter::ASwdCharacter()
 
 	InitialMovementSetUp();
 
+	CurrentHealth = MaxHealth;
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
 	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("Equipment Component"));
-	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
+	DamageConsumerComponent = CreateDefaultSubobject<UDamageConsumerComponent>(TEXT("Damage Consumer Component"));
 	StaminaComponent = CreateDefaultSubobject<UStaminaComponent>(TEXT("Stamina Component"));
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("Attack Component"));
+	DamageInflictorComponent = CreateDefaultSubobject<UDamageInflictorComponent>(TEXT("Damage Inflictor Component"));
 	LeftLegCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Left Leg Collosing Box"));
 	LeftLegCollisionBox->SetupAttachment(RootComponent);
 	LeftLegCollisionBox->SetCollisionProfileName(TEXT("NoCollision"));
-	
+
 	RightLegCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Leg Collosing Box"));
 	RightLegCollisionBox->SetupAttachment(RootComponent);
 	RightLegCollisionBox->SetCollisionProfileName(TEXT("NoCollision"));
@@ -47,7 +50,7 @@ void ASwdCharacter::BeginPlay()
 		EAttachmentRule::SnapToTarget,
 		EAttachmentRule::KeepWorld,
 		false
-		);
+	);
 	LeftLegCollisionBox->AttachToComponent(GetMesh(), AttachmentRules, BoneSockets::LeftFoodKickSocket);
 	RightLegCollisionBox->AttachToComponent(GetMesh(), AttachmentRules, BoneSockets::RightFoodKickSocket);
 	RightLegCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ASwdCharacter::OnKickOverlapBegin);
@@ -55,16 +58,10 @@ void ASwdCharacter::BeginPlay()
 }
 
 void ASwdCharacter::OnKickOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                       const FHitResult& SweepResult)
 {
-	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
-	UGameplayStatics::ApplyDamage(
-		OtherActor,
-		5.f * AttackComponent->GetCurrentAttack()->AttackDamageFactor(),
-		OtherActor->GetInstigatorController(),
-		this,
-		UDamageType::StaticClass()
-	);
+	DamageInflictorComponent->InflictDamage(OtherActor, AttackComponent->GetCurrentAttack()->GetAttackDamageFactor());
 }
 
 
@@ -179,4 +176,14 @@ void ASwdCharacter::InitialMovementSetUp()
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+}
+
+float ASwdCharacter::GetCurrentHealth() const
+{
+	return CurrentHealth;
+}
+
+void ASwdCharacter::UpdateCurrentHealth(float NewValue)
+{
+	CurrentHealth = NewValue;
 }

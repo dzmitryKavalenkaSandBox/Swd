@@ -27,8 +27,8 @@ class SWD_API UAttackBase : public UObject
 public:
 	UAttackBase();
 	virtual void PerformAttack(ASwdCharacter* Character);
-	virtual float AttackDamageFactor();
-	virtual float AttackStaminaFactor();
+	virtual float GetAttackDamageFactor();
+	virtual float GetAttackStaminaFactor();
 	virtual bool HasBlendedAnim();
 	virtual FString AttackName();
 

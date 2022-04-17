@@ -12,12 +12,12 @@ class ASwdCharacter : public ACharacter, public IKillable
 
 public:
 	ASwdCharacter();
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UEquipmentComponent* EquipmentComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UHealthComponent* HealthComponent;
+	class UDamageConsumerComponent* DamageConsumerComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaminaComponent* StaminaComponent;
@@ -27,9 +27,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UBoxComponent* LeftLegCollisionBox;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UBoxComponent* RightLegCollisionBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UDamageInflictorComponent* DamageInflictorComponent;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
@@ -56,8 +59,20 @@ public:
 
 	UFUNCTION()
 	void OnKickOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-									UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-									const FHitResult& SweepResult);
+	                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                        const FHitResult& SweepResult);
+
+	UPROPERTY(EditAnywhere, Category="Health")
+	float MaxHealth = 100.f;
+
+	float GetCurrentHealth() const;
+
+	UFUNCTION()
+	virtual void UpdateCurrentHealth(float NewValue);
+
+	virtual void UpdateHealthOnWidget() const {}
+	
+	virtual void UpdateStaminaOnWidget() const {}
 
 protected:
 	void MoveForward(float Value);
@@ -93,4 +108,7 @@ private:
 
 	UFUNCTION()
 	void InitialMovementSetUp();
+
+	UPROPERTY(BlueprintReadOnly, Category="Health", meta=(AllowPrivateAccess=true))
+	float CurrentHealth;
 };

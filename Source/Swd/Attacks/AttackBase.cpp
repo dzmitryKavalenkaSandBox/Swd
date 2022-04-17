@@ -20,12 +20,12 @@ void UAttackBase::PerformAttack(ASwdCharacter* Character)
 	                                                   AttackName());
 }
 
-float UAttackBase::AttackDamageFactor()
+float UAttackBase::GetAttackDamageFactor()
 {
 	return 1.f;
 }
 
-float UAttackBase::AttackStaminaFactor()
+float UAttackBase::GetAttackStaminaFactor()
 {
 	return 10.f;
 }

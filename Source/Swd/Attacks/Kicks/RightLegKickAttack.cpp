@@ -5,14 +5,14 @@ URightLegKickAttack::URightLegKickAttack()
 	AttackSource = EAttackSource::RIGHT_LEG;
 }
 
-float URightLegKickAttack::AttackDamageFactor()
+float URightLegKickAttack::GetAttackDamageFactor()
 {
-	return .4f;
+	return AttackDamageFactor;
 }
 
-float URightLegKickAttack::AttackStaminaFactor()
+float URightLegKickAttack::GetAttackStaminaFactor()
 {
-	return 15.f;
+	return AttackStaminaFactor;
 }
 
 FString URightLegKickAttack::AttackName()
