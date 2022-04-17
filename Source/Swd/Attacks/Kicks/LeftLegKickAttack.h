@@ -20,9 +20,4 @@ class SWD_API ULeftLegKickAttack: public UAttackBase
 	
 	virtual float GetAttackStaminaFactor() override;
 
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
-	float AttackDamageFactor = .4f;
-	
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
-	float AttackStaminaFactor = 15.f;
 };

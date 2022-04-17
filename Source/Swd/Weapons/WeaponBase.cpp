@@ -87,7 +87,7 @@ void AWeaponBase::OnCollisionBoxOverlapBegin(UPrimitiveComponent* OverlappedComp
 	{
 		if (auto Attack = GetCharacter()->AttackComponent->GetCurrentAttack())
 		{
-			float DamageToInflict = Attack->GetAttackDamageFactor() + GetWeaponBaseDamage();
+			float DamageToInflict = GetWeaponBaseDamage() * Attack->GetAttackDamageFactor();
 			GetCharacter()->DamageInflictorComponent->InflictDamage(OtherActor, DamageToInflict);
 		}
 		else ULogger::Log(ELogLevel::ERROR, TEXT("Trying inflict damage on not set attack"));

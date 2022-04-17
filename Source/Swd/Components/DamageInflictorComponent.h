@@ -18,9 +18,5 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
-
-private:
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
-	float BaseDamage = 10.f;
+	
 };

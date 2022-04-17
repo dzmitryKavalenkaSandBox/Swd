@@ -45,4 +45,10 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UDataTable* AttackAnimMontageDataTable = nullptr;
+	
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
+	float AttackDamageFactor;
+	
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
+	float AttackStaminaFactor;
 };

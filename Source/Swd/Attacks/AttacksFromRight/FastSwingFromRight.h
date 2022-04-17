@@ -18,10 +18,4 @@ class SWD_API UFastSwingFromRight : public UAttackBase
 	virtual float GetAttackStaminaFactor() override;
 	
 	virtual bool HasBlendedAnim() override;
-	
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
-	float AttackDamageFactor = 1.f;
-
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
-	float AttackStaminaFactor = 10.f;
 };

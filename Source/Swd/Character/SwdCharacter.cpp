@@ -12,6 +12,7 @@
 #include "Swd/Components/DamageInflictorComponent.h"
 #include "Swd/Components/EquipmentComponent.h"
 #include "Swd/Components/StaminaComponent.h"
+#include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/Utils/Logger.h"
 
 ASwdCharacter::ASwdCharacter()
@@ -65,7 +66,7 @@ void ASwdCharacter::OnKickOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 	if (OtherActor != this)
 	{
 		DamageInflictorComponent->InflictDamage(
-			OtherActor, AttackComponent->GetCurrentAttack()->GetAttackDamageFactor()
+			OtherActor, 10.f * AttackComponent->GetCurrentAttack()->GetAttackDamageFactor()
 		);
 	}
 }

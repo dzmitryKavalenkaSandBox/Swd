@@ -2,6 +2,8 @@
 
 URightLegKickAttack::URightLegKickAttack()
 {
+	AttackDamageFactor = .4f;
+	AttackStaminaFactor = 15.f;
 	AttackSource = EAttackSource::RIGHT_LEG;
 }
 

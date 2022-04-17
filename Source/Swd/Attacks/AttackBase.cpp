@@ -12,6 +12,8 @@ UAttackBase::UAttackBase()
 	// {
 	// 	AttackAnimMontageDataTable = AttackMontageDataObject.Object;
 	// }
+	AttackDamageFactor = 1.f;
+	AttackStaminaFactor = 10.f;
 }
 
 void UAttackBase::PerformAttack(ASwdCharacter* Character)
@@ -22,12 +24,12 @@ void UAttackBase::PerformAttack(ASwdCharacter* Character)
 
 float UAttackBase::GetAttackDamageFactor()
 {
-	return 1.f;
+	return AttackDamageFactor;
 }
 
 float UAttackBase::GetAttackStaminaFactor()
 {
-	return 10.f;
+	return AttackStaminaFactor;
 }
 
 bool UAttackBase::HasBlendedAnim()

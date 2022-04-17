@@ -24,7 +24,7 @@ void UDamageInflictorComponent::InflictDamage(AActor* DamagedActor, float Damage
 	{
 		UGameplayStatics::ApplyDamage(
 			DamagedActor,
-			BaseDamage * Damage,
+			Damage,
 			Owner->GetController(),
 			Owner,
 			DamageType
