@@ -20,6 +20,9 @@ public:
 	class UHealthComponent* HealthComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaminaComponent* StaminaComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UAttackComponent* AttackComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "SwdCharacter.h"
-#include "UObject/Object.h"
 #include "AICharacterBase.generated.h"
 
 /**
  * 
  */
 class UWidgetComponent;
+class USphereComponent;
 UCLASS()
 class SWD_API AAICharacterBase : public ASwdCharacter
 {
@@ -19,10 +19,22 @@ class SWD_API AAICharacterBase : public ASwdCharacter
 	AAICharacterBase();
 
 	virtual void BeginPlay() override;
+public:
+	void UpdateHealthStaminaWidget() const;
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	UWidgetComponent* HealthStaminaWidgetComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	USphereComponent* SphereAroundAI;
+
 	void SetUpHealthStaminaWidget();
-	void UpdateHealthStaminaWidget() const;
+
+	UFUNCTION()
+	void OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                          const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };

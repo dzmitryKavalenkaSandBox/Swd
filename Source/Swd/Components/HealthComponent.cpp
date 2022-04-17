@@ -2,6 +2,8 @@
 
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
+#include "Swd/Character/AICharacterBase.h"
+#include "Swd/Character/PlayerCharacter.h"
 #include "Swd/Character/SwdCharacter.h"
 #include "Swd/Interfacces/Killable.h"
 #include "Swd/Utils/Logger.h"
@@ -52,11 +54,11 @@ void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDa
 
 void UHealthComponent::UpdateHealthOnWidgets(AActor* DamagedActor)
 {
-	// if (auto AICharacter = Cast<AAICharacter>(DamagedActor))
-	// {
-	// 	AICharacter->UpdateHealthStaminaWidget();
-	// }
-	//
+	if (auto AICharacter = Cast<AAICharacterBase>(DamagedActor))
+	{
+		AICharacter->UpdateHealthStaminaWidget();
+	}
+	
 	// if (auto PlayerCharacter = Cast<APlayerCharacter>(DamagedActor))
 	// {
 	// 	PlayerCharacter->UpdateHUDWidget();

@@ -10,6 +10,7 @@
 #include "Swd/Components/AttackComponent.h"
 #include "Swd/Components/EquipmentComponent.h"
 #include "Swd/Components/HealthComponent.h"
+#include "Swd/Components/StaminaComponent.h"
 #include "Swd/Utils/Logger.h"
 
 ASwdCharacter::ASwdCharacter()
@@ -27,6 +28,7 @@ ASwdCharacter::ASwdCharacter()
 
 	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("Equipment Component"));
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
+	StaminaComponent = CreateDefaultSubobject<UStaminaComponent>(TEXT("Stamina Component"));
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("Attack Component"));
 	LeftLegCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Left Leg Collosing Box"));
 	LeftLegCollisionBox->SetupAttachment(RootComponent);
