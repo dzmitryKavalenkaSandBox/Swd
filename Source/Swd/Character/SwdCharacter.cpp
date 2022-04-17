@@ -12,6 +12,7 @@
 #include "Swd/Components/DamageInflictorComponent.h"
 #include "Swd/Components/EquipmentComponent.h"
 #include "Swd/Components/StaminaComponent.h"
+#include "Swd/Utils/Logger.h"
 
 ASwdCharacter::ASwdCharacter()
 {
@@ -61,7 +62,12 @@ void ASwdCharacter::OnKickOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                        const FHitResult& SweepResult)
 {
-	DamageInflictorComponent->InflictDamage(OtherActor, AttackComponent->GetCurrentAttack()->GetAttackDamageFactor());
+	if (OtherActor != this)
+	{
+		DamageInflictorComponent->InflictDamage(
+			OtherActor, AttackComponent->GetCurrentAttack()->GetAttackDamageFactor()
+		);
+	}
 }
 
 
@@ -130,11 +136,35 @@ bool ASwdCharacter::GetIsInCombat() const
 
 void ASwdCharacter::HandleDeathBehavior()
 {
+	ULogger::Log(ELogLevel::INFO, FString("Actor '" + GetOwner()->GetName() + FString("' is Dead")));
 	GetMesh()->SetSimulatePhysics(true);
 	GetMovementComponent()->StopActiveMovement();
 	GetMesh()->SetCollisionProfileName("Ragdoll");
 	GetController()->DisableInput(Cast<APlayerController>(GetController()));
 	// PlayDeathAnim();
+
+
+	if (EquipmentComponent->ActualWeaponOnTheHip)
+	{
+		EquipmentComponent->ActualWeaponOnTheHip->WeaponSkeletalMesh->SetSimulatePhysics("true");
+		EquipmentComponent->ActualWeaponOnTheHip->DetachFromActor(FDetachmentTransformRules(
+			EDetachmentRule::KeepWorld,
+			EDetachmentRule::KeepWorld,
+			EDetachmentRule::KeepWorld,
+			false
+		));
+	}
+
+	if (EquipmentComponent->WeaponInHands)
+	{
+		EquipmentComponent->WeaponInHands->WeaponSkeletalMesh->SetSimulatePhysics("true");
+		EquipmentComponent->WeaponInHands->DetachFromActor(FDetachmentTransformRules(
+			EDetachmentRule::KeepWorld,
+			EDetachmentRule::KeepWorld,
+			EDetachmentRule::KeepWorld,
+			false
+		));
+	}
 }
 
 void ASwdCharacter::MoveForward(float Value)

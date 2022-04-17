@@ -112,3 +112,9 @@ void APlayerCharacter::UpdateStaminaOnWidget() const
 		ULogger::Log(ELogLevel::ERROR, FString("Widget for Stamina/Health not set on " + this->GetName()));
 	}
 }
+
+void APlayerCharacter::UpdateCurrentHealth(float NewValue)
+{
+	Super::UpdateCurrentHealth(NewValue);
+	UpdateHealthOnWidget();
+}

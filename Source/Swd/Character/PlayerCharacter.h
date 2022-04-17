@@ -21,8 +21,10 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	virtual void UpdateHealthOnWidget() const override;
-	
+
 	virtual void UpdateStaminaOnWidget() const override;
+	
+	virtual void UpdateCurrentHealth(float NewValue) override;
 
 protected:
 	virtual void BeginPlay() override;

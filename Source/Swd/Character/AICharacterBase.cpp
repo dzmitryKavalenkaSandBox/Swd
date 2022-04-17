@@ -83,7 +83,6 @@ void AAICharacterBase::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComp, A
 void AAICharacterBase::UpdateCurrentHealth(float NewValue)
 {
 	Super::UpdateCurrentHealth(NewValue);
-	ULogger::Log(ELogLevel::INFO, TEXT("Calling Update Health on AI"));
 	UpdateHealthOnWidget();
 }
 

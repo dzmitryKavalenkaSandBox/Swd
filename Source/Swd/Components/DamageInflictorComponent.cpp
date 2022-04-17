@@ -22,17 +22,13 @@ void UDamageInflictorComponent::InflictDamage(AActor* DamagedActor, float Damage
 {
 	if (auto Owner = Cast<ASwdCharacter>(GetOwner()))
 	{
-		if (auto Attack = Owner->AttackComponent->GetCurrentAttack())
-		{
-			UGameplayStatics::ApplyDamage(
-				DamagedActor,
-				BaseDamage * Damage,
-				Owner->GetController(),
-				Owner,
-				DamageType
-			);
-		}
-		else ULogger::Log(ELogLevel::ERROR, TEXT("Trying to apply damage with no attack assigned on Attack Component"));
+		UGameplayStatics::ApplyDamage(
+			DamagedActor,
+			BaseDamage * Damage,
+			Owner->GetController(),
+			Owner,
+			DamageType
+		);
 	}
 	else ULogger::Log(ELogLevel::ERROR, TEXT("Damage Inflictor Component does not have an owner"));
 }
