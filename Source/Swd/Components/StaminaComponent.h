@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Swd/Character/SwdCharacter.h"
 #include "StaminaComponent.generated.h"
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -27,7 +28,6 @@ protected:
 private:
 	UFUNCTION()
 	float CalculateDelayBeforeRestore() const;
-	void UpdateStaminaOnWidgets();
 
 	UPROPERTY(VisibleAnywhere)
 	FTimerHandle StaminaRegenTimer;
@@ -35,4 +35,6 @@ private:
 	float StaminaToRestorePerTick;
 	UPROPERTY(VisibleAnywhere)
 	float DefaultDelayBeforeRestore;
+
+	ASwdCharacter* GetCharacter();
 };

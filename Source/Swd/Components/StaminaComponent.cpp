@@ -1,6 +1,7 @@
 #include "StaminaComponent.h"
 
 #include "Swd/Character/AICharacterBase.h"
+#include "Swd/Utils/Logger.h"
 
 UStaminaComponent::UStaminaComponent()
 {
@@ -22,7 +23,7 @@ void UStaminaComponent::DrainStamina(float AmountToDrain)
 	CurrentStamina = FMath::Clamp(CurrentStamina - AmountToDrain, 0.f, MaxStamina);
 	GetWorld()->GetTimerManager().SetTimer(StaminaRegenTimer, this, &UStaminaComponent::RestoreStamina,
 	                                       1.f, true, CalculateDelayBeforeRestore());
-	UpdateStaminaOnWidgets();
+	GetCharacter()->UpdateStaminaOnWidget();
 }
 
 void UStaminaComponent::RestoreStamina()
@@ -32,7 +33,7 @@ void UStaminaComponent::RestoreStamina()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(StaminaRegenTimer);
 	}
-	UpdateStaminaOnWidgets();
+	GetCharacter()->UpdateStaminaOnWidget();
 }
 
 float UStaminaComponent::CalculateDelayBeforeRestore() const
@@ -43,15 +44,20 @@ float UStaminaComponent::CalculateDelayBeforeRestore() const
 	}
 	return DefaultDelayBeforeRestore;
 }
+//
+// void UStaminaComponent::UpdateStaminaOnWidgets()
+// {
+// 	if (auto AICharacter = Cast<AAICharacterBase>(GetOwner()))
+// 	{
+// 		AICharacter->UpdateStaminaOnWidget();
+// 	}
+// 	// if (auto PlayerCharacter = Cast<APlayerCharacter>(GetOwner()))
+// 	// {
+// 	// 	PlayerCharacter->UpdateHUDWidget();
+// 	// }
+// }
 
-void UStaminaComponent::UpdateStaminaOnWidgets()
+ASwdCharacter* UStaminaComponent::GetCharacter()
 {
-	if (auto AICharacter = Cast<AAICharacterBase>(GetOwner()))
-	{
-		AICharacter->UpdateStaminaOnWidget();
-	}
-	// if (auto PlayerCharacter = Cast<APlayerCharacter>(GetOwner()))
-	// {
-	// 	PlayerCharacter->UpdateHUDWidget();
-	// }
+	return Cast<ASwdCharacter>(GetOwner());
 }

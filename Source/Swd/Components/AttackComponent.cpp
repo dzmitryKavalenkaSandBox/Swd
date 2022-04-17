@@ -1,6 +1,7 @@
 #include "AttackComponent.h"
 
 #include "EquipmentComponent.h"
+#include "StaminaComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Swd/Utils/Logger.h"
@@ -62,6 +63,7 @@ void UAttackComponent::AttackEnd()
 		CollisionBox->SetNotifyRigidBodyCollision(false);
 		CollisionBox->SetGenerateOverlapEvents(false);
 	}
+	GetCharacter()->StaminaComponent->DrainStamina(GetCurrentAttack()->GetAttackStaminaFactor());
 }
 
 void UAttackComponent::SwitchCollisionProfile(EAttackSource AttackSource, FName CollisionProfileName)
