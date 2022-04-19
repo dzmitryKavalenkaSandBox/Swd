@@ -12,6 +12,7 @@ enum class EAttackSource: uint8
 	RIGHT_LEG UMETA(DisplayName = "Right Leg"),
 	LEFT_LEG UMETA(DisplayName = "Left Leg"),
 	WEAPON UMETA(DisplayName = "Weapon"),
+	POMMEL UMETA(DisplayName = "Pommel"),
 };
 
 class USoundCue;
@@ -33,22 +34,24 @@ public:
 	virtual FString AttackName();
 
 	/*
-	 * The Weapon or part of the body attack is performed by
-	 */
-	EAttackSource AttackSource;
-	/*
 	 * The Character that performs the attack
 	 */
 	UPROPERTY()
 	ASwdCharacter* Attacker = nullptr;
 
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UDataTable* AttackAnimMontageDataTable = nullptr;
+	/*
+	 * The Weapon or part of the body attack is performed by
+	 */
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	EAttackSource AttackSource;
 	
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess=true))
+	UDataTable* AttackAnimMontageDataTable = nullptr;
+
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
 	float AttackDamageFactor;
-	
+
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
 	float AttackStaminaFactor;
 };

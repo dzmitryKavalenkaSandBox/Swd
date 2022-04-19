@@ -2,7 +2,15 @@
 
 #include "Swd/Character/SwdCharacter.h"
 #include "Swd/Components/AttackComponent.h"
-#include "Swd/Utils/Logger.h"
+
+void UHUDWidget::OnRightElbowPressed()
+{
+	if (OwningPlayer)
+	{
+		OwningPlayer->AttackComponent->SetAttackToPerform(PommelAttack);
+		OwningPlayer->AttackComponent->Attack();
+	}
+}
 
 void UHUDWidget::OnLeftLegPressed()
 {
@@ -52,4 +60,5 @@ void UHUDWidget::NativeOnInitialized()
 	RightLeg->OnPressed.AddDynamic(this, &UHUDWidget::OnRightLegPressed);
 	RightHand->OnPressed.AddDynamic(this, &UHUDWidget::OnRightHandPressed);
 	LeftHand->OnPressed.AddDynamic(this, &UHUDWidget::OnLeftHandPressed);
+	RightElbow->OnPressed.AddDynamic(this, &UHUDWidget::OnRightElbowPressed);
 }

@@ -23,8 +23,10 @@ public:
 	virtual void UpdateHealthOnWidget() const override;
 
 	virtual void UpdateStaminaOnWidget() const override;
-	
+
 	virtual void UpdateCurrentHealth(float NewValue) override;
+
+	virtual void Tick(float DeltaSeconds) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -54,4 +56,11 @@ private:
 	void SetUpHUDWidget();
 
 	void SetUpHealthStaminaWidget();
+
+	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	AActor* LockedOn = nullptr;
+
+	void SetActorRotationToLockedTarget(FVector& LocationOfTarget);
+
+	void SetCameraRotationToLockedTarget(FVector LocationOfTarget);
 };

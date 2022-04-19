@@ -30,6 +30,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	UButton* RightHand;
 
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UButton* LeftElbow;
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UButton* RightElbow;
+
+	UFUNCTION()
+	void OnRightElbowPressed();
 	UFUNCTION()
 	void OnLeftLegPressed();
 	UFUNCTION()
@@ -41,16 +48,19 @@ public:
 
 protected:
 	virtual void NativeConstruct() override;
+
 	virtual void NativeOnInitialized() override;
 
 private:
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
 	ASwdCharacter* OwningPlayer;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	TSubclassOf<UAttackBase> LeftLegKickAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	TSubclassOf<UAttackBase> RightLegKickAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	TSubclassOf<UAttackBase> RightHandAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	TSubclassOf<UAttackBase> PommelAttack;
 };

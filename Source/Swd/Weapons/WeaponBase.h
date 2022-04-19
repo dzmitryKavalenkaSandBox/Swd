@@ -109,7 +109,8 @@ protected:
 	void OnCollisionBoxOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	                                const FHitResult& SweepResult);
-
+	
+	ASwdCharacter* GetCharacter();
 private:
 	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	float BaseDamage = 10.f;
@@ -119,6 +120,4 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Sounds", meta = (AllowPrivateAccess = "true"))
 	UAudioComponent* SheathWeaponSoundComponent = nullptr;
-
-	ASwdCharacter* GetCharacter();
 };

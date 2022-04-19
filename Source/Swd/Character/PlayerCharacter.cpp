@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Swd/Components/StaminaComponent.h"
 #include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/UI/HUDWidget.h"
@@ -36,6 +37,33 @@ APlayerCharacter::APlayerCharacter()
 	SetUpHealthStaminaWidget();
 }
 
+
+// Called when the game starts or when spawned
+void APlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (auto Widget = Cast<UHUDWidget>(HUDWidgetComponent->GetWidget()))
+	{
+		Widget->AddToViewport();
+	}
+	UpdateHealthOnWidget();
+	UpdateStaminaOnWidget();
+}
+
+void APlayerCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (LockedOn)
+	{
+		FVector LocationOfTarget;
+		SetActorRotationToLockedTarget(LocationOfTarget);
+		SetCameraRotationToLockedTarget(LocationOfTarget);
+	}
+}
+
+
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -58,19 +86,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	// PlayerInputComponent->BindTouch(IE_Released, this, &APlayerCharacter::OnTouchEnd);
 
 	PlayerInputComponent->BindAction(TEXT("EquipSheath"), IE_Pressed, this, &APlayerCharacter::EquipSheathWeapon);
-}
-
-// Called when the game starts or when spawned
-void APlayerCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (auto Widget = Cast<UHUDWidget>(HUDWidgetComponent->GetWidget()))
-	{
-		Widget->AddToViewport();
-	}
-	UpdateHealthOnWidget();
-	UpdateStaminaOnWidget();
 }
 
 void APlayerCharacter::SetUpHUDWidget()
@@ -117,4 +132,25 @@ void APlayerCharacter::UpdateCurrentHealth(float NewValue)
 {
 	Super::UpdateCurrentHealth(NewValue);
 	UpdateHealthOnWidget();
+}
+
+void APlayerCharacter::SetCameraRotationToLockedTarget(FVector LocationOfTarget)
+{
+	FRotator ControlRotation = GetController()->GetControlRotation();
+	FVector CameraWorldLocation = CameraBoom->GetComponentLocation();
+	FRotator CameraLookAtRotation = UKismetMathLibrary::FindLookAtRotation(CameraWorldLocation, LocationOfTarget);
+	FRotator InterpRotation = UKismetMathLibrary::RInterpTo(ControlRotation, CameraLookAtRotation,
+	                                                        GetWorld()->DeltaTimeSeconds, 10.f);
+	GetController()->SetControlRotation(
+		FRotator(ControlRotation.Pitch, InterpRotation.Yaw, ControlRotation.Roll)
+	);
+}
+
+void APlayerCharacter::SetActorRotationToLockedTarget(FVector& LocationOfTarget)
+{
+	LocationOfTarget = LockedOn->GetActorLocation();
+	FVector SelfLocation = GetActorLocation();
+	FRotator SelfRotation = GetActorRotation();
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SelfLocation, LocationOfTarget);
+	SetActorRotation(FRotator(SelfRotation.Pitch, LookAtRotation.Yaw, SelfRotation.Roll));
 }

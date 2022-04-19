@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Swd/Swd.h"
 #include "Swd/Utils/Logger.h"
+#include "Swd/Weapons/Sword.h"
 
 
 UAttackComponent::UAttackComponent()
@@ -97,6 +98,16 @@ UBoxComponent* UAttackComponent::GetAttackSourceCollisionBox()
 				}
 				ULogger::Log(ELogLevel::ERROR,
 				             TEXT("Trying to perfrom attach with weapon having no Weapon in Hands"));
+				return nullptr;
+			}
+		case EAttackSource::POMMEL:
+			{
+				if (auto Sword = Cast<ASword>(Character->EquipmentComponent->WeaponInHands))
+				{
+					return Sword->PommelCollisionBox;
+				}
+				ULogger::Log(ELogLevel::ERROR,
+				             TEXT("Trying to perfrom attach with sword having no Sword in Hands"));
 				return nullptr;
 			}
 		default: ULogger::Log(ELogLevel::ERROR, FString("Attack '") +
