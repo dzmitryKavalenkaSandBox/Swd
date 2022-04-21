@@ -3,8 +3,10 @@
 #include "CoreMinimal.h"
 #include "SwdCharacter.h"
 #include "GameFramework/Actor.h"
+#include "Swd/Components/Modular/NearestTargetFinderModule/ClosestActorFinderComponent.h"
 #include "PlayerCharacter.generated.h"
 
+class ULockOnTargetComponent;
 UCLASS()
 class SWD_API APlayerCharacter : public ASwdCharacter
 {
@@ -26,7 +28,9 @@ public:
 
 	virtual void UpdateCurrentHealth(float NewValue) override;
 
-	virtual void Tick(float DeltaSeconds) override;
+	virtual void ManageCombatState(bool bEnableCombat) override;
+
+	// virtual void Tick(float DeltaSeconds) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -53,14 +57,15 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	UWidgetComponent* HealthStaminaWidgetComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	ULockOnTargetComponent* LockOnTargetComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	UClosestActorFinderComponent* ClosestActorFinderComponent;
+
 	void SetUpHUDWidget();
 
 	void SetUpHealthStaminaWidget();
 
-	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess=true))
-	AActor* LockedOn = nullptr;
-
-	void SetActorRotationToLockedTarget(FVector& LocationOfTarget);
-
-	void SetCameraRotationToLockedTarget(FVector LocationOfTarget);
+	void SwitchTargetToLockOn();
 };

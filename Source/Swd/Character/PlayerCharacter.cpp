@@ -6,8 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Swd/Components/StaminaComponent.h"
+#include "Swd/Components/Modular/LockOnTargetModule/LockOnTargetComponent.h"
 #include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/UI/HUDWidget.h"
 #include "Swd/Utils/Logger.h"
@@ -35,6 +35,12 @@ APlayerCharacter::APlayerCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 	SetUpHUDWidget();
 	SetUpHealthStaminaWidget();
+
+	LockOnTargetComponent = CreateDefaultSubobject<ULockOnTargetComponent>(TEXT("Lock On Target Component"));
+	LockOnTargetComponent->SetUpComponent(CameraBoom, true);
+
+	ClosestActorFinderComponent = CreateDefaultSubobject<UClosestActorFinderComponent>(
+		TEXT("Closest Actor Finder Component"));
 }
 
 
@@ -51,24 +57,12 @@ void APlayerCharacter::BeginPlay()
 	UpdateStaminaOnWidget();
 }
 
-void APlayerCharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	if (LockedOn)
-	{
-		FVector LocationOfTarget;
-		SetActorRotationToLockedTarget(LocationOfTarget);
-		SetCameraRotationToLockedTarget(LocationOfTarget);
-	}
-}
-
-
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("LockOn", IE_Pressed, this, &APlayerCharacter::SwitchTargetToLockOn);
 
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &APlayerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &APlayerCharacter::MoveRight);
@@ -134,23 +128,24 @@ void APlayerCharacter::UpdateCurrentHealth(float NewValue)
 	UpdateHealthOnWidget();
 }
 
-void APlayerCharacter::SetCameraRotationToLockedTarget(FVector LocationOfTarget)
+void APlayerCharacter::ManageCombatState(bool bEnableCombat)
 {
-	FRotator ControlRotation = GetController()->GetControlRotation();
-	FVector CameraWorldLocation = CameraBoom->GetComponentLocation();
-	FRotator CameraLookAtRotation = UKismetMathLibrary::FindLookAtRotation(CameraWorldLocation, LocationOfTarget);
-	FRotator InterpRotation = UKismetMathLibrary::RInterpTo(ControlRotation, CameraLookAtRotation,
-	                                                        GetWorld()->DeltaTimeSeconds, 10.f);
-	GetController()->SetControlRotation(
-		FRotator(ControlRotation.Pitch, InterpRotation.Yaw, ControlRotation.Roll)
-	);
+	Super::ManageCombatState(bEnableCombat);
+	if (!bEnableCombat)
+	{
+		LockOnTargetComponent->SetTargetToLockOn(nullptr);
+	}
 }
 
-void APlayerCharacter::SetActorRotationToLockedTarget(FVector& LocationOfTarget)
+void APlayerCharacter::SwitchTargetToLockOn()
 {
-	LocationOfTarget = LockedOn->GetActorLocation();
-	FVector SelfLocation = GetActorLocation();
-	FRotator SelfRotation = GetActorRotation();
-	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SelfLocation, LocationOfTarget);
-	SetActorRotation(FRotator(SelfRotation.Pitch, LookAtRotation.Yaw, SelfRotation.Roll));
+	AActor* NewTarget = ClosestActorFinderComponent->GetNearestTarget();
+	if (GetIsInCombat() && NewTarget && NewTarget != LockOnTargetComponent->GetCurrentTarget())
+	{
+		LockOnTargetComponent->SetTargetToLockOn(NewTarget);
+	}
+	else
+	{
+		LockOnTargetComponent->SetTargetToLockOn(nullptr);
+	}
 }

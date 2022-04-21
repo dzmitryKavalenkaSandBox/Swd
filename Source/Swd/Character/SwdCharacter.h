@@ -47,7 +47,7 @@ public:
 	void EquipSheathWeapon();
 
 	UFUNCTION()
-	void ManageCombatState(bool bEnableCombat);
+	virtual void ManageCombatState(bool bEnableCombat);
 
 	UFUNCTION(BlueprintPure)
 	bool GetIsInCombat() const;
