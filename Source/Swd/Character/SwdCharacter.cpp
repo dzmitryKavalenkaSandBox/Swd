@@ -11,7 +11,7 @@
 #include "Swd/Components/DamageConsumerComponent.h"
 #include "Swd/Components/DamageInflictorComponent.h"
 #include "Swd/Components/EquipmentComponent.h"
-#include "Swd/Components/StaminaComponent.h"
+#include "Swd/Components/Modular/Stamina/StaminaComponent.h"
 #include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/Utils/Logger.h"
 

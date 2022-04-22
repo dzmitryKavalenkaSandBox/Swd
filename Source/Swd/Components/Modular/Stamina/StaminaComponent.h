@@ -1,9 +1,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Fatiguable.h"
 #include "Components/ActorComponent.h"
-#include "Swd/Character/SwdCharacter.h"
 #include "StaminaComponent.generated.h"
+
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class SWD_API UStaminaComponent : public UActorComponent
@@ -13,15 +14,16 @@ class SWD_API UStaminaComponent : public UActorComponent
 public:
 	UStaminaComponent();
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	float MaxStamina;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CurrentStamina;
 
 	void DrainStamina(float AmountToDrain);
 
 	void RestoreStamina();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -29,12 +31,13 @@ private:
 	UFUNCTION()
 	float CalculateDelayBeforeRestore() const;
 
-	UPROPERTY(VisibleAnywhere)
 	FTimerHandle StaminaRegenTimer;
-	UPROPERTY(VisibleAnywhere)
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
 	float StaminaToRestorePerTick;
-	UPROPERTY(VisibleAnywhere)
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
 	float DefaultDelayBeforeRestore;
 
-	ASwdCharacter* GetCharacter();
+	IFatiguable* Owner = nullptr; 
 };

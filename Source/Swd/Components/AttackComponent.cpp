@@ -1,9 +1,9 @@
 #include "AttackComponent.h"
 
 #include "EquipmentComponent.h"
-#include "StaminaComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Modular/Stamina/StaminaComponent.h"
 #include "Swd/Swd.h"
 #include "Swd/Utils/Logger.h"
 #include "Swd/Weapons/Sword.h"

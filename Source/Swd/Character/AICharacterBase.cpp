@@ -4,7 +4,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
-#include "Swd/Components/StaminaComponent.h"
+#include "Swd/Components/Modular/Stamina/StaminaComponent.h"
 #include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/Utils/Logger.h"
 

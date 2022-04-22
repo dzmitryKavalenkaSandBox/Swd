@@ -16,7 +16,7 @@ void UClosestActorFinderComponent::BeginPlay()
 }
 
 
-AActor* UClosestActorFinderComponent::GetNearestTarget() const
+AActor* UClosestActorFinderComponent::GetClosestTarget() const
 {
 	TArray<AActor*> FoundActors;
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;

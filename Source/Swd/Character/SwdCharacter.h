@@ -2,11 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Swd/Components/Modular/Stamina/Fatiguable.h"
 #include "Swd/Interfacces/Killable.h"
 #include "SwdCharacter.generated.h"
 
 UCLASS(config=Game)
-class ASwdCharacter : public ACharacter, public IKillable
+class ASwdCharacter : public ACharacter, public IKillable, public IFatiguable
 {
 	GENERATED_BODY()
 
@@ -72,7 +73,7 @@ public:
 
 	virtual void UpdateHealthOnWidget() const {}
 	
-	virtual void UpdateStaminaOnWidget() const {}
+	virtual void UpdateStaminaOnWidget() const override {}
 
 protected:
 	void MoveForward(float Value);

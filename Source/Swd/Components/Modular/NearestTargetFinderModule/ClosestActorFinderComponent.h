@@ -14,7 +14,7 @@ public:
 	UClosestActorFinderComponent();
 
 	UFUNCTION(BlueprintCallable)
-	AActor* GetNearestTarget() const;
+	AActor* GetClosestTarget() const;
 
 	AActor* GetClosestActorOutOfList(FVector SourceLocation, TArray<AActor*> Actors) const;
 

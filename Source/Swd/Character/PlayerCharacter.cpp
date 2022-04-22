@@ -6,8 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Swd/Components/StaminaComponent.h"
 #include "Swd/Components/Modular/LockOnTargetModule/LockOnTargetComponent.h"
+#include "Swd/Components/Modular/Stamina/StaminaComponent.h"
 #include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/UI/HUDWidget.h"
 #include "Swd/Utils/Logger.h"
@@ -139,7 +139,7 @@ void APlayerCharacter::ManageCombatState(bool bEnableCombat)
 
 void APlayerCharacter::SwitchTargetToLockOn()
 {
-	AActor* NewTarget = ClosestActorFinderComponent->GetNearestTarget();
+	AActor* NewTarget = ClosestActorFinderComponent->GetClosestTarget();
 	if (GetIsInCombat() && NewTarget && NewTarget != LockOnTargetComponent->GetCurrentTarget())
 	{
 		LockOnTargetComponent->SetTargetToLockOn(NewTarget);
