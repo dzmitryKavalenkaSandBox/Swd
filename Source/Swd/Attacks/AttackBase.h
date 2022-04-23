@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Swd/Interfacces/AMDataTablePlayable.h"
 #include "UObject/Object.h"
 #include "AttackBase.generated.h"
 

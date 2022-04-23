@@ -1,7 +1,6 @@
 #include "AttackBase.h"
 
 #include "Sound/SoundCue.h"
-#include "Swd/Swd.h"
 #include "Swd/Components/AttackComponent.h"
 
 

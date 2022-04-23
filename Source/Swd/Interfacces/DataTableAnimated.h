@@ -6,7 +6,7 @@
 #include "Engine/DataTable.h"
 #include "Swd/Character/SwdCharacter.h"
 #include "UObject/Interface.h"
-#include "AMDataTablePlayable.generated.h"
+#include "DataTableAnimated.generated.h"
 
 USTRUCT(BlueprintType)
 struct FPlayerAnimMontage : public FTableRowBase
@@ -22,12 +22,12 @@ struct FPlayerAnimMontage : public FTableRowBase
 
 // This class does not need to be modified.
 UINTERFACE()
-class UAMDataTablePlayable : public UInterface
+class UDataTableAnimated : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class SWD_API IAMDataTablePlayable
+class SWD_API IDataTableAnimated
 {
 	GENERATED_BODY()
 

@@ -1,17 +1,17 @@
-#include "AMDataTablePlayable.h"
+
+#include "DataTableAnimated.h"
 
 #include "Swd/Utils/Logger.h"
 #include "Swd/Utils/SwdGameUtils.h"
 
 
-void IAMDataTablePlayable::PlayDataTableAnimation(
+void IDataTableAnimated::PlayDataTableAnimation(
 	ASwdCharacter* Character,
 	UDataTable* DataTable,
 	bool HasBlendedAnim,
 	FString AnimActionName
 )
 {
-	
 	if (Character && DataTable)
 	{
 		ULogger::Log(ELogLevel::WARNING, FString("Attack Action Name ") + AnimActionName);

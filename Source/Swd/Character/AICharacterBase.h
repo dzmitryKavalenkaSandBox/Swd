@@ -25,6 +25,13 @@ public:
 	virtual void UpdateHealthOnWidget() const override;
 
 	virtual void UpdateStaminaOnWidget() const override;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
+	class UBehaviorTree* TreeAsset;
+
+
+protected:
+	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	UWidgetComponent* HealthStaminaWidgetComponent;

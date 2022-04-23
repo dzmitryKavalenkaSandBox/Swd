@@ -3,11 +3,12 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Swd/Attacks/AttackBase.h"
+#include "Swd/Interfacces/DataTableAnimated.h"
 #include "AttackComponent.generated.h"
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class SWD_API UAttackComponent : public UActorComponent, public IAMDataTablePlayable
+class SWD_API UAttackComponent : public UActorComponent, public IDataTableAnimated
 {
 	GENERATED_BODY()
 

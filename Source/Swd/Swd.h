@@ -32,3 +32,9 @@ namespace AnimAction
 	TCHAR const* const Equip = TEXT("Equip");
 	TCHAR const* const Sheath = TEXT("Sheath");
 }
+
+namespace BBKeys
+{
+	TCHAR const* const TargetActor = TEXT("TargetActor");
+}
+

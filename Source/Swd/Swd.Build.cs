@@ -8,6 +8,9 @@ public class Swd : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "Slate", "SlateCore" });
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
+			"Core", "CoreUObject", "Engine", "AIModule", "InputCore","GameplayTasks", "HeadMountedDisplay", "UMG", "Slate", "SlateCore"
+		});
 	}
 }

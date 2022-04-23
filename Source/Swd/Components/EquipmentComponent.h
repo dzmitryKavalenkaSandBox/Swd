@@ -2,13 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Swd/Interfacces/AMDataTablePlayable.h"
+#include "Swd/Interfacces/DataTableAnimated.h"
 #include "Swd/Weapons/WeaponBase.h"
 #include "EquipmentComponent.generated.h"
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class SWD_API UEquipmentComponent : public UActorComponent, public IAMDataTablePlayable
+class SWD_API UEquipmentComponent : public UActorComponent, public IDataTableAnimated
 {
 	GENERATED_BODY()
 

@@ -1,6 +1,7 @@
 #include "SwdGameUtils.h"
 
-#include "Swd/Interfacces/AMDataTablePlayable.h"
+#include "Swd/Interfacces/DataTableAnimated.h"
+
 
 USwdGameUtils::USwdGameUtils(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
