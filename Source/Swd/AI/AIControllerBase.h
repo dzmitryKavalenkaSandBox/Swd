@@ -17,11 +17,18 @@ public:
 
 	void OnPossess(APawn* InPawn) override;
 
+	virtual void BeginPlay() override;
+
 	UPROPERTY(transient)
 	class UBehaviorTreeComponent* BTC;
 
 	UPROPERTY(transient)
 	UBlackboardComponent* BBC;
+	
+	UPROPERTY(BlueprintReadWrite)
+	class AAICharacterBase* Agent;
 
 	uint8 EnemyKeyId;
+	uint8 LocationKeyId;
+	uint8 ContactKeyId;
 };

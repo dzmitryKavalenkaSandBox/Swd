@@ -4,6 +4,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Swd/Components/Modular/Stamina/StaminaComponent.h"
 #include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/Utils/Logger.h"
@@ -12,7 +13,11 @@ AAICharacterBase::AAICharacterBase()
 {
 	SetUpHealthStaminaWidget();
 	SphereAroundAI = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Around AI"));
+	// to make turning smoother
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 
+	
 	SphereAroundAI->SetupAttachment(RootComponent);
 	SphereAroundAI->SetCollisionProfileName(FName("OverlapAll"));
 	SphereAroundAI->SetGenerateOverlapEvents(true);

@@ -8,6 +8,7 @@
 #include "Kismet/KismetmathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "SmartObjects/SmartObject.h"
 #include "Swd/Swd.h"
 #include "Swd/Character/AICharacterBase.h"
 
@@ -30,8 +31,30 @@ void AAIControllerBase::OnPossess(APawn* InPawn)
 
 		// Set Blackboard Key IDs
 		EnemyKeyId = BBC->GetKeyID(BBKeys::TargetActor);
+		LocationKeyId = BBC->GetKeyID(BBKeys::MoveToLocation);
+		ContactKeyId = BBC->GetKeyID(BBKeys::Contact);
 
 		// Start The BehaviorTree.
 		BTC->StartTree(*Chr->TreeAsset);
+	}
+}
+
+void AAIControllerBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (!Agent)
+	{
+		AAICharacterBase* Chr = Cast<AAICharacterBase>(GetPawn());
+		if (!Chr)
+		{return;}
+		Agent = Chr;
+		Agent->ControllerRef = this;
+	}
+
+	if (Agent->SmartObject)
+	{
+		FGameplayTag SubTag;
+		BTC->SetDynamicSubtree(SubTag, Agent->SmartObject->SubTree);
 	}
 }

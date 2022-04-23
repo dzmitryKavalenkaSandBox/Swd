@@ -29,9 +29,11 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
 	class UBehaviorTree* TreeAsset;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+	class ASmartObject* SmartObject;
 
-protected:
-	
+	UPROPERTY(BlueprintReadOnly)
+	class AAIControllerBase* ControllerRef = nullptr;
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	UWidgetComponent* HealthStaminaWidgetComponent;

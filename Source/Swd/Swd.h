@@ -36,5 +36,25 @@ namespace AnimAction
 namespace BBKeys
 {
 	TCHAR const* const TargetActor = TEXT("TargetActor");
+	TCHAR const* const MoveToLocation = TEXT("MoveToLocation");
+	TCHAR const* const Contact = TEXT("Contact");
 }
 
+UENUM(BlueprintType)
+enum class EAIState : uint8
+{
+	Idle              UMETA(DisplayName = "Idle"),
+	ManDown           UMETA(DisplayName = "Man Down"),
+	Investigate       UMETA(DisplayName = "Investigate"),
+	LostEnemy         UMETA(DisplayName = "Lost Enemy"),
+	Search            UMETA(DisplayName = "Search"),
+	Attack            UMETA(DisplayName = "Attack")
+};
+
+UENUM(BlueprintType)
+enum class EFaction : uint8
+{
+	Enemy            UMETA(DisplayName = "Enemy"),
+	Friendly         UMETA(DisplayName = "Friendly"),
+	Neutral          UMETA(DisplayName = "Neutral")
+};

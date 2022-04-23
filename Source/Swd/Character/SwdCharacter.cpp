@@ -20,6 +20,9 @@ ASwdCharacter::ASwdCharacter()
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
+	// Configure character movement
+	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...
+
 	// set our turn rate for input
 	TurnRateGamepad = 50.f;
 

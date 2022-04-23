@@ -17,15 +17,13 @@ UAnimInstanceBase::UAnimInstanceBase()
 void UAnimInstanceBase::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-
-	PawnOwner = TryGetPawnOwner();
+	Character = Cast<ASwdCharacter>(TryGetPawnOwner());
 }
 
 void UAnimInstanceBase::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
-	if (!PawnOwner) { return; }
-	if (ASwdCharacter* Character = Cast<ASwdCharacter>(PawnOwner))
+	if (Character)
 	{
 		bIsInAir = Character->GetMovementComponent()->IsFalling();
 		Speed = Character->GetSpeed();

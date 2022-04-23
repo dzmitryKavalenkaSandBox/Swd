@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Swd/Character/SwdCharacter.h"
 #include "AnimInstanceBase.generated.h"
 
 UCLASS()
@@ -24,11 +25,11 @@ public:
 	bool bIsWeaponSheathed;
 
 	UAnimInstanceBase();
-	
+
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 protected:
-	UPROPERTY(VisibleAnywhere)
-	APawn* PawnOwner;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true))
+	ASwdCharacter* Character;
 };
