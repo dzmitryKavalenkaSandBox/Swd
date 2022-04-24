@@ -31,6 +31,8 @@ void AAICharacterBase::BeginPlay()
 	UpdateStaminaOnWidget();
 	SphereAroundAI->OnComponentBeginOverlap.AddDynamic(this, &AAICharacterBase::OnSphereOverlapBegin);
 	SphereAroundAI->OnComponentEndOverlap.AddDynamic(this, &AAICharacterBase::OnSphereOverlapEnd);
+
+	UpdateWidgetRef();
 }
 
 void AAICharacterBase::SetUpHealthStaminaWidget()

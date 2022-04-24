@@ -12,6 +12,7 @@
 #include "SmartObjects/SmartObject.h"
 #include "Swd/Swd.h"
 #include "Swd/Character/AICharacterBase.h"
+#include "Swd/Utils/Logger.h"
 
 
 AAIControllerBase::AAIControllerBase()
@@ -51,6 +52,7 @@ void AAIControllerBase::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	AAICharacterBase* AICharacter = Cast<AAICharacterBase>(InPawn);
+
 	if (AICharacter != nullptr && AICharacter->TreeAsset != nullptr)
 	{
 		Agent = AICharacter;
@@ -64,6 +66,7 @@ void AAIControllerBase::OnPossess(APawn* InPawn)
 
 		BTC->StartTree(*AICharacter->TreeAsset);
 	}
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAIControllerBase::OnPerception);
 }
 
 void AAIControllerBase::BeginPlay()
@@ -92,21 +95,24 @@ void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 {
 	if (UAIPerceptionSystem::GetSenseClassForStimulus(GetWorld(), Stimulus) == UAISense_Sight::StaticClass())
 	{
-		ASwdCharacter* Chr = Cast<ASwdCharacter>(Actor);
-		if (Chr && Chr->IsHostile(Agent))
+		ASwdCharacter* SensedCharacter = Cast<ASwdCharacter>(Actor);
+
+		if (SensedCharacter && Agent->IsHostile(SensedCharacter))
 		{
 			BBC->SetValueAsBool(BBKeys::Contact, Stimulus.WasSuccessfullySensed());
 
+			// Check to see if AI already attacking someone
 			if (BBC->GetValueAsEnum(BBKeys::AIState) != (uint8)EAIState::Attack)
 			{
+				// ULogger::Log(ELogLevel::INFO, FString("Setting target actor to: ") + FString(Actor->GetName()));
 				Agent->GetCharacterMovement()->StopActiveMovement();
-				BBC->SetValueAsObject(BBKeys::TargetActor, Actor);
+				BBC->SetValueAsObject(BBKeys::TargetActor, SensedCharacter);
 			}
 
-			Target = Actor;
+			Target = SensedCharacter;
 			LastStimulusLocation = Stimulus.StimulusLocation;
-			// if (AIManager) AIManager->LastStimulusLocation = LastStimulusLocation;
-			TimeStamp = UKismetSystemLibrary::GetGameTimeInSeconds(Agent);
+			if (AIManager) AIManager->LastStimulusLocation = LastStimulusLocation;
+			TimeStamp = UKismetSystemLibrary::GetGameTimeInSeconds(Agent/*pass GetWorld() here*/);
 		}
 
 		if (!GetWorldTimerManager().IsTimerActive(DetectionTimer) && BBC->GetValueAsBool(BBKeys::Contact) && BBC->
@@ -117,14 +123,13 @@ void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 			GetWorldTimerManager().SetTimer(DetectionTimer, this, &AAIControllerBase::SetDetectionLevel, Rate, true,
 			                                0.f);
 		}
-
 		return;
 	}
 
 	if (BBC->GetValueAsEnum(BBKeys::AIState) == (uint8)EAIState::Attack) return;
 
-	AAICharacterBase* Chr = Cast<AAICharacterBase>(Actor);
-	if (Chr && Chr->IsHostile(Agent))
+	ASwdCharacter* Character = Cast<ASwdCharacter>(Actor);
+	if (Character && Character->IsHostile(Agent))
 	{
 		BBC->SetValueAsEnum(BBKeys::AIState, (uint8)EAIState::Investigate);
 		BBC->SetValueAsVector(BBKeys::LastStimulusLocation, Stimulus.StimulusLocation);
@@ -167,7 +172,7 @@ void AAIControllerBase::SetDetectionLevel()
 
 	if (DetectionLevel >= DetectionThreshold / 2)
 	{
-		BBC->SetValueAsEnum(BBKeys::AIState, (uint8)EAIState::Investigate);
+		BBC->SetValueAsEnum(BBKeys::AIState, (uint8) EAIState::Investigate);
 		BBC->SetValueAsVector(BBKeys::LastStimulusLocation, LastStimulusLocation);
 	}
 }

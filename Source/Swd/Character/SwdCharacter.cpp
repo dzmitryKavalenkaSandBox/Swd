@@ -173,7 +173,8 @@ void ASwdCharacter::HandleDeathBehavior()
 
 bool ASwdCharacter::IsHostile(ASwdCharacter* Character)
 {
-	return (Faction != Character->Faction && Character->Faction != EFaction::Neutral);
+	bool IsHostile = Faction != Character->Faction && Character->Faction != EFaction::Neutral;
+	return IsHostile;
 }
 
 void ASwdCharacter::MoveForward(float Value)

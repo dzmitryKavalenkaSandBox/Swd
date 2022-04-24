@@ -19,10 +19,11 @@ class SWD_API AAIControllerBase : public AAIController
 	GENERATED_BODY()
 
 public:
+	
 	AAIControllerBase();
 
 	UPROPERTY(BlueprintReadOnly)
-	class AAIManager* AIManager = nullptr;
+	AAIManager* AIManager = nullptr;
 
 	UPROPERTY(BlueprintReadWrite)
 	float DetectionLevel = 0.f;
@@ -41,7 +42,7 @@ public:
 	UBlackboardComponent* BBC;
 
 	UPROPERTY(BlueprintReadWrite)
-	class AAICharacterBase* Agent;
+	class AAICharacterBase* Agent = nullptr;
 
 	uint8 EnemyKeyId;
 	uint8 LocationKeyId;
@@ -51,12 +52,15 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UAIPerceptionComponent* AIPerceptionComponent;
 
+	/*
+	 * Will be called everytime actor sense someone or stop sensing it
+	 */
 	UFUNCTION()
 	void OnPerception(AActor* Actor, FAIStimulus Stimulus);
 
 	/** A Sight Sense config for our AI */
 	UAISenseConfig_Sight* Sight;
-	
+
 	UAISenseConfig_Hearing* Hearing;
 
 	FTimerHandle DetectionTimer;
