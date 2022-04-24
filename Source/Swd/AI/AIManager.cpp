@@ -9,10 +9,10 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Swd/Swd.h"
 #include "Swd/Character/AICharacterBase.h"
+#include "Swd/Utils/Logger.h"
 
 AAIManager::AAIManager()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 }
 
@@ -35,7 +35,7 @@ void AAIManager::CoverFire(bool ProvideCoverFire, AAICharacterBase* Instgtr)
 		return;
 	}
 
-	if (AgentProvidingCoverFire->ControllerRef->BBC->GetValueAsEnum("CombatState") == (uint8)ECombatState::HoldCover)
+	if (AgentProvidingCoverFire->ControllerRef->BBC->GetValueAsEnum("CombatState") == (uint8) ECombatState::HoldCover)
 		AgentProvidingCoverFire->ControllerRef->BBC->SetValueAsBool("ShootFromCover", false);
 }
 
@@ -47,36 +47,36 @@ void AAIManager::BeginPlay()
 	UpdateCombatRole();
 }
 
-bool AAIManager::Engaged()
+bool AAIManager::IsAnyAgentEngaged()
 {
-	bool ED = false;
+	bool IsEngaged = false;
 
 	for (auto& AIController : Agents)
 	{
 		if (AIController->BBC->GetValueAsBool(BBKeys::Contact))
 		{
-			ED = true;
+			IsEngaged = true;
 			break;
 		}
 
 		if (AIController->BBC->GetValueAsObject(BBKeys::TargetActor))
 		{
-			ED = true;
+			IsEngaged = true;
 			break;
 		}
 
 		if (UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) - AIController->TimeStamp < MaxStimulusTime_Combat)
 		{
-			ED = true;
+			IsEngaged = true;
 			break;
 		}
 	}
-	return ED;
+	return IsEngaged;
 }
 
 void AAIManager::RunCombatLoop()
 {
-	if (Engaged())
+	if (IsAnyAgentEngaged())
 	{
 		//Approach
 		if (Defenders.Num() > 0)
@@ -90,7 +90,8 @@ void AAIManager::RunCombatLoop()
 		return;
 	}
 
-	NotifyAIState(EAIState::LostEnemy);
+	ULogger::Log(ELogLevel::INFO, TEXT("Setting state to Lost Ememy"));
+	NotifyAllAgentsAIState(EAIState::LostEnemy);
 	GetWorldTimerManager().ClearTimer(CombatTimer);
 }
 
@@ -107,34 +108,34 @@ void AAIManager::RunSearchTimer()
 	}
 
 	GetWorldTimerManager().ClearTimer(SearchTimer);
-	NotifyAIState(EAIState::Idle);
+	NotifyAllAgentsAIState(EAIState::Idle);
 }
 
 void AAIManager::CreateAgentsList()
 {
-	TSubclassOf<AAIControllerBase> ClassToFind = AAIControllerBase::StaticClass();
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ClassToFind, Actors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIControllerBase::StaticClass(), Actors);
 
-	for (auto& Cntrlr : Actors)
+	for (auto& GenericController : Actors)
 	{
-		AAIControllerBase* Controller = Cast<AAIControllerBase>(Cntrlr);
-		if (Controller && Controller->Agent && Controller->Agent->Faction == Faction)
+		AAIControllerBase* AIController = Cast<AAIControllerBase>(GenericController);
+		if (AIController && AIController->Agent && AIController->Agent->Faction == Faction)
 		{
-			Agents.AddUnique(Controller);
-			Controller->AIManager = this;
+			Agents.AddUnique(AIController);
+			AIController->AIManager = this;
 		}
 	}
 }
 
-void AAIManager::NotifyAIState(EAIState State)
+// currently sets attack to all the agents, should probably make it more intelligent
+void AAIManager::NotifyAllAgentsAIState(EAIState State)
 {
-	for (auto& Cntrlr : Agents)
+	for (auto& AIController : Agents)
 	{
-		(Engaged())
-			? Cntrlr->BBC->SetValueAsEnum(BBKeys::AIState, (uint8)EAIState::Attack)
-			: Cntrlr->BBC->SetValueAsEnum(BBKeys::AIState, (uint8)State);
-		Cntrlr->BBC->SetValueAsVector(BBKeys::LastStimulusLocation, LastStimulusLocation);
+		IsAnyAgentEngaged()
+			? AIController->BBC->SetValueAsEnum(BBKeys::AIState, (uint8) EAIState::Attack)
+			: AIController->BBC->SetValueAsEnum(BBKeys::AIState, (uint8) State);
+		AIController->BBC->SetValueAsVector(BBKeys::LastStimulusLocation, LastStimulusLocation);
 	}
 
 	if (State == EAIState::Attack)
@@ -166,11 +167,11 @@ void AAIManager::RemoveAgent(AAIControllerBase* ControllerToRemove)
 
 void AAIManager::UpdateCombatRole()
 {
-	for (auto& Cntrlr : Agents)
+	for (auto& AIController : Agents)
 	{
-		if (Cntrlr->Agent->CombatRole == ECombatRole::Defender)
+		if (AIController->Agent->CombatRole == ECombatRole::Defender)
 		{
-			Defenders.AddUnique(Cntrlr->Agent);
+			Defenders.AddUnique(AIController->Agent);
 		}
 	}
 }

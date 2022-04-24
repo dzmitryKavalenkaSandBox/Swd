@@ -99,13 +99,14 @@ void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 
 		if (SensedCharacter && Agent->IsHostile(SensedCharacter))
 		{
+			// ULogger::Log(ELogLevel::INFO, TEXT("Setting contact"));
 			BBC->SetValueAsBool(BBKeys::Contact, Stimulus.WasSuccessfullySensed());
 
 			// Check to see if AI already attacking someone
-			if (BBC->GetValueAsEnum(BBKeys::AIState) != (uint8)EAIState::Attack)
+			if (BBC->GetValueAsEnum(BBKeys::AIState) != (uint8) EAIState::Attack)
 			{
-				// ULogger::Log(ELogLevel::INFO, FString("Setting target actor to: ") + FString(Actor->GetName()));
 				Agent->GetCharacterMovement()->StopActiveMovement();
+				// ULogger::Log(ELogLevel::INFO, FString("Setting target actor to: ") + FString(Actor->GetName()));
 				BBC->SetValueAsObject(BBKeys::TargetActor, SensedCharacter);
 			}
 
@@ -116,7 +117,7 @@ void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 		}
 
 		if (!GetWorldTimerManager().IsTimerActive(DetectionTimer) && BBC->GetValueAsBool(BBKeys::Contact) && BBC->
-			GetValueAsEnum(BBKeys::AIState) == (uint8)EAIState::Idle)
+			GetValueAsEnum(BBKeys::AIState) == (uint8) EAIState::Idle)
 		{
 			DetectionLevel = 0.f;
 			Agent->UpdateWidgetVis(true);
@@ -164,7 +165,8 @@ void AAIControllerBase::SetDetectionLevel()
 
 	if (DetectionLevel >= DetectionThreshold)
 	{
-		if (AIManager) AIManager->NotifyAIState(EAIState::Attack);
+		ULogger::Log(ELogLevel::INFO, TEXT("Setting state to Attack"));
+		if (AIManager) AIManager->NotifyAllAgentsAIState(EAIState::Attack);
 		GetWorldTimerManager().ClearTimer(DetectionTimer);
 		Agent->UpdateWidgetVis(false);
 		return;
@@ -172,7 +174,8 @@ void AAIControllerBase::SetDetectionLevel()
 
 	if (DetectionLevel >= DetectionThreshold / 2)
 	{
-		BBC->SetValueAsEnum(BBKeys::AIState, (uint8) EAIState::Investigate);
+		ULogger::Log(ELogLevel::INFO, TEXT("Setting state to Investigate"));
+		BBC->SetValueAsEnum(BBKeys::AIState, (uint8)EAIState::Investigate);
 		BBC->SetValueAsVector(BBKeys::LastStimulusLocation, LastStimulusLocation);
 	}
 }

@@ -21,11 +21,11 @@ EBTNodeResult::Type UT_OverrideAIState::ExecuteTask(UBehaviorTreeComponent& Owne
 
 	if (RunMode == ERunMode::ThisAgent)
 	{
-		OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Enum>(BBKeys::AIState, (uint8)DesiredState);
+		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(BBKeys::AIState, (uint8) DesiredState);
 	}
 	else
 	{
-		MyController->AIManager->NotifyAIState(DesiredState);
+		MyController->AIManager->NotifyAllAgentsAIState(DesiredState);
 	}
 	return EBTNodeResult::Succeeded;
 }

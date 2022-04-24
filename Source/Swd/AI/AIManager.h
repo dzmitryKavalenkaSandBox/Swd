@@ -46,7 +46,7 @@ protected:
 	float ApproachDelay = 10.f;
 
 	UFUNCTION()
-	bool Engaged();
+	bool IsAnyAgentEngaged();
 
 	FTimerHandle CombatTimer;
 	FTimerHandle SearchTimer;
@@ -70,7 +70,7 @@ public:
 	void CreateAgentsList();
 
 	UFUNCTION()
-	void NotifyAIState(EAIState State);
+	void NotifyAllAgentsAIState(EAIState State);
 
 	UFUNCTION()
 	void RemoveAgent(AAIControllerBase* ControllerToRemove);
