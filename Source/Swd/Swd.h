@@ -38,6 +38,10 @@ namespace BBKeys
 	TCHAR const* const TargetActor = TEXT("TargetActor");
 	TCHAR const* const MoveToLocation = TEXT("MoveToLocation");
 	TCHAR const* const Contact = TEXT("Contact");
+	TCHAR const* const AIState = TEXT("AIState");
+	TCHAR const* const LastStimulusLocation = TEXT("LastStimulusLocation");
+	TCHAR const* const Damaged = TEXT("Damaged");
+	TCHAR const* const CombatState = TEXT("CombatState");
 }
 
 UENUM(BlueprintType)
@@ -57,4 +61,25 @@ enum class EFaction : uint8
 	Enemy            UMETA(DisplayName = "Enemy"),
 	Friendly         UMETA(DisplayName = "Friendly"),
 	Neutral          UMETA(DisplayName = "Neutral")
+};
+
+
+UENUM(BlueprintType)
+enum class ECombatRole : uint8
+{
+	Engager           UMETA(DisplayName = "Engager"),
+	Defender          UMETA(DisplayName = "Defender"),
+	Sniper            UMETA(DisplayName = "Sniper")
+};
+
+
+UENUM(BlueprintType)
+enum class ECombatState : uint8
+{
+	SoftCover         UMETA(DisplayName = "Soft Cover"),
+	ApproachingCover  UMETA(DisplayName = "Approaching Cover"),
+	Flank             UMETA(DisplayName = "Flank"),
+	HoldCover         UMETA(DisplayName = "HoldCover"),
+	RetreatingCover   UMETA(DisplayName = "RetreatingCover"),
+	Evade             UMETA(DisplayName = "Evade")
 };

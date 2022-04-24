@@ -4,7 +4,32 @@
 
 #include "CoreMinimal.h"
 #include "SwdCharacter.h"
+#include "Swd/Swd.h"
 #include "AICharacterBase.generated.h"
+
+USTRUCT(BlueprintType)
+struct FAnimValues
+{
+	GENERATED_BODY()
+
+public:
+
+	// UPROPERTY(BlueprintReadWrite, Category = Movement)
+	// bool bIsCrouching = false;
+
+	UPROPERTY(BlueprintReadWrite, Category = Movement)
+	bool bIsInCombat = false;
+
+	UPROPERTY(BlueprintReadWrite, Category = Movement)
+	bool bIsShooting = false;
+
+	UPROPERTY(BlueprintReadWrite, Category = Movement)
+	bool bADS = false;
+
+	UPROPERTY(BlueprintReadWrite, Category = Movement)
+	bool bIsSitting = false;
+
+};
 
 /**
  * 
@@ -34,6 +59,45 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	class AAIControllerBase* ControllerRef = nullptr;
+
+	// Custom View Target For AI Perception Component
+	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, 
+							   float& OutSightStrength, const AActor* IgnoreActor = nullptr, const bool* bWasVisible = nullptr, 
+																							  int32* UserData = nullptr) const;
+
+	UPROPERTY(BlueprintReadOnly, Category = "AI")
+	bool Dead = false;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
+	FName PerceptionTarget = "spine_02";
+	
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
+	ECombatRole CombatRole;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateWidgetRef();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateWidgetVis(bool Newbool);
+	
+	UFUNCTION(BlueprintCallable)
+	void MakeANoise(FVector Location);
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleCombat(const bool Newbool);
+
+	// UFUNCTION(BlueprintCallable)
+	// void ToggleCrouch(const bool Newbool);
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleADS(const bool Newbool);
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleSprinting(bool Newbool);
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Animation")
+	FAnimValues AnimValues;
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	UWidgetComponent* HealthStaminaWidgetComponent;

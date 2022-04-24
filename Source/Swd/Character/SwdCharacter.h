@@ -6,6 +6,7 @@
 #include "Swd/Interfacces/Killable.h"
 #include "SwdCharacter.generated.h"
 
+enum class EFaction : uint8;
 UCLASS(config=Game)
 class ASwdCharacter : public ACharacter, public IKillable, public IFatiguable
 {
@@ -75,6 +76,11 @@ public:
 	
 	virtual void UpdateStaminaOnWidget() const override {}
 
+	bool IsHostile(ASwdCharacter* Character);
+
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
+	EFaction Faction;
+
 protected:
 	void MoveForward(float Value);
 
@@ -94,10 +100,6 @@ protected:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess=true))
-	bool bIsInCombat = false;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
 	float RunSpeed = 500.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
@@ -106,6 +108,10 @@ private:
 	float WalkSpeed = 200.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
 	float WalkSpeedCombat = 180.f;
+
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess=true))
+	bool bIsInCombat = false;
 
 	UFUNCTION()
 	void InitialMovementSetUp();

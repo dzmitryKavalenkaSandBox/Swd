@@ -1,5 +1,10 @@
 #include "DamageConsumerComponent.h"
 
+#include "BrainComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Swd/AI/AIControllerBase.h"
+#include "Swd/AI/AIManager.h"
+#include "Swd/Character/AICharacterBase.h"
 #include "Swd/Character/SwdCharacter.h"
 #include "Swd/Utils/Logger.h"
 
@@ -22,6 +27,18 @@ void UDamageConsumerComponent::ConsumeDamage(AActor* DamagedActor, float Damage,
 			if (DeadActor)
 			{
 				DeadActor->HandleDeathBehavior();
+			}
+
+			if (auto AI = Cast<AAICharacterBase>(Owner))
+			{
+				if (AI->ControllerRef)
+				{
+					AI->ControllerRef->GetBrainComponent()->StopLogic("Agent Is Dead");
+					AI->ControllerRef->ClearFocus(EAIFocusPriority::LastFocusPriority);
+					AI->ControllerRef->GetAIPerceptionComponent()->DestroyComponent(true);
+					AI->ControllerRef->AIManager->RemoveAgent(AI->ControllerRef);
+					AI->ControllerRef->BBC->SetValueAsBool(BBKeys::Damaged, false);
+				}
 			}
 		}
 	}

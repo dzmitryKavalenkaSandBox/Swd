@@ -17,7 +17,7 @@ AAICharacterBase::AAICharacterBase()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
-	
+
 	SphereAroundAI->SetupAttachment(RootComponent);
 	SphereAroundAI->SetCollisionProfileName(FName("OverlapAll"));
 	SphereAroundAI->SetGenerateOverlapEvents(true);
@@ -66,6 +66,54 @@ void AAICharacterBase::UpdateStaminaOnWidget() const
 	}
 }
 
+bool AAICharacterBase::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation,
+                                     int32& NumberOfLoSChecksPerformed, float& OutSightStrength,
+                                     const AActor* IgnoreActor, const bool* bWasVisible,
+                                     int32* UserData) const
+{
+	static const FName NAME_AILineOfSight = FName(TEXT("TestPawnLineOfSight"));
+
+	FHitResult HitResult;
+	FVector SocketLocation = GetMesh()->GetSocketLocation(PerceptionTarget);
+
+	const bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, ObserverLocation, SocketLocation,
+	                                                                FCollisionObjectQueryParams(ECC_TO_BITFIELD
+		                                                                (ECC_WorldStatic) | ECC_TO_BITFIELD(
+			                                                                ECC_WorldDynamic)),
+	                                                                FCollisionQueryParams(NAME_AILineOfSight, true,
+		                                                                IgnoreActor));
+
+	NumberOfLoSChecksPerformed++;
+
+	if (bHitSocket == false || (IsValid(HitResult.GetActor()) && HitResult.GetActor()->IsOwnedBy(this)))
+	{
+		OutSeenLocation = SocketLocation;
+		OutSightStrength = 1;
+
+		return true;
+	}
+
+	const bool bHit = GetWorld()->LineTraceSingleByObjectType(HitResult, ObserverLocation, GetActorLocation(),
+	                                                          FCollisionObjectQueryParams(
+		                                                          ECC_TO_BITFIELD(ECC_WorldStatic) |
+		                                                          ECC_TO_BITFIELD(ECC_WorldDynamic)),
+	                                                          FCollisionQueryParams
+	                                                          (NAME_AILineOfSight, true, IgnoreActor));
+
+	NumberOfLoSChecksPerformed++;
+
+	if (bHit == false || (IsValid(HitResult.GetActor()) && HitResult.GetActor()->IsOwnedBy(this)))
+	{
+		OutSeenLocation = GetActorLocation();
+		OutSightStrength = 1;
+
+		return true;
+	}
+
+	OutSightStrength = 0;
+	return false;
+}
+
 void AAICharacterBase::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                             UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                             const FHitResult& SweepResult)
@@ -91,3 +139,44 @@ void AAICharacterBase::UpdateCurrentHealth(float NewValue)
 	UpdateHealthOnWidget();
 }
 
+
+void AAICharacterBase::MakeANoise(FVector Location)
+{
+	MakeNoise(1.f, nullptr, Location, 0.f, "");
+}
+
+
+void AAICharacterBase::ToggleCombat(const bool Newbool)
+{
+	GetMesh()->GetAnimInstance()->StopAllMontages(0.2f);
+	AnimValues.bIsInCombat = Newbool;
+	bUseControllerRotationYaw = Newbool;
+	GetCharacterMovement()->bOrientRotationToMovement = !Newbool;
+	FName NewSocket = Newbool ? "hand_rSocket" : "spine_03Socket";
+	// AttachWeapon(Weapon, NewSocket);
+	GetCharacterMovement()->MaxWalkSpeed = (Newbool) ? 187.f : 94.f;
+}
+
+//
+// void AAICharacterBase::ToggleCrouch(const bool Newbool)
+// {
+// 	AnimValues.bIsCrouching = Newbool;
+// 	const float Speed = AnimValues.bIsInCombat ? 187.f : WalkSpeed;
+// 	GetCharacterMovement()->MaxWalkSpeed = (Newbool) ? CrouchedWalkSpeed : Speed;
+// }
+
+void AAICharacterBase::ToggleADS(const bool Newbool)
+{
+	AnimValues.bADS = Newbool;
+}
+
+void AAICharacterBase::ToggleSprinting(bool Newbool)
+{
+	if (Newbool)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+		return;
+	}
+
+	GetCharacterMovement()->MaxWalkSpeed = (AnimValues.bIsInCombat) ? 187.f : WalkSpeed;
+}

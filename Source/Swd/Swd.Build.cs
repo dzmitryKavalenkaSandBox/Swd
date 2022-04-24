@@ -10,7 +10,8 @@ public class Swd : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
-			"Core", "CoreUObject", "Engine", "AIModule", "InputCore","GameplayTasks", "HeadMountedDisplay", "UMG", "Slate", "SlateCore"
+			"Core", "CoreUObject", "Engine", "InputCore", "UMG", "Slate", "SlateCore", "NavigationSystem", "ApexDestruction", "AIModule",
+			"GameplayTasks", "Niagara"
 		});
 	}
 }

@@ -171,6 +171,11 @@ void ASwdCharacter::HandleDeathBehavior()
 	}
 }
 
+bool ASwdCharacter::IsHostile(ASwdCharacter* Character)
+{
+	return (Faction != Character->Faction && Character->Faction != EFaction::Neutral);
+}
+
 void ASwdCharacter::MoveForward(float Value)
 {
 	if ((Controller != nullptr) && (Value != 0.0f))
