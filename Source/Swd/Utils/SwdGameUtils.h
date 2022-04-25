@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Swd/Character/SwdCharacter.h"
 #include "SwdGameUtils.generated.h"
 
+enum class EAIState : uint8;
 struct FPlayerAnimMontage;
 /**
  * 

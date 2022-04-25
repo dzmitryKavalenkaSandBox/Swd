@@ -1,5 +1,7 @@
 #include "SwdGameUtils.h"
 
+#include "Logger.h"
+#include "Swd/Swd.h"
 #include "Swd/Interfacces/DataTableAnimated.h"
 
 

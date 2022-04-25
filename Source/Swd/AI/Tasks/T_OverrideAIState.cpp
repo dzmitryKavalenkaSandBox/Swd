@@ -4,6 +4,7 @@
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Enum.h"
 #include "Swd/Swd.h"
 #include "Swd/AI/AIControllerBase.h"
+#include "Swd/Utils/SwdGameUtils.h"
 
 UT_OverrideAIState::UT_OverrideAIState(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -21,7 +22,7 @@ EBTNodeResult::Type UT_OverrideAIState::ExecuteTask(UBehaviorTreeComponent& Owne
 
 	if (RunMode == ERunMode::ThisAgent)
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(BBKeys::AIState, (uint8) DesiredState);
+		MyController->UpdateAIState(DesiredState);
 	}
 	else
 	{

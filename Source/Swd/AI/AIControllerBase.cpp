@@ -13,6 +13,7 @@
 #include "Swd/Swd.h"
 #include "Swd/Character/AICharacterBase.h"
 #include "Swd/Utils/Logger.h"
+#include "Swd/Utils/SwdGameUtils.h"
 
 
 AAIControllerBase::AAIControllerBase()
@@ -93,17 +94,16 @@ void AAIControllerBase::BeginPlay()
 
 void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 {
+	ASwdCharacter* SensedCharacter = Cast<ASwdCharacter>(Actor);
 	if (UAIPerceptionSystem::GetSenseClassForStimulus(GetWorld(), Stimulus) == UAISense_Sight::StaticClass())
 	{
-		ASwdCharacter* SensedCharacter = Cast<ASwdCharacter>(Actor);
-
 		if (SensedCharacter && Agent->IsHostile(SensedCharacter))
 		{
 			// ULogger::Log(ELogLevel::INFO, TEXT("Setting contact"));
 			BBC->SetValueAsBool(BBKeys::Contact, Stimulus.WasSuccessfullySensed());
 
 			// Check to see if AI already attacking someone
-			if (BBC->GetValueAsEnum(BBKeys::AIState) != (uint8) EAIState::Attack)
+			if (!IsStateEquals(EAIState::Attack))
 			{
 				Agent->GetCharacterMovement()->StopActiveMovement();
 				// ULogger::Log(ELogLevel::INFO, FString("Setting target actor to: ") + FString(Actor->GetName()));
@@ -113,11 +113,12 @@ void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 			Target = SensedCharacter;
 			LastStimulusLocation = Stimulus.StimulusLocation;
 			if (AIManager) AIManager->LastStimulusLocation = LastStimulusLocation;
-			TimeStamp = UKismetSystemLibrary::GetGameTimeInSeconds(Agent/*pass GetWorld() here*/);
+			TimeStampWhenLastSensed = UKismetSystemLibrary::GetGameTimeInSeconds(Agent/*pass GetWorld() here*/);
 		}
 
-		if (!GetWorldTimerManager().IsTimerActive(DetectionTimer) && BBC->GetValueAsBool(BBKeys::Contact) && BBC->
-			GetValueAsEnum(BBKeys::AIState) == (uint8) EAIState::Idle)
+		if (!GetWorldTimerManager().IsTimerActive(DetectionTimer) && BBC->GetValueAsBool(BBKeys::Contact) &&
+			(IsStateEquals(EAIState::Idle) || IsStateEquals(EAIState::Alerted) ||
+				IsStateEquals(EAIState::Search)))
 		{
 			DetectionLevel = 0.f;
 			Agent->UpdateWidgetVis(true);
@@ -127,26 +128,25 @@ void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 		return;
 	}
 
-	if (BBC->GetValueAsEnum(BBKeys::AIState) == (uint8)EAIState::Attack) return;
+	if (IsStateEquals(EAIState::Attack)) return;
 
-	ASwdCharacter* Character = Cast<ASwdCharacter>(Actor);
-	if (Character && Character->IsHostile(Agent))
-	{
-		BBC->SetValueAsEnum(BBKeys::AIState, (uint8)EAIState::Investigate);
-		BBC->SetValueAsVector(BBKeys::LastStimulusLocation, Stimulus.StimulusLocation);
-	}
+	// if (SensedCharacter && SensedCharacter->IsHostile(Agent))
+	// {
+	// 	BBC->SetValueAsEnum(BBKeys::AIState, (uint8)EAIState::Alerted);
+	// 	BBC->SetValueAsVector(BBKeys::LastStimulusLocation, Stimulus.StimulusLocation);
+	// }
 }
 
 void AAIControllerBase::SetDetectionLevel()
 {
 	if (!Target || !BBC->GetValueAsBool(BBKeys::Contact))
 	{
-		if (BBC->GetValueAsEnum(BBKeys::AIState) != (uint8)EAIState::Idle)
-		{
-			GetWorldTimerManager().ClearTimer(DetectionTimer);
-			Agent->UpdateWidgetVis(false);
-			return;
-		}
+		// if (!IsAIStateEquals(EAIState::Idle))
+		// {
+		// 	GetWorldTimerManager().ClearTimer(DetectionTimer);
+		// 	Agent->UpdateWidgetVis(false);
+		// 	return;
+		// }
 
 		if (DetectionLevel > 0.f)
 		{
@@ -155,7 +155,7 @@ void AAIControllerBase::SetDetectionLevel()
 		}
 		GetWorldTimerManager().ClearTimer(DetectionTimer);
 		Agent->UpdateWidgetVis(false);
-
+		UpdateAIState(EAIState::Idle);
 		return;
 	}
 
@@ -165,7 +165,6 @@ void AAIControllerBase::SetDetectionLevel()
 
 	if (DetectionLevel >= DetectionThreshold)
 	{
-		ULogger::Log(ELogLevel::INFO, TEXT("Setting state to Attack"));
 		if (AIManager) AIManager->NotifyAllAgentsAIState(EAIState::Attack);
 		GetWorldTimerManager().ClearTimer(DetectionTimer);
 		Agent->UpdateWidgetVis(false);
@@ -174,8 +173,12 @@ void AAIControllerBase::SetDetectionLevel()
 
 	if (DetectionLevel >= DetectionThreshold / 2)
 	{
-		ULogger::Log(ELogLevel::INFO, TEXT("Setting state to Investigate"));
-		BBC->SetValueAsEnum(BBKeys::AIState, (uint8)EAIState::Investigate);
+		UpdateAIState(EAIState::Alerted);
 		BBC->SetValueAsVector(BBKeys::LastStimulusLocation, LastStimulusLocation);
 	}
+}
+
+UBlackboardComponent* AAIControllerBase::GetBBC()
+{
+	return BBC;
 }

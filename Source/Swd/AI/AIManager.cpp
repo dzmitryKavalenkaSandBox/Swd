@@ -10,6 +10,7 @@
 #include "Swd/Swd.h"
 #include "Swd/Character/AICharacterBase.h"
 #include "Swd/Utils/Logger.h"
+#include "Swd/Utils/SwdGameUtils.h"
 
 AAIManager::AAIManager()
 {
@@ -35,7 +36,7 @@ void AAIManager::CoverFire(bool ProvideCoverFire, AAICharacterBase* Instgtr)
 		return;
 	}
 
-	if (AgentProvidingCoverFire->ControllerRef->BBC->GetValueAsEnum("CombatState") == (uint8) ECombatState::HoldCover)
+	if (AgentProvidingCoverFire->ControllerRef->BBC->GetValueAsEnum("CombatState") == (uint8)ECombatState::HoldCover)
 		AgentProvidingCoverFire->ControllerRef->BBC->SetValueAsBool("ShootFromCover", false);
 }
 
@@ -65,7 +66,8 @@ bool AAIManager::IsAnyAgentEngaged()
 			break;
 		}
 
-		if (UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) - AIController->TimeStamp < MaxStimulusTime_Combat)
+		if (UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) - AIController->TimeStampWhenLastSensed <
+			MaxStimulusTime_Combat)
 		{
 			IsEngaged = true;
 			break;
@@ -90,7 +92,6 @@ void AAIManager::RunCombatLoop()
 		return;
 	}
 
-	ULogger::Log(ELogLevel::INFO, TEXT("Setting state to Lost Ememy"));
 	NotifyAllAgentsAIState(EAIState::LostEnemy);
 	GetWorldTimerManager().ClearTimer(CombatTimer);
 }
@@ -100,9 +101,10 @@ void AAIManager::RunSearchTimer()
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
 	                                 FString::Printf(
 		                                 TEXT("ElapsedTime Is : %f"),
-		                                 UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) - TimeStamp));
+		                                 UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) -
+		                                 TimeStampWhenStartedSearching));
 
-	if (UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) - TimeStamp < MaxStimulusTime_Search)
+	if (UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) - TimeStampWhenStartedSearching < MaxStimulusTime_Search)
 	{
 		return;
 	}
@@ -133,8 +135,8 @@ void AAIManager::NotifyAllAgentsAIState(EAIState State)
 	for (auto& AIController : Agents)
 	{
 		IsAnyAgentEngaged()
-			? AIController->BBC->SetValueAsEnum(BBKeys::AIState, (uint8) EAIState::Attack)
-			: AIController->BBC->SetValueAsEnum(BBKeys::AIState, (uint8) State);
+			? AIController->UpdateAIState(EAIState::Attack)
+			: AIController->UpdateAIState(State);
 		AIController->BBC->SetValueAsVector(BBKeys::LastStimulusLocation, LastStimulusLocation);
 	}
 
@@ -147,7 +149,7 @@ void AAIManager::NotifyAllAgentsAIState(EAIState State)
 
 	if (State == EAIState::Search)
 	{
-		TimeStamp = UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld());
+		TimeStampWhenStartedSearching = UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld());
 		GetWorldTimerManager().SetTimer(SearchTimer, this, &AAIManager::RunSearchTimer, 1.f, true);
 		return;
 	}

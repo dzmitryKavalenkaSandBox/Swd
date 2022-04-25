@@ -54,7 +54,7 @@ protected:
 	UFUNCTION()
 	void RunCombatLoop();
 
-	float TimeStamp = 0.f;
+	float TimeStampWhenStartedSearching = 0.f;
 
 	UFUNCTION()
 	void RunSearchTimer();

@@ -2,7 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "AIManager.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Swd/Interfacces/AI/StatefulAI.h"
 #include "AIControllerBase.generated.h"
 
 struct FAIStimulus;
@@ -14,7 +16,7 @@ class UAISenseConfig_Sight;
 class UAISenseConfig_Hearing;
 
 UCLASS()
-class SWD_API AAIControllerBase : public AAIController
+class SWD_API AAIControllerBase : public AAIController, public IStatefulAI
 {
 	GENERATED_BODY()
 
@@ -29,7 +31,7 @@ public:
 	float DetectionLevel = 0.f;
 
 	UPROPERTY(BlueprintReadOnly)
-	float TimeStamp = 0.f;
+	float TimeStampWhenLastSensed = 0.f;
 
 	void OnPossess(APawn* InPawn) override;
 
@@ -47,6 +49,8 @@ public:
 	uint8 EnemyKeyId;
 	uint8 LocationKeyId;
 	uint8 ContactKeyId;
+
+	virtual UBlackboardComponent* GetBBC() override;
 
 protected:
 	UPROPERTY(VisibleAnywhere)
@@ -70,7 +74,7 @@ protected:
 	float Rate = 1.f;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	float DetectionThreshold = 5.f;
+	float DetectionThreshold = 10.f;
 
 	AActor* Target = nullptr;
 
