@@ -3,6 +3,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Swd/AI/AIControllerBase.h"
 #include "Swd/Character/AICharacterBase.h"
+#include "Swd/Utils/Logger.h"
 
 
 UT_SelectTarget::UT_SelectTarget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -29,7 +30,8 @@ EBTNodeResult::Type UT_SelectTarget::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 void UT_SelectTarget::EnemySeekerQueryFinished(TSharedPtr<FEnvQueryResult> Result)
 {
 	BestTarget = nullptr;
-	Cntrlr->BBC->SetValueAsObject(BBKeys::TargetActor, nullptr);
+	// ULogger::Log(ELogLevel::WARNING, FString("Target actor set to NULL"));
+	// Cntrlr->BBC->SetValueAsObject(BBKeys::TargetActor, nullptr);
 
 	float CurrentBestScore = 0.f;
 	int32 Index = 0;
@@ -38,8 +40,8 @@ void UT_SelectTarget::EnemySeekerQueryFinished(TSharedPtr<FEnvQueryResult> Resul
 
 	for (auto& DetectedActor : AllDetectedActors)
 	{
-		AAICharacterBase* Chr = Cast<AAICharacterBase>(DetectedActor);
-		if (Chr && Chr->IsHostile(Cntrlr->Agent) && !Chr->Dead)
+		ASwdCharacter* Chr = Cast<ASwdCharacter>(DetectedActor);
+		if (Chr && Cntrlr->Agent->IsHostile(Chr) /*&& !Chr->Dead*/)
 		{
 			if (Result->GetItemScore(Index) > CurrentBestScore && Result->GetItemScore(Index) > 0.f)
 			{
@@ -54,6 +56,6 @@ void UT_SelectTarget::EnemySeekerQueryFinished(TSharedPtr<FEnvQueryResult> Resul
 
 	if (BestTarget)
 	{
-		Cntrlr->BBC->SetValueAsObject(BBKeys::TargetActor, BestTarget);
+		Cntrlr->BBC->SetValueAsObject(GetSelectedBlackboardKey(), BestTarget);
 	}
 }

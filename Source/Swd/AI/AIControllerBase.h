@@ -21,7 +21,6 @@ class SWD_API AAIControllerBase : public AAIController, public IStatefulAI
 	GENERATED_BODY()
 
 public:
-	
 	AAIControllerBase();
 
 	UPROPERTY(BlueprintReadOnly)
@@ -56,6 +55,8 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UAIPerceptionComponent* AIPerceptionComponent;
 
+	virtual void Tick(float DeltaSeconds) override;
+
 	/*
 	 * Will be called everytime actor sense someone or stop sensing it
 	 */
@@ -69,14 +70,33 @@ protected:
 
 	FTimerHandle DetectionTimer;
 
-	void SetDetectionLevel();
+	void UpdateDetectionLevel();
 
 	float Rate = 1.f;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	float DetectionThreshold = 10.f;
 
-	AActor* Target = nullptr;
+	// AActor* Target = nullptr;
 
-	FVector LastStimulusLocation = FVector::ZeroVector;
+	// FVector LastStimulusLocation = FVector::ZeroVector;
+
+	/**
+	 *
+	 * Will hold the list of actors that are currently in sensed area
+	 */
+	TArray<AActor*> SensedActors;
+
+	/**
+	 * Will add actors to SensedActors list if actor just sensed and remove it from list when actor stopped sensing
+	 */
+	void ManageSensedActor(AActor* SensedActor);
+
+private:
+
+	bool ShouldStartDetection();
+	
+	void StartDetection();
+	
+	bool HaveHostileInSenseArea();
 };

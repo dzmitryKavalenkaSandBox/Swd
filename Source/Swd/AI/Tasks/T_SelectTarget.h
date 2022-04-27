@@ -33,6 +33,6 @@ public:
 
 	class AAIControllerBase* Cntrlr;
 
-	class AAICharacterBase* BestTarget;
+	class ASwdCharacter* BestTarget;
 	
 };

@@ -81,6 +81,9 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
 	EFaction Faction;
 
+	UFUNCTION(BlueprintCallable)
+	void MakeANoise(FVector Location);
+
 protected:
 	void MoveForward(float Value);
 

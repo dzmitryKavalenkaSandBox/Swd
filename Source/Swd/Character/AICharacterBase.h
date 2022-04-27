@@ -79,9 +79,6 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateWidgetVis(bool Newbool);
-	
-	UFUNCTION(BlueprintCallable)
-	void MakeANoise(FVector Location);
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleCombat(const bool Newbool);

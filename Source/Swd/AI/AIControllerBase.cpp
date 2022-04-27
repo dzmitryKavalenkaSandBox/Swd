@@ -92,75 +92,57 @@ void AAIControllerBase::BeginPlay()
 	}
 }
 
+void AAIControllerBase::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	// if (auto ClosestHostile = Cast<AActor>(BBC->GetValueAsObject(BBKeys::ClosestHostile)))
+	// {
+	// 	BBC->SetValueAsVector(BBKeys::LastLocationOfClosestHostile, ClosestHostile->GetActorLocation());
+	// }
+}
+
 void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 {
 	ASwdCharacter* SensedCharacter = Cast<ASwdCharacter>(Actor);
 	if (UAIPerceptionSystem::GetSenseClassForStimulus(GetWorld(), Stimulus) == UAISense_Sight::StaticClass())
 	{
-		if (SensedCharacter && Agent->IsHostile(SensedCharacter))
+		ManageSensedActor(SensedCharacter);
+
+		if (ShouldStartDetection())
 		{
-			// ULogger::Log(ELogLevel::INFO, TEXT("Setting contact"));
-			BBC->SetValueAsBool(BBKeys::Contact, Stimulus.WasSuccessfullySensed());
-
-			// Check to see if AI already attacking someone
-			if (!IsStateEquals(EAIState::Attack))
-			{
-				Agent->GetCharacterMovement()->StopActiveMovement();
-				// ULogger::Log(ELogLevel::INFO, FString("Setting target actor to: ") + FString(Actor->GetName()));
-				BBC->SetValueAsObject(BBKeys::TargetActor, SensedCharacter);
-			}
-
-			Target = SensedCharacter;
-			LastStimulusLocation = Stimulus.StimulusLocation;
-			if (AIManager) AIManager->LastStimulusLocation = LastStimulusLocation;
-			TimeStampWhenLastSensed = UKismetSystemLibrary::GetGameTimeInSeconds(Agent/*pass GetWorld() here*/);
+			StartDetection();
 		}
-
-		if (!GetWorldTimerManager().IsTimerActive(DetectionTimer) && BBC->GetValueAsBool(BBKeys::Contact) &&
-			(IsStateEquals(EAIState::Idle) || IsStateEquals(EAIState::Alerted) ||
-				IsStateEquals(EAIState::Search)))
-		{
-			DetectionLevel = 0.f;
-			Agent->UpdateWidgetVis(true);
-			GetWorldTimerManager().SetTimer(DetectionTimer, this, &AAIControllerBase::SetDetectionLevel, Rate, true,
-			                                0.f);
-		}
-		return;
 	}
-
-	if (IsStateEquals(EAIState::Attack)) return;
-
-	// if (SensedCharacter && SensedCharacter->IsHostile(Agent))
-	// {
-	// 	BBC->SetValueAsEnum(BBKeys::AIState, (uint8)EAIState::Alerted);
-	// 	BBC->SetValueAsVector(BBKeys::LastStimulusLocation, Stimulus.StimulusLocation);
-	// }
 }
 
-void AAIControllerBase::SetDetectionLevel()
+void AAIControllerBase::UpdateDetectionLevel()
 {
-	if (!Target || !BBC->GetValueAsBool(BBKeys::Contact))
+	if (!HaveHostileInSenseArea())
 	{
-		// if (!IsAIStateEquals(EAIState::Idle))
-		// {
-		// 	GetWorldTimerManager().ClearTimer(DetectionTimer);
-		// 	Agent->UpdateWidgetVis(false);
-		// 	return;
-		// }
-
+		BBC->ClearValue(BBKeys::ClosestHostile);
 		if (DetectionLevel > 0.f)
 		{
 			DetectionLevel -= 1;
 			return;
 		}
+		BBC->ClearValue(BBKeys::LastLocationOfClosestHostile);
 		GetWorldTimerManager().ClearTimer(DetectionTimer);
 		Agent->UpdateWidgetVis(false);
 		UpdateAIState(EAIState::Idle);
 		return;
 	}
 
-	const float Distance = GetPawn()->GetDistanceTo(Target);
+	ASwdCharacter* ClosestHostile = Cast<ASwdCharacter>(
+		USwdGameUtils::GetClosestActor(Agent->GetActorLocation(), SensedActors)
+	);
+	assert(ClosestHostile);
+	BBC->SetValueAsObject(BBKeys::ClosestHostile, ClosestHostile);
+	BBC->SetValueAsVector(BBKeys::LastLocationOfClosestHostile, ClosestHostile->GetActorLocation());
+
+	const float Distance = GetPawn()->GetDistanceTo(ClosestHostile);
 	Rate = (Distance <= 500.f) ? 1.f : 2.f;
+	ULogger::Log(ELogLevel::INFO, FString::FromInt(Rate));
 	DetectionLevel += 1;
 
 	if (DetectionLevel >= DetectionThreshold)
@@ -174,7 +156,18 @@ void AAIControllerBase::SetDetectionLevel()
 	if (DetectionLevel >= DetectionThreshold / 2)
 	{
 		UpdateAIState(EAIState::Alerted);
-		BBC->SetValueAsVector(BBKeys::LastStimulusLocation, LastStimulusLocation);
+	}
+}
+
+void AAIControllerBase::ManageSensedActor(AActor* SensedActor)
+{
+	if (SensedActors.Contains(SensedActor))
+	{
+		SensedActors.Remove(SensedActor);
+	}
+	else
+	{
+		SensedActors.Add(SensedActor);
 	}
 }
 
@@ -182,3 +175,122 @@ UBlackboardComponent* AAIControllerBase::GetBBC()
 {
 	return BBC;
 }
+
+
+/**
+ * new
+ * new
+ */
+bool AAIControllerBase::HaveHostileInSenseArea()
+{
+	for (const auto SensedActor : SensedActors)
+	{
+		ASwdCharacter* SensedCharacter = Cast<ASwdCharacter>(SensedActor);
+		if (SensedCharacter && Agent->IsHostile(SensedCharacter))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AAIControllerBase::ShouldStartDetection()
+{
+	return HaveHostileInSenseArea() && !GetWorldTimerManager().IsTimerActive(DetectionTimer) &&
+		(IsStateEquals(EAIState::Idle) || IsStateEquals(EAIState::Alerted) || IsStateEquals(EAIState::Search));
+}
+
+void AAIControllerBase::StartDetection()
+{
+	DetectionLevel = 0.f;
+	Agent->UpdateWidgetVis(true);
+	GetWorldTimerManager().SetTimer(DetectionTimer, this, &AAIControllerBase::UpdateDetectionLevel, Rate, true,
+	                                0.f);
+}
+
+//
+// void AAIControllerBase::SetDetectionLevel()
+// {
+// 	if (!Target || !BBC->GetValueAsBool(BBKeys::Contact))
+// 	{
+// 		// if (!IsAIStateEquals(EAIState::Idle))
+// 		// {
+// 		// 	GetWorldTimerManager().ClearTimer(DetectionTimer);
+// 		// 	Agent->UpdateWidgetVis(false);
+// 		// 	return;
+// 		// }
+//
+// 		if (DetectionLevel > 0.f)
+// 		{
+// 			DetectionLevel -= 1;
+// 			return;
+// 		}
+// 		GetWorldTimerManager().ClearTimer(DetectionTimer);
+// 		Agent->UpdateWidgetVis(false);
+// 		UpdateAIState(EAIState::Idle);
+// 		return;
+// 	}
+//
+// 	const float Distance = GetPawn()->GetDistanceTo(Target);
+// 	Rate = (Distance <= 500.f) ? 1.f : 2.f;
+// 	DetectionLevel += 1;
+//
+// 	if (DetectionLevel >= DetectionThreshold)
+// 	{
+// 		if (AIManager) AIManager->NotifyAllAgentsAIState(EAIState::Attack);
+// 		GetWorldTimerManager().ClearTimer(DetectionTimer);
+// 		Agent->UpdateWidgetVis(false);
+// 		return;
+// 	}
+//
+// 	if (DetectionLevel >= DetectionThreshold / 2)
+// 	{
+// 		UpdateAIState(EAIState::Alerted);
+// 		BBC->SetValueAsVector(BBKeys::LastStimulusLocation, LastStimulusLocation);
+// 	}
+// }
+
+// void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
+// {
+// 	ASwdCharacter* SensedCharacter = Cast<ASwdCharacter>(Actor);
+// 	if (UAIPerceptionSystem::GetSenseClassForStimulus(GetWorld(), Stimulus) == UAISense_Sight::StaticClass())
+// 	{
+// 		if (SensedCharacter && Agent->IsHostile(SensedCharacter))
+// 		{
+// 			// ULogger::Log(ELogLevel::INFO, TEXT("Setting contact"));
+// 			BBC->SetValueAsBool(BBKeys::Contact, Stimulus.WasSuccessfullySensed());
+//
+// 			// Check to see if AI already attacking someone
+// 			if (!IsStateEquals(EAIState::Attack))
+// 			{
+// 				Agent->GetCharacterMovement()->StopActiveMovement();
+// 				// ULogger::Log(ELogLevel::INFO, FString("Setting target actor to: ") + FString(Actor->GetName()));
+// 				BBC->SetValueAsObject(BBKeys::SensedActor, SensedCharacter);
+// 			}
+//
+// 			Target = SensedCharacter;
+// 			LastStimulusLocation = Stimulus.StimulusLocation;
+// 			if (AIManager) AIManager->LastStimulusLocation = LastStimulusLocation;
+// 			TimeStampWhenLastSensed = UKismetSystemLibrary::GetGameTimeInSeconds(Agent/*pass GetWorld() here*/);
+// 		}
+//
+// 		if (!GetWorldTimerManager().IsTimerActive(DetectionTimer) && BBC->GetValueAsBool(BBKeys::Contact) &&
+// 			(IsStateEquals(EAIState::Idle) || IsStateEquals(EAIState::Alerted) ||
+// 				IsStateEquals(EAIState::Search)))
+// 		{
+// 			DetectionLevel = 0.f;
+// 			Agent->UpdateWidgetVis(true);
+// 			GetWorldTimerManager().SetTimer(DetectionTimer, this, &AAIControllerBase::SetDetectionLevel, Rate, true,
+// 			                                0.f);
+// 		}
+// 		return;
+// 	}
+//
+// 	if (IsStateEquals(EAIState::Attack)) return;
+//
+// 	// if (SensedCharacter && SensedCharacter->IsHostile(Agent))
+// 	// {
+// 	// 	BBC->SetValueAsEnum(BBKeys::AIState, (uint8)EAIState::Alerted);
+// 	// 	BBC->SetValueAsVector(BBKeys::LastStimulusLocation, Stimulus.StimulusLocation);
+// 	// }
+// }

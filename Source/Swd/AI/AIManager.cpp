@@ -9,7 +9,6 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Swd/Swd.h"
 #include "Swd/Character/AICharacterBase.h"
-#include "Swd/Utils/Logger.h"
 #include "Swd/Utils/SwdGameUtils.h"
 
 AAIManager::AAIManager()
@@ -84,7 +83,8 @@ void AAIManager::RunCombatLoop()
 		if (Defenders.Num() > 0)
 		{
 			Defenders[ApproacherIndex]->ControllerRef->BBC->SetValueAsEnum(
-				BBKeys::CombatState, (uint8)ECombatState::ApproachingCover);
+				BBKeys::CombatState, (uint8)ECombatState::ApproachingCover
+			);
 			CoverFire(true, Defenders[ApproacherIndex]);
 			ApproacherIndex = (ApproacherIndex + 1 <= Defenders.Num() - 1) ? ApproacherIndex += 1 : 0;
 		}
@@ -137,7 +137,7 @@ void AAIManager::NotifyAllAgentsAIState(EAIState State)
 		IsAnyAgentEngaged()
 			? AIController->UpdateAIState(EAIState::Attack)
 			: AIController->UpdateAIState(State);
-		AIController->BBC->SetValueAsVector(BBKeys::LastStimulusLocation, LastStimulusLocation);
+		AIController->BBC->SetValueAsVector(BBKeys::LastLocationOfClosestHostile, LastStimulusLocation);
 	}
 
 	if (State == EAIState::Attack)

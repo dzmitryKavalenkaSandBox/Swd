@@ -142,12 +142,6 @@ void AAICharacterBase::UpdateCurrentHealth(float NewValue)
 }
 
 
-void AAICharacterBase::MakeANoise(FVector Location)
-{
-	MakeNoise(1.f, nullptr, Location, 0.f, "");
-}
-
-
 void AAICharacterBase::ToggleCombat(const bool Newbool)
 {
 	GetMesh()->GetAnimInstance()->StopAllMontages(0.2f);

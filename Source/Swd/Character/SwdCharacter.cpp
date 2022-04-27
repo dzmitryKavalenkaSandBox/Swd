@@ -227,3 +227,9 @@ void ASwdCharacter::UpdateCurrentHealth(float NewValue)
 {
 	CurrentHealth = NewValue;
 }
+
+void ASwdCharacter::MakeANoise(FVector Location)
+{
+	ULogger::Log(ELogLevel::INFO, __FUNCTION__);
+	MakeNoise(1.f, nullptr, Location, 0.f, "");
+}
