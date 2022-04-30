@@ -44,6 +44,8 @@ namespace BBKeys
 	TCHAR const* const Damaged = TEXT("Damaged");
 	TCHAR const* const ClosestHostile = TEXT("ClosestHostile");
 	TCHAR const* const CombatState = TEXT("CombatState");
+	TCHAR const* const ReadyForCombat = TEXT("ReadyForCombat");
+	TCHAR const* const DistanceToClosestHostile = TEXT("DistanceToClosestHostile");
 }
 
 UENUM(BlueprintType)

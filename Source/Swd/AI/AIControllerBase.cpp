@@ -23,6 +23,8 @@ AAIControllerBase::AAIControllerBase()
 
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Componennt"));
 
+	SwitchToAlertDetectionLevel = MaxDetectionLevel / 2;
+
 	//Create a Sight And Hearing Sense
 	Sight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
 	Hearing = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Config"));
@@ -95,11 +97,22 @@ void AAIControllerBase::BeginPlay()
 void AAIControllerBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	// if (auto ClosestHostile = Cast<AActor>(BBC->GetValueAsObject(BBKeys::ClosestHostile)))
-	// {
-	// 	BBC->SetValueAsVector(BBKeys::LastLocationOfClosestHostile, ClosestHostile->GetActorLocation());
-	// }
+	ClosestHostile = Cast<ASwdCharacter>(USwdGameUtils::GetClosestActor(Agent->GetActorLocation(), SensedActors));
+	if (ClosestHostile)
+	{
+		const float DistanceToHostile = GetPawn()->GetDistanceTo(ClosestHostile);
+		BBC->SetValueAsFloat(BBKeys::DistanceToClosestHostile, DistanceToHostile);
+		if (DistanceToHostile < SwitchToAttackDistance)
+		{
+			UpdateAIState(EAIState::Attack);
+			GetWorldTimerManager().ClearTimer(DetectionTimer);
+			Agent->UpdateWidgetVis(false);
+		}
+	}
+	else
+	{
+		BBC->ClearValue(BBKeys::DistanceToClosestHostile);
+	}
 }
 
 void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
@@ -118,6 +131,7 @@ void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 
 void AAIControllerBase::UpdateDetectionLevel()
 {
+	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
 	if (!HaveHostileInSenseArea())
 	{
 		BBC->ClearValue(BBKeys::ClosestHostile);
@@ -133,19 +147,16 @@ void AAIControllerBase::UpdateDetectionLevel()
 		return;
 	}
 
-	ASwdCharacter* ClosestHostile = Cast<ASwdCharacter>(
-		USwdGameUtils::GetClosestActor(Agent->GetActorLocation(), SensedActors)
-	);
 	assert(ClosestHostile);
 	BBC->SetValueAsObject(BBKeys::ClosestHostile, ClosestHostile);
 	BBC->SetValueAsVector(BBKeys::LastLocationOfClosestHostile, ClosestHostile->GetActorLocation());
 
-	const float Distance = GetPawn()->GetDistanceTo(ClosestHostile);
-	Rate = (Distance <= 500.f) ? 1.f : 2.f;
-	ULogger::Log(ELogLevel::INFO, FString::FromInt(Rate));
-	DetectionLevel += 1;
+	RateOfDetection = BBC->GetValueAsFloat(BBKeys::DistanceToClosestHostile) <= DistanceForRateOfDetectionChange
+		                  ? RateOfDetection
+		                  : RateOfDetection + RateOfDetectionIncrement;
+	DetectionLevel = CalculateDetectionLevelIncrement();
 
-	if (DetectionLevel >= DetectionThreshold)
+	if (DetectionLevel >= MaxDetectionLevel)
 	{
 		if (AIManager) AIManager->NotifyAllAgentsAIState(EAIState::Attack);
 		GetWorldTimerManager().ClearTimer(DetectionTimer);
@@ -153,7 +164,7 @@ void AAIControllerBase::UpdateDetectionLevel()
 		return;
 	}
 
-	if (DetectionLevel >= DetectionThreshold / 2)
+	if (DetectionLevel >= SwitchToAlertDetectionLevel)
 	{
 		UpdateAIState(EAIState::Alerted);
 	}
@@ -194,6 +205,29 @@ bool AAIControllerBase::HaveHostileInSenseArea()
 	return false;
 }
 
+float AAIControllerBase::CalculateDetectionLevelIncrement()
+{
+	float DetectionLevelToReturn = DetectionLevel;
+	if (ClosestHostile)
+	{
+		const float Distance = GetPawn()->GetDistanceTo(ClosestHostile);
+		if (Distance < 1000 && Distance > 500)
+		{
+			DetectionLevelToReturn = DetectionLevel * 1.1f;
+		}
+		if (Distance < 500 && Distance > 200)
+		{
+			DetectionLevelToReturn = DetectionLevel * 1.5f;
+		}
+		if (Distance < 200)
+		{
+			DetectionLevelToReturn = DetectionLevel * 10.f;
+		}
+	}
+	ULogger::Log(ELogLevel::WARNING, FString("Detection Level ") + FString::FromInt(DetectionLevelToReturn));
+	return DetectionLevelToReturn += 1;
+}
+
 bool AAIControllerBase::ShouldStartDetection()
 {
 	return HaveHostileInSenseArea() && !GetWorldTimerManager().IsTimerActive(DetectionTimer) &&
@@ -202,10 +236,12 @@ bool AAIControllerBase::ShouldStartDetection()
 
 void AAIControllerBase::StartDetection()
 {
-	DetectionLevel = 0.f;
+	DetectionLevel = CalculateDetectionLevelIncrement();
 	Agent->UpdateWidgetVis(true);
-	GetWorldTimerManager().SetTimer(DetectionTimer, this, &AAIControllerBase::UpdateDetectionLevel, Rate, true,
+	GetWorldTimerManager().SetTimer(DetectionTimer, this, &AAIControllerBase::UpdateDetectionLevel, RateOfDetection,
+	                                true,
 	                                0.f);
+	Agent->GetCharacterMovement()->StopActiveMovement();
 }
 
 //

@@ -4,6 +4,7 @@
 #include "AIController.h"
 #include "AIManager.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Swd/Character/SwdCharacter.h"
 #include "Swd/Interfacces/AI/StatefulAI.h"
 #include "AIControllerBase.generated.h"
 
@@ -27,7 +28,7 @@ public:
 	AAIManager* AIManager = nullptr;
 
 	UPROPERTY(BlueprintReadWrite)
-	float DetectionLevel = 0.f;
+	float DetectionLevel = 1.f;
 
 	UPROPERTY(BlueprintReadOnly)
 	float TimeStampWhenLastSensed = 0.f;
@@ -72,11 +73,6 @@ protected:
 
 	void UpdateDetectionLevel();
 
-	float Rate = 1.f;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	float DetectionThreshold = 10.f;
-
 	// AActor* Target = nullptr;
 
 	// FVector LastStimulusLocation = FVector::ZeroVector;
@@ -93,10 +89,46 @@ protected:
 	void ManageSensedActor(AActor* SensedActor);
 
 private:
-
 	bool ShouldStartDetection();
-	
+
 	void StartDetection();
-	
+	void SwitchToAIState(EAIState State);
+
 	bool HaveHostileInSenseArea();
+
+	/*
+	 * Distance threshold at which the rate of detection will change (closer the target - faster the detection)
+	 */
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true), Category="Emeny Detection")
+	float DistanceForRateOfDetectionChange = 200.f;
+	/*
+	 * Rate at which the detection level will increment
+	 */
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true), Category="Emeny Detection")
+	float RateOfDetection = 1.f;
+
+	/*
+	 * Rate at witch the detection will slow down, if the distance to target is greater then DistanceForRateOfDetectionChange
+	 */
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true), Category="Emeny Detection")
+	float RateOfDetectionIncrement = 1.f;
+	/*
+	 * Detection level at which the AI state will switch to Alerted
+	 */
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true), Category="Emeny Detection")
+	float SwitchToAlertDetectionLevel;
+	/*
+	 * Distance to hostile at which the AI state will switch to Attack
+	 */
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true), Category="Emeny Detection")
+	float SwitchToAttackDistance = 200;
+	/*
+	 * Max level of detection possible. Of reached - the AI state will switch to Attack
+	 */
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true), Category="Emeny Detection")
+	float MaxDetectionLevel = 10.f;
+
+	float CalculateDetectionLevelIncrement();
+
+	ASwdCharacter* ClosestHostile = nullptr;
 };
