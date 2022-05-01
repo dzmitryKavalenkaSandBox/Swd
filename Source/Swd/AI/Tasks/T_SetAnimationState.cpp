@@ -43,6 +43,10 @@ EBTNodeResult::Type UT_SetAnimationState::ExecuteTask(UBehaviorTreeComponent& Ow
 				// AICharacter->ToggleADS(ADS);
 				return EBTNodeResult::Succeeded;
 			}
+			if (States.Find(EAnimationState::Sprinting))
+			{
+				AICharacter->ToggleSprinting(States[EAnimationState::Sprinting]);
+			}
 		}
 		// MyController->ClearFocus(EAIFocusPriority::LastFocusPriority);
 		return EBTNodeResult::Succeeded;

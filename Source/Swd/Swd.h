@@ -83,4 +83,5 @@ enum class EAnimationState : uint8
 	AtEase UMETA(DisplayName = "AtEase"),
 	Combat UMETA(DisplayName = "Combat"),
 	Focus UMETA(DisplayName = "Focus"),
+	Sprinting UMETA(DisplayName = "Sprinting"),
 };
