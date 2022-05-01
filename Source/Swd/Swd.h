@@ -44,35 +44,43 @@ namespace BBKeys
 	TCHAR const* const Damaged = TEXT("Damaged");
 	TCHAR const* const ClosestHostile = TEXT("ClosestHostile");
 	TCHAR const* const CombatState = TEXT("CombatState");
-	TCHAR const* const ReadyForCombat = TEXT("ReadyForCombat");
 	TCHAR const* const DistanceToClosestHostile = TEXT("DistanceToClosestHostile");
 }
 
 UENUM(BlueprintType)
 enum class EFaction : uint8
 {
-	Enemy            UMETA(DisplayName = "Enemy"),
-	Friendly         UMETA(DisplayName = "Friendly"),
-	Neutral          UMETA(DisplayName = "Neutral")
+	Enemy UMETA(DisplayName = "Enemy"),
+	Friendly UMETA(DisplayName = "Friendly"),
+	Neutral UMETA(DisplayName = "Neutral")
 };
 
 
 UENUM(BlueprintType)
 enum class ECombatRole : uint8
 {
-	Engager           UMETA(DisplayName = "Engager"),
-	Defender          UMETA(DisplayName = "Defender"),
-	Sniper            UMETA(DisplayName = "Sniper")
+	Engager UMETA(DisplayName = "Engager"),
+	Defender UMETA(DisplayName = "Defender"),
+	Sniper UMETA(DisplayName = "Sniper")
 };
 
 
 UENUM(BlueprintType)
 enum class ECombatState : uint8
 {
-	SoftCover         UMETA(DisplayName = "Soft Cover"),
-	ApproachingCover  UMETA(DisplayName = "Approaching Cover"),
-	Flank             UMETA(DisplayName = "Flank"),
-	HoldCover         UMETA(DisplayName = "HoldCover"),
-	RetreatingCover   UMETA(DisplayName = "RetreatingCover"),
-	Evade             UMETA(DisplayName = "Evade")
+	SoftCover UMETA(DisplayName = "Soft Cover"),
+	ApproachingCover UMETA(DisplayName = "Approaching Cover"),
+	Flank UMETA(DisplayName = "Flank"),
+	HoldCover UMETA(DisplayName = "HoldCover"),
+	RetreatingCover UMETA(DisplayName = "RetreatingCover"),
+	Evade UMETA(DisplayName = "Evade")
+};
+
+UENUM(BlueprintType)
+enum class EAnimationState : uint8
+{
+	ArmSelf UMETA(DisplayName = "ArmSelf"),
+	AtEase UMETA(DisplayName = "AtEase"),
+	Combat UMETA(DisplayName = "Combat"),
+	Focus UMETA(DisplayName = "Focus"),
 };

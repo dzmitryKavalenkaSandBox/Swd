@@ -32,6 +32,5 @@ void UEquipWeaponNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimS
 	else
 	{
 		Character->EquipmentComponent->WeaponInHands->WeaponState.FinishInteraction();
-		Character->ManageCombatState(true);
 	}
 }

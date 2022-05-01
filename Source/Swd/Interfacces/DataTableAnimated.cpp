@@ -1,4 +1,3 @@
-
 #include "DataTableAnimated.h"
 
 #include "Swd/Utils/Logger.h"
@@ -30,7 +29,7 @@ void IDataTableAnimated::PlayDataTableAnimation(
 			Character->bIsAnimationBlended = true;
 			RowName = FName(AnimActionName + FString("UpperBody"));
 		}
-		
+
 		AminMontage = DataTable->FindRow<FPlayerAnimMontage>(
 			RowName,
 			ContextString,

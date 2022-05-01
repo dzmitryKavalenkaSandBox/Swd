@@ -35,6 +35,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
 	// /** Handler for when a touch input begins. */
 	// void OnTouchBegin(ETouchIndex::Type TouchType, FVector NewTouchLocation);
 

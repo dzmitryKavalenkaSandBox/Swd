@@ -7,6 +7,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
 #include "Swd/Character/AICharacterBase.h"
+#include "Swd/Utils/Logger.h"
 
 
 UT_SetAnimationState::UT_SetAnimationState(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -19,25 +20,31 @@ UT_SetAnimationState::UT_SetAnimationState(const FObjectInitializer& ObjectIniti
 EBTNodeResult::Type UT_SetAnimationState::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* MyController = OwnerComp.GetAIOwner();
-	AAICharacterBase* Chr = Cast<AAICharacterBase>(MyController->GetPawn());
-	if (MyController && Chr)
+	AAICharacterBase* AICharacter = Cast<AAICharacterBase>(MyController->GetPawn());
+	const UBlackboardComponent* MyBlackboard = OwnerComp.GetBlackboardComponent();
+	ASwdCharacter* EnemyActor = Cast<AAICharacterBase>(MyBlackboard->GetValueAsObject(BBKeys::ClosestHostile));
+	if (MyController && AICharacter)
 	{
-		Chr->ToggleCombat(Combat);
-		// Chr->ToggleCrouch(Crouch);
-		Chr->ToggleSprinting(Sprint);
-
-		const UBlackboardComponent* MyBlackboard = OwnerComp.GetBlackboardComponent();
-		auto MyID = MyBlackboard->GetKeyID(BlackboardKey.SelectedKeyName);
-
-		AAICharacterBase* EnemyActor = Cast<AAICharacterBase>(MyBlackboard->GetValue<UBlackboardKeyType_Object>(MyID));
-		if (EnemyActor)
+		if (!States.IsEmpty())
 		{
-			(Focus) ? MyController->SetFocus(EnemyActor) : MyController->ClearFocus(EAIFocusPriority::LastFocusPriority);
-			Chr->ToggleADS(ADS);
-			return EBTNodeResult::Succeeded;
+			if (States.Find(EAnimationState::ArmSelf))
+			{
+				AICharacter->ToggleArmedState(States[EAnimationState::ArmSelf]);
+			}
+			if (States.Find(EAnimationState::Combat))
+			{
+				AICharacter->ToggleCombat(States[EAnimationState::Combat]);
+			}
+			if (States.Find(EAnimationState::Focus) && EnemyActor)
+			{
+				States[EAnimationState::Focus]
+					? MyController->SetFocus(EnemyActor)
+					: MyController->ClearFocus(EAIFocusPriority::LastFocusPriority);
+				// AICharacter->ToggleADS(ADS);
+				return EBTNodeResult::Succeeded;
+			}
 		}
-		MyController->ClearFocus(EAIFocusPriority::LastFocusPriority);
-		Chr->ToggleADS(false);
+		// MyController->ClearFocus(EAIFocusPriority::LastFocusPriority);
 		return EBTNodeResult::Succeeded;
 	}
 

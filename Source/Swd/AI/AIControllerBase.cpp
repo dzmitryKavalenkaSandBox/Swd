@@ -97,7 +97,18 @@ void AAIControllerBase::BeginPlay()
 void AAIControllerBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	ClosestHostile = Cast<ASwdCharacter>(USwdGameUtils::GetClosestActor(Agent->GetActorLocation(), SensedActors));
+
+	for (auto SensedActor : SensedActors)
+	{
+		if (auto SensedCharacter = Cast<ASwdCharacter>(SensedActor))
+		{
+			if (SensedCharacter->Faction != Agent->Faction)
+			{
+				ClosestHostile = Cast<ASwdCharacter>(
+					USwdGameUtils::GetClosestActor(Agent->GetActorLocation(), SensedActors));
+			}
+		}
+	}
 	if (ClosestHostile)
 	{
 		const float DistanceToHostile = GetPawn()->GetDistanceTo(ClosestHostile);

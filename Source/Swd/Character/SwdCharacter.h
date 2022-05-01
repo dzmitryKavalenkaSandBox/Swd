@@ -72,9 +72,13 @@ public:
 	UFUNCTION()
 	virtual void UpdateCurrentHealth(float NewValue);
 
-	virtual void UpdateHealthOnWidget() const {}
-	
-	virtual void UpdateStaminaOnWidget() const override {}
+	virtual void UpdateHealthOnWidget() const
+	{
+	}
+
+	virtual void UpdateStaminaOnWidget() const override
+	{
+	}
 
 	bool IsHostile(ASwdCharacter* Character);
 
@@ -83,6 +87,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void MakeANoise(FVector Location);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
+	bool bIsInputEnabled = true;
+
+	void ManageInput(const bool bShouldEnable);
 
 protected:
 	void MoveForward(float Value);

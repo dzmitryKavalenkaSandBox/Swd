@@ -16,7 +16,10 @@ public:
 
 	// UPROPERTY(BlueprintReadWrite, Category = Movement)
 	// bool bIsCrouching = false;
-
+	
+	UPROPERTY(BlueprintReadWrite, Category = Movement)
+	bool bIsArmed = false;
+	
 	UPROPERTY(BlueprintReadWrite, Category = Movement)
 	bool bIsInCombat = false;
 
@@ -28,7 +31,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = Movement)
 	bool bIsSitting = false;
-
 };
 
 /**
@@ -81,7 +83,10 @@ public:
 	void UpdateWidgetVis(bool Newbool);
 
 	UFUNCTION(BlueprintCallable)
-	void ToggleCombat(const bool Newbool);
+	void ToggleCombat(const bool ShouldEnableCombat);
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleArmedState(const bool ShouldArmSelf);
 
 	// UFUNCTION(BlueprintCallable)
 	// void ToggleCrouch(const bool Newbool);

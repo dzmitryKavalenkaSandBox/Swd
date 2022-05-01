@@ -177,6 +177,20 @@ bool ASwdCharacter::IsHostile(ASwdCharacter* Character)
 	return IsHostile;
 }
 
+void ASwdCharacter::ManageInput(const bool bShouldEnable)
+{
+	if (bShouldEnable)
+	{
+		GetController()->EnableInput(Cast<APlayerController>(GetController()));
+		bIsInputEnabled = true;
+	}
+	else
+	{
+		GetController()->DisableInput(Cast<APlayerController>(GetController()));
+		bIsInputEnabled = false;
+	}
+}
+
 void ASwdCharacter::MoveForward(float Value)
 {
 	if ((Controller != nullptr) && (Value != 0.0f))

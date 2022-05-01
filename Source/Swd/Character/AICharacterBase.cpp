@@ -5,6 +5,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Swd/AI/AIControllerBase.h"
+#include "Swd/Components/EquipmentComponent.h"
 #include "Swd/Components/Modular/Stamina/StaminaComponent.h"
 #include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/Utils/Logger.h"
@@ -142,24 +144,31 @@ void AAICharacterBase::UpdateCurrentHealth(float NewValue)
 }
 
 
-void AAICharacterBase::ToggleCombat(const bool Newbool)
+void AAICharacterBase::ToggleCombat(const bool ShouldEnableCombat)
 {
-	GetMesh()->GetAnimInstance()->StopAllMontages(0.2f);
-	AnimValues.bIsInCombat = Newbool;
-	bUseControllerRotationYaw = Newbool;
-	GetCharacterMovement()->bOrientRotationToMovement = !Newbool;
-	FName NewSocket = Newbool ? "hand_rSocket" : "spine_03Socket";
-	// AttachWeapon(Weapon, NewSocket);
-	GetCharacterMovement()->MaxWalkSpeed = (Newbool) ? 187.f : 94.f;
+	// GetMesh()->GetAnimInstance()->StopAllMontages(0.2f);
+	ManageCombatState(ShouldEnableCombat);
+	AnimValues.bIsInCombat = ShouldEnableCombat;
+	// AnimValues.bIsInCombat = ShouldEnableCombat;
+	// bUseControllerRotationYaw = ShouldEnableCombat;
+	// GetCharacterMovement()->bOrientRotationToMovement = !ShouldEnableCombat;
+	// FName NewSocket = ShouldEnableCombat ? "hand_rSocket" : "spine_03Socket";
+	// // AttachWeapon(Weapon, NewSocket);
+	// GetCharacterMovement()->MaxWalkSpeed = (ShouldEnableCombat) ? 187.f : 94.f;
 }
 
-//
-// void AAICharacterBase::ToggleCrouch(const bool Newbool)
-// {
-// 	AnimValues.bIsCrouching = Newbool;
-// 	const float Speed = AnimValues.bIsInCombat ? 187.f : WalkSpeed;
-// 	GetCharacterMovement()->MaxWalkSpeed = (Newbool) ? CrouchedWalkSpeed : Speed;
-// }
+void AAICharacterBase::ToggleArmedState(const bool ShouldArmSelf)
+{
+	GetMesh()->GetAnimInstance()->StopAllMontages(0.2f);
+	if (ShouldArmSelf && EquipmentComponent->ActualWeaponOnTheHip)
+	{
+		EquipmentComponent->EquipWeapon();
+	}
+	if (!ShouldArmSelf && EquipmentComponent->WeaponInHands)
+	{
+		EquipmentComponent->SheathWeapon();
+	}
+}
 
 void AAICharacterBase::ToggleADS(const bool Newbool)
 {
