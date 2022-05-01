@@ -31,7 +31,7 @@ public:
 	// The function that gets called when querry finished
 	void EnemySeekerQueryFinished(TSharedPtr<FEnvQueryResult> Result);
 
-	class AAIControllerBase* Cntrlr;
+	class AAIControllerBase* AIController;
 
 	class ASwdCharacter* BestTarget;
 	

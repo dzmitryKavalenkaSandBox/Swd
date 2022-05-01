@@ -15,6 +15,8 @@
 
 APlayerCharacter::APlayerCharacter()
 {
+	InitialMovementSetUp();
+	
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -136,7 +138,11 @@ void APlayerCharacter::ManageCombatState(bool bEnableCombat)
 	Super::ManageCombatState(bEnableCombat);
 	if (!bEnableCombat)
 	{
+		GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 		LockOnTargetComponent->SetTargetToLockOn(nullptr);
+	} else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = RunSpeedCombat;
 	}
 }
 
@@ -151,4 +157,10 @@ void APlayerCharacter::SwitchTargetToLockOn()
 	{
 		LockOnTargetComponent->SetTargetToLockOn(nullptr);
 	}
+}
+
+void APlayerCharacter::InitialMovementSetUp()
+{
+	Super::InitialMovementSetUp();
+	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 }

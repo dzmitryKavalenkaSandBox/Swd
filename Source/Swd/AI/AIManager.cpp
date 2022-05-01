@@ -59,7 +59,7 @@ bool AAIManager::IsAnyAgentEngaged()
 			break;
 		}
 
-		if (AIController->BBC->GetValueAsObject(BBKeys::TargetActor))
+		if (AIController->BBC->GetValueAsObject(BBKeys::BestTarget))
 		{
 			IsEngaged = true;
 			break;

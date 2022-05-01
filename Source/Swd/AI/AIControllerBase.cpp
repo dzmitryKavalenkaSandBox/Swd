@@ -63,7 +63,7 @@ void AAIControllerBase::OnPossess(APawn* InPawn)
 
 		BBC->InitializeBlackboard(*AICharacter->TreeAsset->BlackboardAsset);
 
-		EnemyKeyId = BBC->GetKeyID(BBKeys::TargetActor);
+		EnemyKeyId = BBC->GetKeyID(BBKeys::BestTarget);
 		LocationKeyId = BBC->GetKeyID(BBKeys::MoveToLocation);
 		ContactKeyId = BBC->GetKeyID(BBKeys::Contact);
 
@@ -142,7 +142,6 @@ void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 
 void AAIControllerBase::UpdateDetectionLevel()
 {
-	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
 	if (!HaveHostileInSenseArea())
 	{
 		BBC->ClearValue(BBKeys::ClosestHostile);
@@ -235,7 +234,6 @@ float AAIControllerBase::CalculateDetectionLevelIncrement()
 			DetectionLevelToReturn = DetectionLevel * 10.f;
 		}
 	}
-	ULogger::Log(ELogLevel::WARNING, FString("Detection Level ") + FString::FromInt(DetectionLevelToReturn));
 	return DetectionLevelToReturn += 1;
 }
 

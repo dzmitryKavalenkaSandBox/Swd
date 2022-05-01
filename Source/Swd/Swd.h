@@ -35,8 +35,8 @@ namespace AnimAction
 
 namespace BBKeys
 {
-	TCHAR const* const TargetActor = TEXT("TargetActor");
 	TCHAR const* const SensedActor = TEXT("SensedActor");
+	TCHAR const* const BestTarget = TEXT("BestTarget");
 	TCHAR const* const MoveToLocation = TEXT("MoveToLocation");
 	TCHAR const* const Contact = TEXT("Contact");
 	TCHAR const* const AIState = TEXT("AIState");

@@ -3,7 +3,6 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Swd/AI/AIControllerBase.h"
 #include "Swd/Character/AICharacterBase.h"
-#include "Swd/Utils/Logger.h"
 
 
 UT_SelectTarget::UT_SelectTarget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -14,11 +13,11 @@ UT_SelectTarget::UT_SelectTarget(const FObjectInitializer& ObjectInitializer) : 
 
 EBTNodeResult::Type UT_SelectTarget::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	Cntrlr = Cast<AAIControllerBase>(OwnerComp.GetAIOwner());
+	AIController = Cast<AAIControllerBase>(OwnerComp.GetAIOwner());
 
-	if (Cntrlr && EnemySeekerQuery)
+	if (AIController && EnemySeekerQuery)
 	{
-		EnemySeekerQueryRequest = FEnvQueryRequest(EnemySeekerQuery, Cntrlr->Agent);
+		EnemySeekerQueryRequest = FEnvQueryRequest(EnemySeekerQuery, AIController->Agent);
 		EnemySeekerQueryRequest.Execute(EEnvQueryRunMode::AllMatching, this,
 		                                &UT_SelectTarget::EnemySeekerQueryFinished);
 		return EBTNodeResult::Succeeded;
@@ -30,8 +29,6 @@ EBTNodeResult::Type UT_SelectTarget::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 void UT_SelectTarget::EnemySeekerQueryFinished(TSharedPtr<FEnvQueryResult> Result)
 {
 	BestTarget = nullptr;
-	// ULogger::Log(ELogLevel::WARNING, FString("Target actor set to NULL"));
-	// Cntrlr->BBC->SetValueAsObject(BBKeys::TargetActor, nullptr);
 
 	float CurrentBestScore = 0.f;
 	int32 Index = 0;
@@ -41,7 +38,7 @@ void UT_SelectTarget::EnemySeekerQueryFinished(TSharedPtr<FEnvQueryResult> Resul
 	for (auto& DetectedActor : AllDetectedActors)
 	{
 		ASwdCharacter* Chr = Cast<ASwdCharacter>(DetectedActor);
-		if (Chr && Cntrlr->Agent->IsHostile(Chr) /*&& !Chr->Dead*/)
+		if (Chr && AIController->Agent->IsHostile(Chr) /*&& !Chr->Dead*/)
 		{
 			if (Result->GetItemScore(Index) > CurrentBestScore && Result->GetItemScore(Index) > 0.f)
 			{
@@ -56,6 +53,7 @@ void UT_SelectTarget::EnemySeekerQueryFinished(TSharedPtr<FEnvQueryResult> Resul
 
 	if (BestTarget)
 	{
-		Cntrlr->BBC->SetValueAsObject(GetSelectedBlackboardKey(), BestTarget);
+		// ULogger::Log(ELogLevel::WARNING, FString("Setting target from SelectTargetTask to ") + BestTarget->GetName());
+		AIController->BBC->SetValueAsObject(GetSelectedBlackboardKey(), BestTarget);
 	}
 }

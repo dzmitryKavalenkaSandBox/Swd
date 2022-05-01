@@ -22,7 +22,7 @@ EBTNodeResult::Type UT_SetAnimationState::ExecuteTask(UBehaviorTreeComponent& Ow
 	AAIController* MyController = OwnerComp.GetAIOwner();
 	AAICharacterBase* AICharacter = Cast<AAICharacterBase>(MyController->GetPawn());
 	const UBlackboardComponent* MyBlackboard = OwnerComp.GetBlackboardComponent();
-	ASwdCharacter* EnemyActor = Cast<AAICharacterBase>(MyBlackboard->GetValueAsObject(BBKeys::ClosestHostile));
+	ASwdCharacter* EnemyActor = Cast<ASwdCharacter>(MyBlackboard->GetValueAsObject(BBKeys::ClosestHostile));
 	if (MyController && AICharacter)
 	{
 		if (!States.IsEmpty())

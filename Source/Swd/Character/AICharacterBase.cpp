@@ -13,6 +13,7 @@
 
 AAICharacterBase::AAICharacterBase()
 {
+	InitialMovementSetUp();
 	SetUpHealthStaminaWidget();
 	SphereAroundAI = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Around AI"));
 	// to make turning smoother
@@ -137,6 +138,13 @@ void AAICharacterBase::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComp, A
 	}
 }
 
+void AAICharacterBase::InitialMovementSetUp()
+{
+	Super::InitialMovementSetUp();
+	ULogger::Log(ELogLevel::WARNING, TEXT("Setting movement from Ai"));
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+}
+
 void AAICharacterBase::UpdateCurrentHealth(float NewValue)
 {
 	Super::UpdateCurrentHealth(NewValue);
@@ -175,13 +183,14 @@ void AAICharacterBase::ToggleADS(const bool Newbool)
 	AnimValues.bADS = Newbool;
 }
 
-void AAICharacterBase::ToggleSprinting(bool Newbool)
+void AAICharacterBase::ToggleSprinting(bool bShouldSprint)
 {
-	if (Newbool)
+	if (bShouldSprint)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
-		return;
 	}
-
-	GetCharacterMovement()->MaxWalkSpeed = (AnimValues.bIsInCombat) ? 187.f : WalkSpeed;
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	}
 }

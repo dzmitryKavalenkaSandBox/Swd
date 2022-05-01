@@ -15,9 +15,9 @@ UT_Attack::UT_Attack()
 
 EBTNodeResult::Type UT_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	if (auto TargetActor = OwnerComp.GetBlackboardComponent()->GetValueAsObject(BBKeys::TargetActor))
+	if (auto Hostile = OwnerComp.GetBlackboardComponent()->GetValueAsObject(BBKeys::BestTarget))
 	{
-		ULogger::Log(ELogLevel::WARNING, FString("Attacking Target: ") + TargetActor->GetName());
+		ULogger::Log(ELogLevel::WARNING, FString("Attacking Target: ") + Hostile->GetName());
 	}
 	else
 	{

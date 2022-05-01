@@ -13,13 +13,12 @@ struct FAnimValues
 	GENERATED_BODY()
 
 public:
-
 	// UPROPERTY(BlueprintReadWrite, Category = Movement)
 	// bool bIsCrouching = false;
-	
+
 	UPROPERTY(BlueprintReadWrite, Category = Movement)
 	bool bIsArmed = false;
-	
+
 	UPROPERTY(BlueprintReadWrite, Category = Movement)
 	bool bIsInCombat = false;
 
@@ -63,16 +62,18 @@ public:
 	class AAIControllerBase* ControllerRef = nullptr;
 
 	// Custom View Target For AI Perception Component
-	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, 
-							   float& OutSightStrength, const AActor* IgnoreActor = nullptr, const bool* bWasVisible = nullptr, 
-																							  int32* UserData = nullptr) const;
+	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation,
+	                           int32& NumberOfLoSChecksPerformed,
+	                           float& OutSightStrength, const AActor* IgnoreActor = nullptr,
+	                           const bool* bWasVisible = nullptr,
+	                           int32* UserData = nullptr) const;
 
 	UPROPERTY(BlueprintReadOnly, Category = "AI")
 	bool Dead = false;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
 	FName PerceptionTarget = "spine_02";
-	
+
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
 	ECombatRole CombatRole;
 
@@ -95,10 +96,13 @@ public:
 	void ToggleADS(const bool Newbool);
 
 	UFUNCTION(BlueprintCallable)
-	void ToggleSprinting(bool Newbool);
-	
+	void ToggleSprinting(bool bShouldSprint);
+
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")
 	FAnimValues AnimValues;
+
+protected:
+	virtual void InitialMovementSetUp() override;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))

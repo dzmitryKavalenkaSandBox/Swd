@@ -43,7 +43,7 @@ protected:
 	// /** Handler for when a touch input stops. */
 	// void OnTouchEnd(ETouchIndex::Type TouchType, FVector NewTouchLocation);
 
-
+	virtual void InitialMovementSetUp() override;
 private:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

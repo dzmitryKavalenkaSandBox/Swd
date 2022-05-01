@@ -21,7 +21,7 @@ void UEnemyQueryContext::ProvideContext(FEnvQueryInstance& QueryInstance, FEnvQu
 		AActor* Target = Cast<AActor>(Cntrlr->BBC->GetValueAsObject(BBKeys::ClosestHostile));
 		if (Target)
 		{
-			ULogger::Log(ELogLevel::WARNING, FString("Setting Target to ") + Target->GetName());
+			// ULogger::Log(ELogLevel::WARNING, FString("Setting Target to ") + Target->GetName());
 			UEnvQueryItemType_Actor::SetContextHelper(ContextData, Target);
 		}
 	}

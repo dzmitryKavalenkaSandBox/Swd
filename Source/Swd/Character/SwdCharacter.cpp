@@ -26,8 +26,6 @@ ASwdCharacter::ASwdCharacter()
 	// set our turn rate for input
 	TurnRateGamepad = 50.f;
 
-	InitialMovementSetUp();
-
 	CurrentHealth = MaxHealth;
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
@@ -115,7 +113,6 @@ void ASwdCharacter::ManageCombatState(bool bEnableCombat)
 	bIsInCombat = bEnableCombat;
 	if (bEnableCombat)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = RunSpeedCombat;
 		if (!GetCharacterMovement()->bUseControllerDesiredRotation)
 		{
 			GetCharacterMovement()->bUseControllerDesiredRotation = true;
@@ -124,7 +121,6 @@ void ASwdCharacter::ManageCombatState(bool bEnableCombat)
 	}
 	else
 	{
-		GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 		if (GetCharacterMovement()->bUseControllerDesiredRotation)
 		{
 			GetCharacterMovement()->bUseControllerDesiredRotation = false;
@@ -227,7 +223,6 @@ void ASwdCharacter::InitialMovementSetUp()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 }

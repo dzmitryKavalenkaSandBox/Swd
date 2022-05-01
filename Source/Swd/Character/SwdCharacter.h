@@ -121,12 +121,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
 	float WalkSpeedCombat = 180.f;
 
+	UFUNCTION()
+	virtual void InitialMovementSetUp();
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess=true))
 	bool bIsInCombat = false;
-
-	UFUNCTION()
-	void InitialMovementSetUp();
 
 	UPROPERTY(BlueprintReadOnly, Category="Health", meta=(AllowPrivateAccess=true))
 	float CurrentHealth;
