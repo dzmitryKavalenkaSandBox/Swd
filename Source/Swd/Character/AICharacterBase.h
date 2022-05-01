@@ -109,9 +109,14 @@ private:
 	UWidgetComponent* HealthStaminaWidgetComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	UWidgetComponent* DetectorWidgetComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	USphereComponent* SphereAroundAI;
 
 	void SetUpHealthStaminaWidget();
+
+	void SetUpDetectorWidget();
 
 	UFUNCTION()
 	void OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

@@ -15,6 +15,7 @@ AAICharacterBase::AAICharacterBase()
 {
 	InitialMovementSetUp();
 	SetUpHealthStaminaWidget();
+	SetUpDetectorWidget();
 	SphereAroundAI = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Around AI"));
 	// to make turning smoother
 	bUseControllerRotationYaw = false;
@@ -43,8 +44,18 @@ void AAICharacterBase::SetUpHealthStaminaWidget()
 	HealthStaminaWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Stamina Widget Component"));
 	HealthStaminaWidgetComponent->SetupAttachment(RootComponent);
 	HealthStaminaWidgetComponent->SetDrawSize(FVector2D(80, 20));
+	HealthStaminaWidgetComponent->SetRelativeLocation(FVector(0, 0, 110.f));
 	HealthStaminaWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	HealthStaminaWidgetComponent->SetVisibility(false);
+}
+
+void AAICharacterBase::SetUpDetectorWidget()
+{
+	DetectorWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Detector Widget Component"));
+	DetectorWidgetComponent->SetupAttachment(RootComponent);
+	DetectorWidgetComponent->SetDrawSize(FVector2D(80, 10));
+	DetectorWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	DetectorWidgetComponent->SetRelativeLocation(FVector(0, 0, 120.f));
 }
 
 void AAICharacterBase::UpdateHealthOnWidget() const

@@ -23,6 +23,7 @@ public:
 	
 	void SheathWeapon();
 
+	UFUNCTION(BlueprintCallable)
 	void AttachWeaponToHand();
 	
 	void AttachWeaponToThy();
