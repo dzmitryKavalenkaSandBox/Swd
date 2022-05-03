@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
-#include "UObject/Object.h"
 #include "T_SelectTarget.generated.h"
 
 class UEnvQuery;

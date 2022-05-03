@@ -13,10 +13,6 @@ void UEquipWeaponNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 	{
 		Character->EquipmentComponent->AttachWeaponToHand();
 	}
-	else
-	{
-		Character->EquipmentComponent->AttachWeaponToThy();
-	}
 }
 
 void UEquipWeaponNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
@@ -24,13 +20,8 @@ void UEquipWeaponNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimS
 	Super::NotifyEnd(MeshComp, Animation);
 	auto Character = Cast<ASwdCharacter>(MeshComp->GetOwner());
 	if (!Character) return;
-	if (Character->EquipmentComponent->ActualWeaponOnTheHip)
+	if (auto Weapon = Character->EquipmentComponent->WeaponInHands)
 	{
-		Character->EquipmentComponent->ActualWeaponOnTheHip->WeaponState.FinishInteraction();
-		Character->ManageCombatState(false);
-	}
-	else
-	{
-		Character->EquipmentComponent->WeaponInHands->WeaponState.FinishInteraction();
+		Weapon->WeaponState.FinishInteraction();
 	}
 }

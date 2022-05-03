@@ -43,6 +43,7 @@ ASwdCharacter::ASwdCharacter()
 	RightLegCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Leg Collosing Box"));
 	RightLegCollisionBox->SetupAttachment(RootComponent);
 	RightLegCollisionBox->SetCollisionProfileName(TEXT("NoCollision"));
+
 }
 
 void ASwdCharacter::BeginPlay()

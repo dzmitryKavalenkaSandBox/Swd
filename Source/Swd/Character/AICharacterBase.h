@@ -83,6 +83,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateWidgetVis(bool Newbool);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void PostCombatStateEnabled();
+
 	UFUNCTION(BlueprintCallable)
 	void ToggleCombat(const bool ShouldEnableCombat);
 
@@ -100,6 +103,8 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")
 	FAnimValues AnimValues;
+
+	virtual void ManageCombatState(bool bEnableCombat) override;
 
 protected:
 	virtual void InitialMovementSetUp() override;

@@ -149,6 +149,12 @@ void AAICharacterBase::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComp, A
 	}
 }
 
+void AAICharacterBase::ManageCombatState(bool bEnableCombat)
+{
+	Super::ManageCombatState(bEnableCombat);
+	PostCombatStateEnabled();
+}
+
 void AAICharacterBase::InitialMovementSetUp()
 {
 	Super::InitialMovementSetUp();
