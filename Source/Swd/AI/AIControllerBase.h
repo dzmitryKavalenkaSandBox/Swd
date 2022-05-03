@@ -92,6 +92,9 @@ private:
 	bool ShouldStartDetection();
 
 	void StartDetection();
+	
+	void ListenForClosestHostile();
+	
 	void SwitchToAIState(EAIState State);
 
 	bool HaveHostileInSenseArea();

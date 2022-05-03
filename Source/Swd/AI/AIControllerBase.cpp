@@ -97,33 +97,7 @@ void AAIControllerBase::BeginPlay()
 void AAIControllerBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	for (auto SensedActor : SensedActors)
-	{
-		if (auto SensedCharacter = Cast<ASwdCharacter>(SensedActor))
-		{
-			if (SensedCharacter->Faction != Agent->Faction)
-			{
-				ClosestHostile = Cast<ASwdCharacter>(
-					USwdGameUtils::GetClosestActor(Agent->GetActorLocation(), SensedActors));
-			}
-		}
-	}
-	if (ClosestHostile)
-	{
-		const float DistanceToHostile = GetPawn()->GetDistanceTo(ClosestHostile);
-		BBC->SetValueAsFloat(BBKeys::DistanceToClosestHostile, DistanceToHostile);
-		if (DistanceToHostile < SwitchToAttackDistance)
-		{
-			UpdateAIState(EAIState::Attack);
-			GetWorldTimerManager().ClearTimer(DetectionTimer);
-			Agent->UpdateWidgetVis(false);
-		}
-	}
-	else
-	{
-		BBC->ClearValue(BBKeys::DistanceToClosestHostile);
-	}
+	ListenForClosestHostile();
 }
 
 void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
@@ -251,6 +225,40 @@ void AAIControllerBase::StartDetection()
 	                                true,
 	                                0.f);
 	Agent->GetCharacterMovement()->StopActiveMovement();
+}
+
+void AAIControllerBase::ListenForClosestHostile()
+{
+	TArray<AActor*> SensedHostiles;
+	for (auto SensedActor : SensedActors)
+	{
+		if (auto SensedCharacter = Cast<ASwdCharacter>(SensedActor))
+		{
+			if (SensedCharacter->Faction != Agent->Faction)
+			{
+				SensedHostiles.Add(SensedCharacter);
+			}
+		}
+	}
+	if (!SensedHostiles.IsEmpty())
+	{
+		ClosestHostile = Cast<ASwdCharacter>(USwdGameUtils::GetClosestActor(Agent->GetActorLocation(), SensedHostiles));
+	}
+	if (ClosestHostile)
+	{
+		const float DistanceToHostile = GetPawn()->GetDistanceTo(ClosestHostile);
+		BBC->SetValueAsFloat(BBKeys::DistanceToClosestHostile, DistanceToHostile);
+		if (DistanceToHostile < SwitchToAttackDistance)
+		{
+			UpdateAIState(EAIState::Attack);
+			GetWorldTimerManager().ClearTimer(DetectionTimer);
+			Agent->UpdateWidgetVis(false);
+		}
+	}
+	else
+	{
+		BBC->ClearValue(BBKeys::DistanceToClosestHostile);
+	}
 }
 
 //
