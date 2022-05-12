@@ -93,6 +93,9 @@ public:
 
 	void ManageInput(const bool bShouldEnable);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	class UCharacterData* CharacterData;
+
 protected:
 	void MoveForward(float Value);
 
@@ -111,15 +114,6 @@ protected:
 	void LookUpAtRate(float Rate);
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
-	float RunSpeed = 500.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
-	float RunSpeedCombat = 350.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
-	float WalkSpeed = 230.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
-	float WalkSpeedCombat = 180.f;
 
 	UFUNCTION()
 	virtual void InitialMovementSetUp();

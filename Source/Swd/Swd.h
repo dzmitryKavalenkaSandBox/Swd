@@ -8,6 +8,7 @@ namespace CollisionProfile
 {
 	TCHAR const* const Weapon = TEXT("Weapon");
 	TCHAR const* const NoCollision = TEXT("NoCollision");
+	TCHAR const* const OverlapAll = TEXT("OverlapAll");
 }
 
 namespace BoneSockets

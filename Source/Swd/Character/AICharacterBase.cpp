@@ -13,7 +13,6 @@
 
 AAICharacterBase::AAICharacterBase()
 {
-	InitialMovementSetUp();
 	SetUpHealthStaminaWidget();
 	SetUpDetectorWidget();
 	SphereAroundAI = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Around AI"));
@@ -21,9 +20,8 @@ AAICharacterBase::AAICharacterBase()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
-
 	SphereAroundAI->SetupAttachment(RootComponent);
-	SphereAroundAI->SetCollisionProfileName(FName("OverlapAll"));
+	SphereAroundAI->SetCollisionProfileName(CollisionProfile::OverlapAll);
 	SphereAroundAI->SetGenerateOverlapEvents(true);
 	SphereAroundAI->SetSphereRadius(600.f);
 }
@@ -33,6 +31,10 @@ void AAICharacterBase::BeginPlay()
 	Super::BeginPlay();
 	UpdateHealthOnWidget();
 	UpdateStaminaOnWidget();
+	if (CharacterData)
+	{
+		InitialMovementSetUp();
+	}
 	SphereAroundAI->OnComponentBeginOverlap.AddDynamic(this, &AAICharacterBase::OnSphereOverlapBegin);
 	SphereAroundAI->OnComponentEndOverlap.AddDynamic(this, &AAICharacterBase::OnSphereOverlapEnd);
 
@@ -158,8 +160,10 @@ void AAICharacterBase::ManageCombatState(bool bEnableCombat)
 void AAICharacterBase::InitialMovementSetUp()
 {
 	Super::InitialMovementSetUp();
-	ULogger::Log(ELogLevel::WARNING, TEXT("Setting movement from Ai"));
-	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	if (CharacterData)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
+	}
 }
 
 void AAICharacterBase::UpdateCurrentHealth(float NewValue)
@@ -202,12 +206,12 @@ void AAICharacterBase::ToggleADS(const bool Newbool)
 
 void AAICharacterBase::ToggleSprinting(bool bShouldSprint)
 {
-	if (bShouldSprint)
+	if (bShouldSprint && CharacterData)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = CharacterData->RunSpeed;
 	}
-	else
+	if (!bShouldSprint && CharacterData)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
 	}
 }

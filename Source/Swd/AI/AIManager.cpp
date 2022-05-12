@@ -171,7 +171,8 @@ void AAIManager::UpdateCombatRole()
 {
 	for (auto& AIController : Agents)
 	{
-		if (AIController->Agent->CombatRole == ECombatRole::Defender)
+		auto CharacterData = Cast<UAICharacterData>(AIController->Agent->CharacterData);
+		if (CharacterData && CharacterData->CombatRole == ECombatRole::Defender)
 		{
 			Defenders.AddUnique(AIController->Agent);
 		}

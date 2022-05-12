@@ -12,6 +12,7 @@
 #include "Swd/Components/DamageInflictorComponent.h"
 #include "Swd/Components/EquipmentComponent.h"
 #include "Swd/Components/Modular/Stamina/StaminaComponent.h"
+#include "Swd/DataAssets/CharacterData.h"
 #include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/Utils/Logger.h"
 
@@ -38,17 +39,28 @@ ASwdCharacter::ASwdCharacter()
 	DamageInflictorComponent = CreateDefaultSubobject<UDamageInflictorComponent>(TEXT("Damage Inflictor Component"));
 	LeftLegCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Left Leg Collosing Box"));
 	LeftLegCollisionBox->SetupAttachment(RootComponent);
-	LeftLegCollisionBox->SetCollisionProfileName(TEXT("NoCollision"));
+	LeftLegCollisionBox->SetCollisionProfileName(CollisionProfile::NoCollision);
+	LeftLegCollisionBox->SetRelativeLocation(FVector(18.7f, -19.62f, -86.f));
+	LeftLegCollisionBox->SetRelativeRotation(FRotator(0.f, -85.f, 0.f));
+	LeftLegCollisionBox->SetRelativeScale3D(FVector(0.1875f, 0.4375f, 0.125f));
 
 	RightLegCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Leg Collosing Box"));
 	RightLegCollisionBox->SetupAttachment(RootComponent);
-	RightLegCollisionBox->SetCollisionProfileName(TEXT("NoCollision"));
-
+	RightLegCollisionBox->SetCollisionProfileName(CollisionProfile::NoCollision);
+	RightLegCollisionBox->SetRelativeLocation(FVector(-14.204f, 16.37f, -86.f));
+	RightLegCollisionBox->SetRelativeRotation(FRotator(0.f, -40.f, 0.f));
+	RightLegCollisionBox->SetRelativeScale3D(FVector(0.1875f, 0.4375f, 0.125f));
 }
 
 void ASwdCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	if (CharacterData)
+	{
+		GetMesh()->SetSkeletalMesh(CharacterData->SkeletalMesh);
+		Faction = CharacterData->Faction;
+		GetMesh()->SetAnimInstanceClass(CharacterData->AnimInstanceClass);
+	}
 	const FAttachmentTransformRules AttachmentRules(
 		EAttachmentRule::SnapToTarget,
 		EAttachmentRule::SnapToTarget,
@@ -111,6 +123,7 @@ void ASwdCharacter::EquipSheathWeapon()
 
 void ASwdCharacter::ManageCombatState(bool bEnableCombat)
 {
+	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
 	bIsInCombat = bEnableCombat;
 	if (bEnableCombat)
 	{

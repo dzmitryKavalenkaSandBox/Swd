@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Swd/Components/Modular/LockOnTargetModule/LockOnTargetComponent.h"
 #include "Swd/Components/Modular/Stamina/StaminaComponent.h"
+#include "Swd/DataAssets/CharacterData.h"
 #include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/UI/HUDWidget.h"
 #include "Swd/Utils/Logger.h"
@@ -15,8 +16,6 @@
 
 APlayerCharacter::APlayerCharacter()
 {
-	InitialMovementSetUp();
-	
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -48,7 +47,10 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	if (CharacterData)
+	{
+		InitialMovementSetUp();
+	}
 	if (auto Widget = Cast<UHUDWidget>(HUDWidgetComponent->GetWidget()))
 	{
 		Widget->AddToViewport();
@@ -136,13 +138,14 @@ void APlayerCharacter::UpdateCurrentHealth(float NewValue)
 void APlayerCharacter::ManageCombatState(bool bEnableCombat)
 {
 	Super::ManageCombatState(bEnableCombat);
-	if (!bEnableCombat)
+	if (!bEnableCombat && CharacterData)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = CharacterData->RunSpeed;
 		LockOnTargetComponent->SetTargetToLockOn(nullptr);
-	} else
+	}
+	if (bEnableCombat && CharacterData)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = RunSpeedCombat;
+		GetCharacterMovement()->MaxWalkSpeed = CharacterData->RunSpeedCombat;
 	}
 }
 
@@ -162,5 +165,8 @@ void APlayerCharacter::SwitchTargetToLockOn()
 void APlayerCharacter::InitialMovementSetUp()
 {
 	Super::InitialMovementSetUp();
-	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+	if (CharacterData)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = CharacterData->RunSpeed;
+	}
 }

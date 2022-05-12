@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "SwdCharacter.h"
 #include "Swd/Swd.h"
+#include "Swd/DataAssets/AICharacterData.h"
 #include "AICharacterBase.generated.h"
 
 USTRUCT(BlueprintType)
@@ -74,8 +75,8 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
 	FName PerceptionTarget = "spine_02";
 
-	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
-	ECombatRole CombatRole;
+	// UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
+	// ECombatRole CombatRole;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateWidgetRef();
@@ -130,4 +131,6 @@ private:
 	UFUNCTION()
 	void OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	
 };
