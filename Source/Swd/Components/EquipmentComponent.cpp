@@ -83,7 +83,6 @@ void UEquipmentComponent::AttachWeaponToHand()
 		ActualWeaponOnTheHip = nullptr;
 		if (auto AnimInstance = GetCharacter()->GetAnimInstance())
 		{
-			ULogger::Log(ELogLevel::INFO, TEXT("AnimInstance->bHasWeaponEquipped = true;"));
 			AnimInstance->bHasWeaponEquipped = true;
 		}
 	}
@@ -108,7 +107,6 @@ void UEquipmentComponent::AttachWeaponToThy()
 		WeaponInHands = nullptr;
 		if (auto AnimInstance = GetCharacter()->GetAnimInstance())
 		{
-			ULogger::Log(ELogLevel::INFO, TEXT("AnimInstance->bHasWeaponEquipped = false;"));
 			AnimInstance->bHasWeaponEquipped = false;
 		}
 	}

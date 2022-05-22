@@ -214,7 +214,7 @@ float AAIControllerBase::CalculateDetectionLevelIncrement()
 bool AAIControllerBase::ShouldStartDetection()
 {
 	return HaveHostileInSenseArea() && !GetWorldTimerManager().IsTimerActive(DetectionTimer) &&
-		(IsStateEquals(EAIState::Idle) || IsStateEquals(EAIState::Alerted) || IsStateEquals(EAIState::Search));
+		(IsStateEquals(EAIState::Idle) || IsStateEquals(EAIState::Relaxed) || IsStateEquals(EAIState::Alerted) || IsStateEquals(EAIState::Search));
 }
 
 void AAIControllerBase::StartDetection()
