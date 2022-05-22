@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
+#include "Swd/AI/AIControllerBase.h"
 #include "Swd/Character/AICharacterBase.h"
 #include "Swd/Utils/Logger.h"
 
@@ -19,7 +20,7 @@ UT_SetAnimationState::UT_SetAnimationState(const FObjectInitializer& ObjectIniti
 
 EBTNodeResult::Type UT_SetAnimationState::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AAIController* MyController = OwnerComp.GetAIOwner();
+	AAIControllerBase* MyController = Cast<AAIControllerBase>(OwnerComp.GetAIOwner());
 	AAICharacterBase* AICharacter = Cast<AAICharacterBase>(MyController->GetPawn());
 	const UBlackboardComponent* MyBlackboard = OwnerComp.GetBlackboardComponent();
 	ASwdCharacter* EnemyActor = Cast<ASwdCharacter>(MyBlackboard->GetValueAsObject(BBKeys::ClosestHostile));
@@ -27,9 +28,32 @@ EBTNodeResult::Type UT_SetAnimationState::ExecuteTask(UBehaviorTreeComponent& Ow
 	{
 		if (!States.IsEmpty())
 		{
-			if (States.Find(EAnimationState::ArmSelf))
+			// Relaxed state management
+			if (States.Find(EAnimationState::Idle))
 			{
-				AICharacter->ToggleArmedState(States[EAnimationState::ArmSelf]);
+				if (States[EAnimationState::Idle])
+				{
+					AICharacter->AtEase();
+					MyController->UpdateAIState(EAIState::Idle);
+				}
+				else
+				{
+					AICharacter->Ready();
+					MyController->UpdateAIState(EAIState::OnDuty);
+				}
+			}
+			if (States.Find(EAnimationState::OnDuty))
+			{
+				if (States[EAnimationState::OnDuty])
+				{
+					AICharacter->Ready();
+					MyController->UpdateAIState(EAIState::OnDuty);
+				}
+				else
+				{
+					AICharacter->AtEase();
+					MyController->UpdateAIState(EAIState::Idle);
+				}
 			}
 			if (States.Find(EAnimationState::Combat))
 			{

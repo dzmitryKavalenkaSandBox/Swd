@@ -78,26 +78,9 @@ void ASwdCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	auto AnimInstance = GetAnimInstance();
-	if (GetSpeed() == 0)
+	if (AnimInstance)
 	{
-		if (!RelaxedTimer.IsValid())
-		{
-			GetWorld()->GetTimerManager().SetTimer(RelaxedTimer, this, &ASwdCharacter::AtEase,
-			                                       1.f, false, FMath::RandRange(
-				                                       MinTimeBeforeCanRelax, MaxTimeBeforeCanRelax));
-		}
-		if (AnimInstance)
-		{
-			AnimInstance->bHasWeaponEquipped = EquipmentComponent->WeaponInHands;
-		}
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().ClearTimer(RelaxedTimer);
-		if (AnimInstance)
-		{
-			AnimInstance->bIsRelaxed = false;
-		}
+		AnimInstance->bHasWeaponEquipped = EquipmentComponent->WeaponInHands;
 	}
 }
 
@@ -272,7 +255,15 @@ void ASwdCharacter::AtEase()
 {
 	if (auto AnimInstance = GetAnimInstance())
 	{
-		AnimInstance->bIsRelaxed = true;
+		AnimInstance->bIsIdle = true;
+	}
+}
+
+void ASwdCharacter::Ready()
+{
+	if (auto AnimInstance = GetAnimInstance())
+	{
+		AnimInstance->bIsIdle = false;
 	}
 }
 

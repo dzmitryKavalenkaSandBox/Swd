@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "SwdCharacter.h"
-#include "Swd/Swd.h"
 #include "Swd/DataAssets/AICharacterData.h"
 #include "AICharacterBase.generated.h"
 
@@ -131,6 +130,4 @@ private:
 	UFUNCTION()
 	void OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	
 };

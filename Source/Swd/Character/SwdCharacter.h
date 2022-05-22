@@ -101,6 +101,10 @@ public:
 
 	class UAnimInstanceBase* GetAnimInstance();
 
+	virtual void AtEase();
+	
+	virtual void Ready();
+
 protected:
 	void MoveForward(float Value);
 
@@ -129,14 +133,4 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category="Health", meta=(AllowPrivateAccess=true))
 	float CurrentHealth;
-
-	void AtEase();
-
-	UPROPERTY()
-	FTimerHandle RelaxedTimer;
-
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
-	float MinTimeBeforeCanRelax = 5;
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
-	float MaxTimeBeforeCanRelax = 10;
 };

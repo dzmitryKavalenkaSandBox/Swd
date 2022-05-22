@@ -1,10 +1,10 @@
-#include "StatefulAI.h"
+#include "StatefulAIController.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Swd/Swd.h"
 #include "Swd/Utils/Logger.h"
 
-void IStatefulAI::UpdateAIState(EAIState State)
+void IStatefulAIController::UpdateAIState(EAIState State)
 {
 	if (!IsStateEquals(State))
 	{
@@ -13,12 +13,12 @@ void IStatefulAI::UpdateAIState(EAIState State)
 	}
 }
 
-UBlackboardComponent* IStatefulAI::GetBBC()
+UBlackboardComponent* IStatefulAIController::GetBBC()
 {
 	return nullptr;
 }
 
-bool IStatefulAI::IsStateEquals(EAIState State)
+bool IStatefulAIController::IsStateEquals(EAIState State)
 {
 	return GetBBC()->GetValueAsEnum(BBKeys::AIState) == (uint8)State;
 }

@@ -80,8 +80,8 @@ enum class ECombatState : uint8
 UENUM(BlueprintType)
 enum class EAnimationState : uint8
 {
-	ArmSelf UMETA(DisplayName = "ArmSelf"),
-	AtEase UMETA(DisplayName = "AtEase"),
+	Idle UMETA(DisplayName = "Idle"),
+	OnDuty UMETA(DisplayName = "OnDuty"),
 	Combat UMETA(DisplayName = "Combat"),
 	Focus UMETA(DisplayName = "Focus"),
 	Sprinting UMETA(DisplayName = "Sprinting"),

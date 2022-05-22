@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Swd/AI/AIControllerBase.h"
+#include "Swd/Animations/Animinstances/AnimInstanceBase.h"
 #include "Swd/Components/EquipmentComponent.h"
 #include "Swd/Components/Modular/Stamina/StaminaComponent.h"
 #include "Swd/UI/HealthStaminaWidget.h"
@@ -197,6 +198,14 @@ void AAICharacterBase::ToggleArmedState(const bool ShouldArmSelf)
 	{
 		EquipmentComponent->SheathWeapon();
 	}
+	if (auto AnimIsntance = Cast<UAnimInstanceBase>(GetMesh()->GetAnimInstance()))
+	{
+		AnimIsntance->bIsIdle = false;
+	}
+	// if (auto AIController = Cast<IStatefulAIController>(GetController()))
+	// {
+	// 	
+	// }
 }
 
 void AAICharacterBase::ToggleADS(const bool Newbool)

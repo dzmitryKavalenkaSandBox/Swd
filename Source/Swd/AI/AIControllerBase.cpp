@@ -5,14 +5,12 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h"
 #include "Runtime/AIModule/Classes/Perception/AISenseConfig_Hearing.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "SmartObjects/SmartObject.h"
 #include "Swd/Swd.h"
 #include "Swd/Character/AICharacterBase.h"
-#include "Swd/Utils/Logger.h"
 #include "Swd/Utils/SwdGameUtils.h"
 
 
@@ -172,10 +170,6 @@ UBlackboardComponent* AAIControllerBase::GetBBC()
 }
 
 
-/**
- * new
- * new
- */
 bool AAIControllerBase::HaveHostileInSenseArea()
 {
 	for (const auto SensedActor : SensedActors)
@@ -214,7 +208,8 @@ float AAIControllerBase::CalculateDetectionLevelIncrement()
 bool AAIControllerBase::ShouldStartDetection()
 {
 	return HaveHostileInSenseArea() && !GetWorldTimerManager().IsTimerActive(DetectionTimer) &&
-		(IsStateEquals(EAIState::Idle) || IsStateEquals(EAIState::Relaxed) || IsStateEquals(EAIState::Alerted) || IsStateEquals(EAIState::Search));
+	(IsStateEquals(EAIState::Idle) || IsStateEquals(EAIState::OnDuty) || IsStateEquals(EAIState::Alerted) ||
+		IsStateEquals(EAIState::Search));
 }
 
 void AAIControllerBase::StartDetection()

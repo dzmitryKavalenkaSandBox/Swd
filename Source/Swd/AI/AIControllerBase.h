@@ -5,7 +5,7 @@
 #include "AIManager.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Swd/Character/SwdCharacter.h"
-#include "Swd/Interfacces/AI/StatefulAI.h"
+#include "Swd/Interfacces/AI/StatefulAIController.h"
 #include "AIControllerBase.generated.h"
 
 struct FAIStimulus;
@@ -17,7 +17,7 @@ class UAISenseConfig_Sight;
 class UAISenseConfig_Hearing;
 
 UCLASS()
-class SWD_API AAIControllerBase : public AAIController, public IStatefulAI
+class SWD_API AAIControllerBase : public AAIController, public IStatefulAIController
 {
 	GENERATED_BODY()
 

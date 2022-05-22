@@ -2,14 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "StatefulAI.generated.h"
+#include "StatefulAIController.generated.h"
 
 class UBlackboardComponent;
 UENUM(BlueprintType)
 enum class EAIState : uint8
 {
-	Relaxed UMETA(DisplayName = "Relaxed"),
 	Idle UMETA(DisplayName = "Idle"),
+	OnDuty UMETA(DisplayName = "OnDuty"),
 	ManDown UMETA(DisplayName = "Man Down"),
 	Alerted UMETA(DisplayName = "Alerted"),
 	LostEnemy UMETA(DisplayName = "Lost Enemy"),
@@ -19,12 +19,12 @@ enum class EAIState : uint8
 
 
 UINTERFACE()
-class UStatefulAI : public UInterface
+class UStatefulAIController : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class SWD_API IStatefulAI
+class SWD_API IStatefulAIController
 {
 	GENERATED_BODY()
 public:

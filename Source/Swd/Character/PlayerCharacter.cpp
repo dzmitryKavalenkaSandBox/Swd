@@ -6,6 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Swd/Animations/Animinstances/AnimInstanceBase.h"
+#include "Swd/Components/EquipmentComponent.h"
 #include "Swd/Components/Modular/LockOnTargetModule/LockOnTargetComponent.h"
 #include "Swd/Components/Modular/Stamina/StaminaComponent.h"
 #include "Swd/DataAssets/CharacterData.h"
@@ -62,6 +64,24 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	auto AnimInstance = GetAnimInstance();
+	if (GetSpeed() == 0)
+	{
+		if (!RelaxedTimer.IsValid())
+		{
+			GetWorld()->GetTimerManager().SetTimer(RelaxedTimer, this, &ASwdCharacter::AtEase,
+			                                       1.f, false, FMath::RandRange(
+				                                       MinTimeBeforeCanRelax, MaxTimeBeforeCanRelax));
+		}
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(RelaxedTimer);
+		if (AnimInstance)
+		{
+			AnimInstance->bIsIdle = false;
+		}
+	}
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

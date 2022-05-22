@@ -70,4 +70,13 @@ private:
 	void SetUpHealthStaminaWidget();
 
 	void SwitchTargetToLockOn();
+	
+	UPROPERTY()
+	FTimerHandle RelaxedTimer;
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
+	float MinTimeBeforeCanRelax = 5;
+	
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
+	float MaxTimeBeforeCanRelax = 10;
 };

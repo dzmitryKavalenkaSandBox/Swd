@@ -24,7 +24,7 @@ public:
 	bool bIsWeaponSheathed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim Instace")
-	bool bIsRelaxed;
+	bool bIsIdle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim Instace")
 	bool bHasWeaponEquipped;
