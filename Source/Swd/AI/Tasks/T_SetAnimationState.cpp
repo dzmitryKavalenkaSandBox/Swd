@@ -26,12 +26,12 @@ EBTNodeResult::Type UT_SetAnimationState::ExecuteTask(UBehaviorTreeComponent& Ow
 	ASwdCharacter* EnemyActor = Cast<ASwdCharacter>(MyBlackboard->GetValueAsObject(BBKeys::ClosestHostile));
 	if (MyController && AICharacter)
 	{
-		if (!States.IsEmpty())
+		if (!AnimationStates.IsEmpty())
 		{
 			// Relaxed state management
-			if (States.Find(EAnimationState::Idle))
+			if (AnimationStates.Find(EAnimationState::Idle))
 			{
-				if (States[EAnimationState::Idle])
+				if (AnimationStates[EAnimationState::Idle])
 				{
 					AICharacter->AtEase();
 					MyController->UpdateAIState(EAIState::Idle);
@@ -42,9 +42,9 @@ EBTNodeResult::Type UT_SetAnimationState::ExecuteTask(UBehaviorTreeComponent& Ow
 					MyController->UpdateAIState(EAIState::OnDuty);
 				}
 			}
-			if (States.Find(EAnimationState::OnDuty))
+			if (AnimationStates.Find(EAnimationState::OnDuty))
 			{
-				if (States[EAnimationState::OnDuty])
+				if (AnimationStates[EAnimationState::OnDuty])
 				{
 					AICharacter->Ready();
 					MyController->UpdateAIState(EAIState::OnDuty);
@@ -55,21 +55,21 @@ EBTNodeResult::Type UT_SetAnimationState::ExecuteTask(UBehaviorTreeComponent& Ow
 					MyController->UpdateAIState(EAIState::Idle);
 				}
 			}
-			if (States.Find(EAnimationState::Combat))
+			if (AnimationStates.Find(EAnimationState::Combat))
 			{
-				AICharacter->ToggleCombat(States[EAnimationState::Combat]);
+				AICharacter->ToggleCombat(AnimationStates[EAnimationState::Combat]);
 			}
-			if (States.Find(EAnimationState::Focus) && EnemyActor)
+			if (AnimationStates.Find(EAnimationState::Focus) && EnemyActor)
 			{
-				States[EAnimationState::Focus]
+				AnimationStates[EAnimationState::Focus]
 					? MyController->SetFocus(EnemyActor)
 					: MyController->ClearFocus(EAIFocusPriority::LastFocusPriority);
 				// AICharacter->ToggleADS(ADS);
 				return EBTNodeResult::Succeeded;
 			}
-			if (States.Find(EAnimationState::Sprinting))
+			if (AnimationStates.Find(EAnimationState::Sprinting))
 			{
-				AICharacter->ToggleSprinting(States[EAnimationState::Sprinting]);
+				AICharacter->ToggleSprinting(AnimationStates[EAnimationState::Sprinting]);
 			}
 		}
 		// MyController->ClearFocus(EAIFocusPriority::LastFocusPriority);
