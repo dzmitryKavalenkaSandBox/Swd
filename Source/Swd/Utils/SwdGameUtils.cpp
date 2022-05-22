@@ -1,7 +1,5 @@
 #include "SwdGameUtils.h"
 
-#include "Logger.h"
-#include "Swd/Swd.h"
 #include "Swd/Interfacces/DataTableAnimated.h"
 
 
@@ -43,3 +41,27 @@ AActor* USwdGameUtils::GetClosestActor(FVector SourceLocation, TArray<AActor*> A
 
 	return ClosestActor;
 }
+//
+// UAnimMontage* USwdGameUtils::GetRandomMontage(UDataTable* DataTable, FName RowName, FString AnimAction)
+// {
+// 	static const FString ContextString(TEXT("Data table anim montage context"));
+// 	FPlayerAnimMontage* AminMontage = DataTable->FindRow<FPlayerAnimMontage>(
+// 		RowName,
+// 		ContextString,
+// 		true
+// 	);
+// 	if (AminMontage)
+// 	{
+// 		FString MontageSection;
+// 		if (AminMontage->AnimSectionCount == 1)
+// 		{
+// 			MontageSection = AnimAction;
+// 		}
+// 		else
+// 		{
+// 			int MontageSectionIndex = rand() % AminMontage->AnimSectionCount + 1;
+// 			MontageSection = AnimAction + FString::FromInt(MontageSectionIndex);
+// 		}
+// 		USwdGameUtils::PlayAnimMontage(Character, AminMontage, 1.f, FName(*MontageSection));
+// 	}
+// }

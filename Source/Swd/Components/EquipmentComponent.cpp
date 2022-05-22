@@ -3,6 +3,9 @@
 #include "Swd/Swd.h"
 #include "Swd/Character/SwdCharacter.h"
 #include "Engine/DataTable.h"
+#include "Swd/Animations/Animinstances/AnimInstanceBase.h"
+#include "Swd/DataAssets/CharacterData.h"
+#include "Swd/Utils/Logger.h"
 
 UEquipmentComponent::UEquipmentComponent()
 {
@@ -78,6 +81,11 @@ void UEquipmentComponent::AttachWeaponToHand()
 		WeaponInHands = ActualWeaponOnTheHip;
 		WeaponInHands->PlayDrawWeaponSound();
 		ActualWeaponOnTheHip = nullptr;
+		if (auto AnimInstance = GetCharacter()->GetAnimInstance())
+		{
+			ULogger::Log(ELogLevel::INFO, TEXT("AnimInstance->bHasWeaponEquipped = true;"));
+			AnimInstance->bHasWeaponEquipped = true;
+		}
 	}
 }
 
@@ -98,6 +106,11 @@ void UEquipmentComponent::AttachWeaponToThy()
 		ActualWeaponOnTheHip = WeaponInHands;
 		ActualWeaponOnTheHip->PlaySheathWeaponSound();
 		WeaponInHands = nullptr;
+		if (auto AnimInstance = GetCharacter()->GetAnimInstance())
+		{
+			ULogger::Log(ELogLevel::INFO, TEXT("AnimInstance->bHasWeaponEquipped = false;"));
+			AnimInstance->bHasWeaponEquipped = false;
+		}
 	}
 }
 

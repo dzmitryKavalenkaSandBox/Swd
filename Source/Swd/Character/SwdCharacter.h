@@ -43,6 +43,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Animation")
 	bool bIsAnimationBlended;
 
+	UFUNCTION(BlueprintPure, Category="Movement")
 	float GetSpeed();
 
 	UFUNCTION(BlueprintCallable)
@@ -58,6 +59,8 @@ public:
 	virtual void HandleDeathBehavior() override;
 
 	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION()
 	void OnKickOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -96,6 +99,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	class UCharacterData* CharacterData;
 
+	class UAnimInstanceBase* GetAnimInstance();
+
 protected:
 	void MoveForward(float Value);
 
@@ -124,4 +129,14 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category="Health", meta=(AllowPrivateAccess=true))
 	float CurrentHealth;
+
+	void AtEase();
+
+	UPROPERTY()
+	FTimerHandle RelaxedTimer;
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
+	float MinTimeBeforeCanRelax = 5;
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
+	float MaxTimeBeforeCanRelax = 10;
 };

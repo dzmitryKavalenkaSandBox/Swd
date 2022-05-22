@@ -13,7 +13,7 @@ void IDataTableAnimated::PlayDataTableAnimation(
 {
 	if (Character && DataTable)
 	{
-		ULogger::Log(ELogLevel::WARNING, FString("Attack Action Name ") + AnimActionName);
+		ULogger::Log(ELogLevel::WARNING, FString("Animation Action Name ") + AnimActionName);
 		static const FString ContextString(TEXT("Data table anim montage context"));
 		FPlayerAnimMontage* AminMontage;
 		FName RowName;

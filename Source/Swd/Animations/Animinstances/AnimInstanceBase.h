@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "Swd/Character/SwdCharacter.h"
 #include "AnimInstanceBase.generated.h"
 
 UCLASS()
@@ -24,6 +23,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim Instace")
 	bool bIsWeaponSheathed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim Instace")
+	bool bIsRelaxed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim Instace")
+	bool bHasWeaponEquipped;
+
 	UAnimInstanceBase();
 
 	virtual void NativeInitializeAnimation() override;
@@ -31,5 +36,5 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true))
-	ASwdCharacter* Character;
+	class ASwdCharacter* Character;
 };

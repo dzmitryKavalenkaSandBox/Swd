@@ -11,23 +11,23 @@ class SWD_API UCharacterData : public UDataAsset
 
 public:
 	UPROPERTY(EditAnywhere)
-	class USkeletalMesh* SkeletalMesh = nullptr;
+	USkeletalMesh* SkeletalMesh = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
-	class UClass* AnimInstanceClass = nullptr;
-
+	UClass* AnimInstanceClass = nullptr;
+	
 	UPROPERTY(EditAnywhere)
 	EFaction Faction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
 	float RunSpeed = 500.f;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
 	float RunSpeedCombat = 350.f;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
 	float WalkSpeed = 230.f;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement", meta=(AllowPrivateAccess=true))
 	float WalkSpeedCombat = 180.f;
 };

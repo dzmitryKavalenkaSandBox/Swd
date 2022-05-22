@@ -7,6 +7,7 @@
 #include "GameFramework/Controller.h"
 #include "Kismet/GameplayStatics.h"
 #include "Swd/Swd.h"
+#include "Swd/Animations/Animinstances/AnimInstanceBase.h"
 #include "Swd/Components/AttackComponent.h"
 #include "Swd/Components/DamageConsumerComponent.h"
 #include "Swd/Components/DamageInflictorComponent.h"
@@ -73,6 +74,33 @@ void ASwdCharacter::BeginPlay()
 	LeftLegCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ASwdCharacter::OnKickOverlapBegin);
 }
 
+void ASwdCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	auto AnimInstance = GetAnimInstance();
+	if (GetSpeed() == 0)
+	{
+		if (!RelaxedTimer.IsValid())
+		{
+			GetWorld()->GetTimerManager().SetTimer(RelaxedTimer, this, &ASwdCharacter::AtEase,
+			                                       1.f, false, FMath::RandRange(
+				                                       MinTimeBeforeCanRelax, MaxTimeBeforeCanRelax));
+		}
+		if (AnimInstance)
+		{
+			AnimInstance->bHasWeaponEquipped = EquipmentComponent->WeaponInHands;
+		}
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(RelaxedTimer);
+		if (AnimInstance)
+		{
+			AnimInstance->bIsRelaxed = false;
+		}
+	}
+}
+
 void ASwdCharacter::OnKickOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                        const FHitResult& SweepResult)
@@ -123,7 +151,6 @@ void ASwdCharacter::EquipSheathWeapon()
 
 void ASwdCharacter::ManageCombatState(bool bEnableCombat)
 {
-	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
 	bIsInCombat = bEnableCombat;
 	if (bEnableCombat)
 	{
@@ -239,6 +266,19 @@ void ASwdCharacter::InitialMovementSetUp()
 	GetCharacterMovement()->AirControl = 0.35f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+}
+
+void ASwdCharacter::AtEase()
+{
+	if (auto AnimInstance = GetAnimInstance())
+	{
+		AnimInstance->bIsRelaxed = true;
+	}
+}
+
+UAnimInstanceBase* ASwdCharacter::GetAnimInstance()
+{
+	return Cast<UAnimInstanceBase>(GetMesh()->GetAnimInstance());
 }
 
 float ASwdCharacter::GetCurrentHealth() const

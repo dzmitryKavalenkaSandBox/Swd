@@ -22,4 +22,6 @@ public:
 	                             FName StartSectionName = FName("Default"));
 
 	static AActor* GetClosestActor(FVector SourceLocation, TArray<AActor*> Actors);
+
+	// static UAnimMontage* GetRandomMontage(class UDataTable* DataTable, FName RowName, FString AnimAction);
 };
