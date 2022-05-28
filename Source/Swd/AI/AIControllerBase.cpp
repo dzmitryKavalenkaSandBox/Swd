@@ -11,6 +11,7 @@
 #include "SmartObjects/SmartObject.h"
 #include "Swd/Swd.h"
 #include "Swd/Character/AICharacterBase.h"
+#include "Swd/Components/Modular/LockOnTargetModule/LockOnTargetComponent.h"
 #include "Swd/Utils/SwdGameUtils.h"
 
 
@@ -107,6 +108,7 @@ void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 
 		if (ShouldStartDetection())
 		{
+			Agent->LockOnTargetComponent->SetTargetToLockOn(ClosestHostile);
 			StartDetection();
 		}
 	}

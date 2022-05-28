@@ -10,8 +10,8 @@ enum class EAIState : uint8
 {
 	Idle UMETA(DisplayName = "Idle"),
 	OnDuty UMETA(DisplayName = "OnDuty"),
-	ManDown UMETA(DisplayName = "Man Down"),
 	Alerted UMETA(DisplayName = "Alerted"),
+	ManDown UMETA(DisplayName = "Man Down"),
 	LostEnemy UMETA(DisplayName = "Lost Enemy"),
 	Search UMETA(DisplayName = "Search"),
 	Attack UMETA(DisplayName = "Attack")

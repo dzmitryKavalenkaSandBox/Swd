@@ -49,8 +49,3 @@ private:
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
 	bool bRotateOnTick;
 };
-
-inline AActor* ULockOnTargetComponent::GetCurrentTarget()
-{
-	return CurrentTarget;
-}

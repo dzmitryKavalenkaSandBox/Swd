@@ -82,7 +82,7 @@ enum class EAnimationState : uint8
 {
 	Idle UMETA(DisplayName = "Idle"),
 	OnDuty UMETA(DisplayName = "OnDuty"),
-	Combat UMETA(DisplayName = "Combat"),
 	Focus UMETA(DisplayName = "Focus"),
+	Combat UMETA(DisplayName = "Combat"),
 	Sprinting UMETA(DisplayName = "Sprinting"),
 };

@@ -8,6 +8,7 @@
 #include "Swd/AI/AIControllerBase.h"
 #include "Swd/Animations/Animinstances/AnimInstanceBase.h"
 #include "Swd/Components/EquipmentComponent.h"
+#include "Swd/Components/Modular/LockOnTargetModule/LockOnTargetComponent.h"
 #include "Swd/Components/Modular/Stamina/StaminaComponent.h"
 #include "Swd/UI/HealthStaminaWidget.h"
 #include "Swd/Utils/Logger.h"
@@ -25,6 +26,9 @@ AAICharacterBase::AAICharacterBase()
 	SphereAroundAI->SetCollisionProfileName(CollisionProfile::OverlapAll);
 	SphereAroundAI->SetGenerateOverlapEvents(true);
 	SphereAroundAI->SetSphereRadius(600.f);
+
+	LockOnTargetComponent = CreateDefaultSubobject<ULockOnTargetComponent>(TEXT("Lock On Target Component"));
+	LockOnTargetComponent->SetUpComponent(nullptr, true);
 }
 
 void AAICharacterBase::BeginPlay()
@@ -38,7 +42,6 @@ void AAICharacterBase::BeginPlay()
 	}
 	SphereAroundAI->OnComponentBeginOverlap.AddDynamic(this, &AAICharacterBase::OnSphereOverlapBegin);
 	SphereAroundAI->OnComponentEndOverlap.AddDynamic(this, &AAICharacterBase::OnSphereOverlapEnd);
-
 	UpdateWidgetRef();
 }
 

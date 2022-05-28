@@ -106,6 +106,9 @@ public:
 
 	virtual void ManageCombatState(bool bEnableCombat) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	class ULockOnTargetComponent* LockOnTargetComponent;
+
 protected:
 	virtual void InitialMovementSetUp() override;
 

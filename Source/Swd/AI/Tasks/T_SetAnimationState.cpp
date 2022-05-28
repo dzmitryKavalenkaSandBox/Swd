@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "T_SetAnimationState.h"
 
 #include "AIController.h"
@@ -8,7 +5,6 @@
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
 #include "Swd/AI/AIControllerBase.h"
 #include "Swd/Character/AICharacterBase.h"
-#include "Swd/Utils/Logger.h"
 
 
 UT_SetAnimationState::UT_SetAnimationState(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -55,22 +51,21 @@ EBTNodeResult::Type UT_SetAnimationState::ExecuteTask(UBehaviorTreeComponent& Ow
 					MyController->UpdateAIState(EAIState::Idle);
 				}
 			}
-			if (AnimationStates.Find(EAnimationState::Combat))
-			{
-				AICharacter->ToggleCombat(AnimationStates[EAnimationState::Combat]);
-			}
-			if (AnimationStates.Find(EAnimationState::Focus) && EnemyActor)
-			{
-				AnimationStates[EAnimationState::Focus]
-					? MyController->SetFocus(EnemyActor)
-					: MyController->ClearFocus(EAIFocusPriority::LastFocusPriority);
-				// AICharacter->ToggleADS(ADS);
-				return EBTNodeResult::Succeeded;
-			}
-			if (AnimationStates.Find(EAnimationState::Sprinting))
-			{
-				AICharacter->ToggleSprinting(AnimationStates[EAnimationState::Sprinting]);
-			}
+			// if (AnimationStates.Find(EAnimationState::Focus) && EnemyActor)
+			// {
+			// 	AnimationStates[EAnimationState::Focus]
+			// 		? AICharacter->LockOnTargetComponent->SetTargetToLockOn(EnemyActor)
+			// 		: AICharacter->LockOnTargetComponent->SetTargetToLockOn(nullptr);
+			// }
+			// if (AnimationStates.Find(EAnimationState::Combat))
+			// {
+			// 	AICharacter->ToggleCombat(AnimationStates[EAnimationState::Combat]);
+			// }
+
+			// if (AnimationStates.Find(EAnimationState::Sprinting))
+			// {
+			// 	AICharacter->ToggleSprinting(AnimationStates[EAnimationState::Sprinting]);
+			// }
 		}
 		// MyController->ClearFocus(EAIFocusPriority::LastFocusPriority);
 		return EBTNodeResult::Succeeded;

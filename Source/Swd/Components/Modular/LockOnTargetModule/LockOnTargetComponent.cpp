@@ -32,7 +32,7 @@ void ULockOnTargetComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void ULockOnTargetComponent::RotateCharacterToTarget(FVector& LocationOfTarget)
 {
-	if (Owner)
+	if (Owner && Owner->GetController()->LineOfSightTo(CurrentTarget))
 	{
 		LocationOfTarget = CurrentTarget->GetActorLocation();
 		FVector SelfLocation = Owner->GetActorLocation();
@@ -67,4 +67,9 @@ void ULockOnTargetComponent::SetUpComponent(USpringArmComponent* SpringArmCompon
 void ULockOnTargetComponent::SetTargetToLockOn(AActor* Target)
 {
 	CurrentTarget = Target;
+}
+
+AActor* ULockOnTargetComponent::GetCurrentTarget()
+{
+	return CurrentTarget;
 }
