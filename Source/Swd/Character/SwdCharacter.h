@@ -105,6 +105,9 @@ public:
 	
 	virtual void Ready();
 
+	UFUNCTION()
+	virtual void InitialMovementSetUp();
+
 protected:
 	void MoveForward(float Value);
 
@@ -123,9 +126,6 @@ protected:
 	void LookUpAtRate(float Rate);
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	UFUNCTION()
-	virtual void InitialMovementSetUp();
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess=true))

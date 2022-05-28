@@ -109,8 +109,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
 	class ULockOnTargetComponent* LockOnTargetComponent;
 
-protected:
 	virtual void InitialMovementSetUp() override;
+protected:
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))

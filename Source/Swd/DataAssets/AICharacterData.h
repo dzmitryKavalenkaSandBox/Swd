@@ -13,4 +13,10 @@ class SWD_API UAICharacterData : public UCharacterData
 public:
 	UPROPERTY(EditAnyWhere)
 	ECombatRole CombatRole;
+
+	/*
+	 * Animinstace class to use when AI is alerted
+	 */
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UClass* AlertedAnimInstanceClass = nullptr;
 };

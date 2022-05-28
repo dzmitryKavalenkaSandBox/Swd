@@ -4,9 +4,11 @@
 #include "UObject/Interface.h"
 #include "StatefulAIController.generated.h"
 
+class AAICharacterBase;
+class AAICharacter;
 class UBlackboardComponent;
 UENUM(BlueprintType)
-enum class EAIState : uint8
+	enum class EAIState : uint8
 {
 	Idle UMETA(DisplayName = "Idle"),
 	OnDuty UMETA(DisplayName = "OnDuty"),
