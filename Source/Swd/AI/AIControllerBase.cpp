@@ -106,7 +106,6 @@ void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 	ASwdCharacter* SensedCharacter = Cast<ASwdCharacter>(Actor);
 	if (UAIPerceptionSystem::GetSenseClassForStimulus(GetWorld(), Stimulus) == UAISense_Sight::StaticClass())
 	{
-		ULogger::Log(ELogLevel::INFO, FString("Successfully sensed :") + (Stimulus.WasSuccessfullySensed() ? "true" : "false"));
 		ManageSensedActor(SensedCharacter);
 
 		if (ShouldStartDetection())
@@ -166,12 +165,10 @@ void AAIControllerBase::ManageSensedActor(AActor* SensedActor)
 {
 	if (SensedActors.Contains(SensedActor))
 	{
-		ULogger::Log(ELogLevel::INFO, FString("Removing Actor from sensed list"));
 		SensedActors.Remove(SensedActor);
 	}
 	else
 	{
-		ULogger::Log(ELogLevel::INFO, FString("Adding Actor to sensed list"));
 		SensedActors.Add(SensedActor);
 	}
 }
@@ -234,7 +231,6 @@ bool AAIControllerBase::ShouldStartDetection()
 void AAIControllerBase::StartDetection()
 {
 	DetectionLevel = CalculateDetectionLevelIncrement();
-	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
 	Agent->UpdateWidgetVis(true);
 	GetWorldTimerManager().SetTimer(DetectionTimer, this, &AAIControllerBase::UpdateDetectionLevel, RateOfDetection,
 	                                true,
@@ -245,7 +241,7 @@ void AAIControllerBase::StartDetection()
 void AAIControllerBase::SearchForEnemy()
 {
 	ULogger::Log(ELogLevel::INFO,
-	             FString("Seconds spent searching: ") + FString::FromInt(
+	             FString("Seconds Left for searching: ") + FString::FromInt(MaxSearchTimeSec -
 		             UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) - SearchTimeStamp));
 
 	if (UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) - SearchTimeStamp < MaxSearchTimeSec)
