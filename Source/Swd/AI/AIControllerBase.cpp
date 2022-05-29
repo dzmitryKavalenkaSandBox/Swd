@@ -30,7 +30,7 @@ AAIControllerBase::AAIControllerBase()
 	Sight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
 	Hearing = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Config"));
 
-	Sight->SightRadius = 2000.f;
+	Sight->SightRadius = SightPerceptionRadius;
 	Sight->LoseSightRadius = Sight->SightRadius + 500.f;
 	Sight->PeripheralVisionAngleDegrees = 90.f;
 
@@ -106,6 +106,7 @@ void AAIControllerBase::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 	ASwdCharacter* SensedCharacter = Cast<ASwdCharacter>(Actor);
 	if (UAIPerceptionSystem::GetSenseClassForStimulus(GetWorld(), Stimulus) == UAISense_Sight::StaticClass())
 	{
+		ULogger::Log(ELogLevel::INFO, FString("Successfully sensed :") + (Stimulus.WasSuccessfullySensed() ? "true" : "false"));
 		ManageSensedActor(SensedCharacter);
 
 		if (ShouldStartDetection())
@@ -129,6 +130,8 @@ void AAIControllerBase::UpdateDetectionLevel()
 				return;
 			}
 			BBC->ClearValue(BBKeys::LastLocationOfClosestHostile);
+			GetWorldTimerManager().ClearTimer(DetectionTimer);
+			Agent->UpdateWidgetVis(false);
 			UpdateAIState(EAIState::Idle);
 			return;
 		}
@@ -163,10 +166,12 @@ void AAIControllerBase::ManageSensedActor(AActor* SensedActor)
 {
 	if (SensedActors.Contains(SensedActor))
 	{
+		ULogger::Log(ELogLevel::INFO, FString("Removing Actor from sensed list"));
 		SensedActors.Remove(SensedActor);
 	}
 	else
 	{
+		ULogger::Log(ELogLevel::INFO, FString("Adding Actor to sensed list"));
 		SensedActors.Add(SensedActor);
 	}
 }

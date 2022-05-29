@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Swd/AI/AIControllerBase.h"
 #include "Swd/Animations/Animinstances/AnimInstanceBase.h"
 #include "Swd/Components/EquipmentComponent.h"
@@ -29,6 +30,12 @@ AAICharacterBase::AAICharacterBase()
 
 	LockOnTargetComponent = CreateDefaultSubobject<ULockOnTargetComponent>(TEXT("Lock On Target Component"));
 	LockOnTargetComponent->SetUpComponent(nullptr, true);
+
+	Eyes = CreateDefaultSubobject<USphereComponent>(TEXT("Eyes"));
+	Eyes->SetupAttachment(RootComponent);
+	Eyes->SetSphereRadius(32.f);
+	Eyes->SetRelativeLocation(FVector(12, 0, 75));
+	Eyes->SetRelativeScale3D(FVector(1, 1, 0.531));
 }
 
 void AAICharacterBase::BeginPlay()
@@ -226,4 +233,19 @@ void AAICharacterBase::ToggleSprinting(bool bShouldSprint)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
 	}
+}
+
+
+void AAICharacterBase::GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const
+{
+	FTransform T = GetAIEyesTransform();
+	Location = T.GetLocation();
+	Rotation = T.Rotator();
+}
+
+FTransform AAICharacterBase::GetAIEyesTransform() const
+{
+	FVector EyesWorldLocation = Eyes->GetComponentLocation();
+	FRotator ActorRotation = GetActorRotation();
+	return UKismetMathLibrary::MakeTransform(EyesWorldLocation, ActorRotation);
 }

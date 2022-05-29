@@ -110,6 +110,14 @@ public:
 	class ULockOnTargetComponent* LockOnTargetComponent;
 
 	virtual void InitialMovementSetUp() override;
+
+	// Override for AI Perception "Eye" Location
+	virtual void GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const override;
+
+	// AI Eyes function
+	UFUNCTION(Category = AI)
+	FTransform GetAIEyesTransform() const;
+
 protected:
 
 private:
@@ -133,4 +141,7 @@ private:
 	UFUNCTION()
 	void OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	USphereComponent* Eyes;
 };

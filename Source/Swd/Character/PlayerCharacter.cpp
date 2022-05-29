@@ -7,7 +7,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Swd/Animations/Animinstances/AnimInstanceBase.h"
-#include "Swd/Components/EquipmentComponent.h"
 #include "Swd/Components/Modular/LockOnTargetModule/LockOnTargetComponent.h"
 #include "Swd/Components/Modular/Stamina/StaminaComponent.h"
 #include "Swd/DataAssets/CharacterData.h"

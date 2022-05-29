@@ -148,4 +148,7 @@ private:
 	float CalculateDetectionLevelIncrement();
 
 	ASwdCharacter* ClosestHostile = nullptr;
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true), Category="Perception")
+	float SightPerceptionRadius = 2000.f;
 };
