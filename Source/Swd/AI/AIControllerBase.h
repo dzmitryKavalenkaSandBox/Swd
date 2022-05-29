@@ -52,6 +52,17 @@ public:
 
 	virtual UBlackboardComponent* GetBBC() override;
 
+	void StartSearchTimer();
+
+	/**
+	 * Time is seconds when search state was set for AI
+	 */
+	float SearchTimeStamp = 0.f;
+
+	FTimerHandle DetectionTimer;
+
+	FTimerHandle SearchTimer;
+
 protected:
 	UPROPERTY(VisibleAnywhere)
 	UAIPerceptionComponent* AIPerceptionComponent;
@@ -68,8 +79,6 @@ protected:
 	UAISenseConfig_Sight* Sight;
 
 	UAISenseConfig_Hearing* Hearing;
-
-	FTimerHandle DetectionTimer;
 
 	void UpdateDetectionLevel();
 
@@ -92,9 +101,11 @@ private:
 	bool ShouldStartDetection();
 
 	void StartDetection();
-	
+
+	void SearchForEnemy();
+
 	void ListenForClosestHostile();
-	
+
 	void SwitchToAIState(EAIState State);
 
 	bool HaveHostileInSenseArea();
@@ -130,6 +141,9 @@ private:
 	 */
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true), Category="Emeny Detection")
 	float MaxDetectionLevel = 10.f;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true), Category="Emeny Search")
+	float MaxSearchTimeSec = 10.f;
 
 	float CalculateDetectionLevelIncrement();
 

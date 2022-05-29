@@ -20,4 +20,7 @@ public:
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Blackboard")
 	TMap<EAnimationState, bool> AnimationStates;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Focus")
+	AActor* FocusTarget = nullptr;
 };

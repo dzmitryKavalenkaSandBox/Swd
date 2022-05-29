@@ -5,6 +5,7 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h"
 #include "Runtime/AIModule/Classes/Perception/AISenseConfig_Hearing.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -12,6 +13,7 @@
 #include "Swd/Swd.h"
 #include "Swd/Character/AICharacterBase.h"
 #include "Swd/Components/Modular/LockOnTargetModule/LockOnTargetComponent.h"
+#include "Swd/Utils/Logger.h"
 #include "Swd/Utils/SwdGameUtils.h"
 
 
@@ -119,21 +121,24 @@ void AAIControllerBase::UpdateDetectionLevel()
 	if (!HaveHostileInSenseArea())
 	{
 		BBC->ClearValue(BBKeys::ClosestHostile);
-		if (DetectionLevel > 0.f)
+		if (!IsStateEquals(EAIState::Search))
 		{
-			DetectionLevel -= 1;
+			if (DetectionLevel > 0.f)
+			{
+				DetectionLevel -= 1;
+				return;
+			}
+			BBC->ClearValue(BBKeys::LastLocationOfClosestHostile);
+			UpdateAIState(EAIState::Idle);
 			return;
 		}
-		BBC->ClearValue(BBKeys::LastLocationOfClosestHostile);
-		GetWorldTimerManager().ClearTimer(DetectionTimer);
-		Agent->UpdateWidgetVis(false);
-		UpdateAIState(EAIState::Idle);
 		return;
 	}
 
 	assert(ClosestHostile);
 	BBC->SetValueAsObject(BBKeys::ClosestHostile, ClosestHostile);
 	BBC->SetValueAsVector(BBKeys::LastLocationOfClosestHostile, ClosestHostile->GetActorLocation());
+	SearchTimeStamp = UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld());
 
 	RateOfDetection = BBC->GetValueAsFloat(BBKeys::DistanceToClosestHostile) <= DistanceForRateOfDetectionChange
 		                  ? RateOfDetection
@@ -148,7 +153,7 @@ void AAIControllerBase::UpdateDetectionLevel()
 		return;
 	}
 
-	if (DetectionLevel >= SwitchToAlertDetectionLevel)
+	if (DetectionLevel >= SwitchToAlertDetectionLevel && !IsStateEquals(EAIState::Search))
 	{
 		UpdateAIState(EAIState::Alerted);
 	}
@@ -169,6 +174,13 @@ void AAIControllerBase::ManageSensedActor(AActor* SensedActor)
 UBlackboardComponent* AAIControllerBase::GetBBC()
 {
 	return BBC;
+}
+
+void AAIControllerBase::StartSearchTimer()
+{
+	GetWorldTimerManager().SetTimer(SearchTimer, this, &AAIControllerBase::SearchForEnemy, 1.f,
+	                                true,
+	                                0.f);
 }
 
 
@@ -217,11 +229,26 @@ bool AAIControllerBase::ShouldStartDetection()
 void AAIControllerBase::StartDetection()
 {
 	DetectionLevel = CalculateDetectionLevelIncrement();
+	ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
 	Agent->UpdateWidgetVis(true);
 	GetWorldTimerManager().SetTimer(DetectionTimer, this, &AAIControllerBase::UpdateDetectionLevel, RateOfDetection,
 	                                true,
 	                                0.f);
 	Agent->GetCharacterMovement()->StopActiveMovement();
+}
+
+void AAIControllerBase::SearchForEnemy()
+{
+	ULogger::Log(ELogLevel::INFO,
+	             FString("Seconds spent searching: ") + FString::FromInt(
+		             UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) - SearchTimeStamp));
+
+	if (UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) - SearchTimeStamp < MaxSearchTimeSec)
+	{
+		return;
+	}
+	GetWorldTimerManager().ClearTimer(SearchTimer);
+	UpdateAIState(EAIState::LostEnemy);
 }
 
 void AAIControllerBase::ListenForClosestHostile()
@@ -248,8 +275,6 @@ void AAIControllerBase::ListenForClosestHostile()
 		if (DistanceToHostile < SwitchToAttackDistance)
 		{
 			UpdateAIState(EAIState::Attack);
-			GetWorldTimerManager().ClearTimer(DetectionTimer);
-			Agent->UpdateWidgetVis(false);
 		}
 	}
 	else

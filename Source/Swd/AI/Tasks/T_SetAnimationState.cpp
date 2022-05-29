@@ -5,6 +5,7 @@
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
 #include "Swd/AI/AIControllerBase.h"
 #include "Swd/Character/AICharacterBase.h"
+#include "Swd/Components/Modular/LockOnTargetModule/LockOnTargetComponent.h"
 
 
 UT_SetAnimationState::UT_SetAnimationState(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -29,12 +30,10 @@ EBTNodeResult::Type UT_SetAnimationState::ExecuteTask(UBehaviorTreeComponent& Ow
 			{
 				if (AnimationStates[EAnimationState::Idle])
 				{
-					AICharacter->AtEase();
 					MyController->UpdateAIState(EAIState::Idle);
 				}
 				else
 				{
-					AICharacter->Ready();
 					MyController->UpdateAIState(EAIState::OnDuty);
 				}
 			}
@@ -51,17 +50,29 @@ EBTNodeResult::Type UT_SetAnimationState::ExecuteTask(UBehaviorTreeComponent& Ow
 					MyController->UpdateAIState(EAIState::Idle);
 				}
 			}
-			// if (AnimationStates.Find(EAnimationState::Focus) && EnemyActor)
-			// {
-			// 	AnimationStates[EAnimationState::Focus]
-			// 		? AICharacter->LockOnTargetComponent->SetTargetToLockOn(EnemyActor)
-			// 		: AICharacter->LockOnTargetComponent->SetTargetToLockOn(nullptr);
-			// }
+			if (AnimationStates.Find(EAnimationState::Focus))
+			{
+				if (AnimationStates[EAnimationState::Focus])
+				{
+					if (FocusTarget)
+					{
+						AICharacter->LockOnTargetComponent->SetTargetToLockOn(FocusTarget);
+					}
+					else if (EnemyActor)
+					{
+						AICharacter->LockOnTargetComponent->SetTargetToLockOn(EnemyActor);
+					}
+				}
+				else
+				{
+					AICharacter->LockOnTargetComponent->SetTargetToLockOn(nullptr);
+				}
+			}
 			// if (AnimationStates.Find(EAnimationState::Combat))
 			// {
 			// 	AICharacter->ToggleCombat(AnimationStates[EAnimationState::Combat]);
 			// }
-
+			//
 			// if (AnimationStates.Find(EAnimationState::Sprinting))
 			// {
 			// 	AICharacter->ToggleSprinting(AnimationStates[EAnimationState::Sprinting]);
