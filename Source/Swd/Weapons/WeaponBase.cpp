@@ -1,13 +1,11 @@
 #include "WeaponBase.h"
 
 #include "Components/AudioComponent.h"
-#include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "Sound/SoundCue.h"
 #include "Swd/Swd.h"
+#include "Swd/Character/AICharacterBase.h"
 #include "Swd/Components/AttackComponent.h"
-#include "Swd/Components/DamageInflictorComponent.h"
-#include "Swd/Utils/Logger.h"
 
 AWeaponBase::AWeaponBase()
 {
@@ -28,9 +26,16 @@ AWeaponBase::AWeaponBase()
 	InteractionSphere->SetCollisionProfileName("OverlapAllDynamics");
 	InteractionSphere->SetGenerateOverlapEvents(true);
 
-	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision Box"));
-	CollisionBox->SetupAttachment(WeaponSkeletalMesh);
-	CollisionBox->SetCollisionProfileName(CollisionProfile::NoCollision);
+	BladeDamagePointStart = CreateDefaultSubobject<USphereComponent>(TEXT("Damage Point Start"));
+	BladeDamagePointStart->SetupAttachment(WeaponSkeletalMesh);
+	BladeDamagePointStart->SetRelativeScale3D(FVector(0.2, 0.2, 0.2));
+	BladeDamagePointEnd = CreateDefaultSubobject<USphereComponent>(TEXT("Damage Point End"));
+	BladeDamagePointEnd->SetupAttachment(WeaponSkeletalMesh);
+	BladeDamagePointEnd->SetRelativeScale3D(FVector(0.2, 0.2, 0.2));
+
+	// CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision Box"));
+	// CollisionBox->SetupAttachment(WeaponSkeletalMesh);
+	// CollisionBox->SetCollisionProfileName(CollisionProfile::NoCollision);
 
 	DrawWeaponSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Draw Weapon Audio cpmponent"));
 	SheathWeaponSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Sheath Weapon Audio cpmponent"));
@@ -49,21 +54,27 @@ void AWeaponBase::SetOwnerCharacter(ASwdCharacter* NewOwner)
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-
+	SetActorTickEnabled(false);
 	InteractionSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnInteractionSphereOverlapBegin);
 	InteractionSphere->OnComponentEndOverlap.AddDynamic(this, &AWeaponBase::OnInteractionSphereOverlapEnd);
-	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnCollisionBoxOverlapBegin);
 
-	CollisionBox->AttachToComponent(
-		WeaponSkeletalMesh,
-		FAttachmentTransformRules(
-			EAttachmentRule::KeepWorld,
-			EAttachmentRule::KeepWorld,
-			EAttachmentRule::KeepWorld,
-			false
-		),
-		BoneSockets::CollisionBoxSocket
-	);
+	// CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnCollisionBoxOverlapBegin);
+	//
+	// CollisionBox->AttachToComponent(
+	// 	WeaponSkeletalMesh,
+	// 	FAttachmentTransformRules(
+	// 		EAttachmentRule::KeepWorld,
+	// 		EAttachmentRule::KeepWorld,
+	// 		EAttachmentRule::KeepWorld,
+	// 		false
+	// 	),
+	// 	BoneSockets::CollisionBoxSocket
+	// );
+}
+
+void AWeaponBase::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
 }
 
 void AWeaponBase::OnInteractionSphereOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -79,20 +90,26 @@ void AWeaponBase::OnInteractionSphereOverlapEnd(UPrimitiveComponent* OverlappedC
 	// ULogger::Log(ELogLevel::WARNING, __FUNCTION__);
 }
 
-void AWeaponBase::OnCollisionBoxOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-                                             UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-                                             const FHitResult& SweepResult)
-{
-	if (OtherActor != GetCharacter())
-	{
-		if (auto Attack = GetCharacter()->AttackComponent->GetCurrentAttack())
-		{
-			float DamageToInflict = GetWeaponBaseDamage() * Attack->GetAttackDamageFactor();
-			GetCharacter()->DamageInflictorComponent->InflictDamage(OtherActor, DamageToInflict);
-		}
-		else ULogger::Log(ELogLevel::ERROR, TEXT("Trying inflict damage on not set attack"));
-	}
-}
+//
+// void AWeaponBase::OnCollisionBoxOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+//                                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+//                                              const FHitResult& SweepResult)
+// {
+// 	ULogger::Log(ELogLevel::WARNING, FString("Hit Component name: ") + SweepResult.Component->GetName());
+// 	if (auto AI = Cast<AAICharacterBase>(OtherActor))
+// 	{
+// 		ULogger::Log(ELogLevel::WARNING, FString("Hit Bone name: ") + AI->GetMesh()->GetBoneName(OtherBodyIndex).ToString());
+// 	}
+// 	if (OtherActor != GetCharacter())
+// 	{
+// 		if (auto Attack = GetCharacter()->AttackComponent->GetCurrentAttack())
+// 		{
+// 			float DamageToInflict = GetWeaponBaseDamage() * Attack->GetAttackDamageFactor();
+// 			GetCharacter()->DamageInflictorComponent->InflictDamage(OtherActor, DamageToInflict, SweepResult);
+// 		}
+// 		else ULogger::Log(ELogLevel::ERROR, TEXT("Trying inflict damage on not set attack"));
+// 	}
+// }
 
 ASwdCharacter* AWeaponBase::GetCharacter()
 {

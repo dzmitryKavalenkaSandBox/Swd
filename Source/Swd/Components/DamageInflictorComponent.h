@@ -14,9 +14,9 @@ public:
 	UDamageInflictorComponent();
 
 	UFUNCTION()
-	void InflictDamage(AActor* DamagedActor, float Damage, TSubclassOf<UDamageType> DamageType = UDamageType::StaticClass());
+	void InflictDamage(AActor* DamagedActor, float Damage, const FHitResult& HitResult,
+	                   TSubclassOf<UDamageType> DamageType = UDamageType::StaticClass());
 
 protected:
 	virtual void BeginPlay() override;
-	
 };

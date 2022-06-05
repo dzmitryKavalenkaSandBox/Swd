@@ -10,7 +10,7 @@ enum class EAttackSource: uint8
 	NONE UMETA(DisplayName = "NONE"),
 	RIGHT_LEG UMETA(DisplayName = "Right Leg"),
 	LEFT_LEG UMETA(DisplayName = "Left Leg"),
-	WEAPON UMETA(DisplayName = "Weapon"),
+	BLADE UMETA(DisplayName = "Blade"),
 	POMMEL UMETA(DisplayName = "Pommel"),
 };
 
@@ -43,7 +43,10 @@ public:
 	 */
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	EAttackSource AttackSource;
-	
+
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	UObject* AttackComponent = nullptr;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess=true))
 	UDataTable* AttackAnimMontageDataTable = nullptr;

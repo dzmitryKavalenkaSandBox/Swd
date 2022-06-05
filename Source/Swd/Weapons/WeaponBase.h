@@ -57,16 +57,24 @@ public:
 
 	float GetWeaponBaseDamage();
 
-	USceneComponent* GetWeaponStart();
-
-	USceneComponent* GetWeaponEnd();
-
 	/**
 	 *	Area upon entering which Character can interact with weapon
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	USphereComponent* InteractionSphere;
 
+	/**
+	 *	Start of the line trace
+	 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USphereComponent* BladeDamagePointStart;
+
+	/**
+	 * End of a line trace
+	 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USphereComponent* BladeDamagePointEnd;
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	USkeletalMeshComponent* WeaponSkeletalMesh;
 
@@ -85,17 +93,19 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Sounds")
 	USoundCue* SheathWeaponSoundCue = nullptr;
 
-	/**
-	*	'Damaging' area of the weapon
-	*/
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Collision", meta=(AllowPrivateAccess=true))
-	UBoxComponent* CollisionBox;
+	// /**
+	// *	'Damaging' area of the weapon
+	// */
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Collision", meta=(AllowPrivateAccess=true))
+	// UBoxComponent* CollisionBox;
 
 	UFUNCTION()
 	void SetOwnerCharacter(ASwdCharacter* NewOwner);
 
 protected:
 	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION()
 	void OnInteractionSphereOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -105,11 +115,11 @@ protected:
 	void OnInteractionSphereOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UFUNCTION()
-	void OnCollisionBoxOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-	                                const FHitResult& SweepResult);
-	
+	// UFUNCTION()
+	// void OnCollisionBoxOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	//                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	//                                 const FHitResult& SweepResult);
+
 	ASwdCharacter* GetCharacter();
 private:
 	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess=true))

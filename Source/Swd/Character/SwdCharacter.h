@@ -31,7 +31,13 @@ public:
 	class UBoxComponent* LeftLegCollisionBox;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USphereComponent* LeftLegEndTrace;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UBoxComponent* RightLegCollisionBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USphereComponent* RightLegEndTrace;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UDamageInflictorComponent* DamageInflictorComponent;
@@ -62,10 +68,10 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
-	UFUNCTION()
-	void OnKickOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-	                        const FHitResult& SweepResult);
+	// UFUNCTION()
+	// void OnKickOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	//                         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	//                         const FHitResult& SweepResult);
 
 	UPROPERTY(EditAnywhere, Category="Health")
 	float MaxHealth = 100.f;
@@ -107,6 +113,15 @@ public:
 
 	UFUNCTION()
 	virtual void InitialMovementSetUp();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetupPhysicalAnimation();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void HitReaction(FHitResult HitResult);
+
+	UPROPERTY(EditAnywhere, Category="Attack")
+	float KickBaseDamage = 10.f;
 
 protected:
 	void MoveForward(float Value);

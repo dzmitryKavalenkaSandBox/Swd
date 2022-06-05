@@ -31,9 +31,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
 	UPROPERTY()
@@ -43,6 +41,14 @@ private:
 	void SwitchCollisionProfile(FName CollisionProfileName);
 	
 	UBoxComponent* GetAttackSourceCollisionBox();
-
+	
 	ASwdCharacter* GetCharacter();
+	
+	FHitResult SwingForAttack(FVector TraceStart, FVector TraceEnd, FCollisionQueryParams CollisionParams);
+	
+	void DrawDebugTraceLine(FVector TraceStart, FVector TraceEnd);
+	
+	void HandleTraceHit(FHitResult HitResult, float BaseDamage);
+	
+	void DoAttackTrace();
 };

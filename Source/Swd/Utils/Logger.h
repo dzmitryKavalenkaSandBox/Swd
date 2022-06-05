@@ -32,6 +32,8 @@ public:
 	* @param FString the message for display
 	*/
 	static void Log(ELogLevel Level, FString Message);
+	
+	static void LogError(FString Message);
 	/**
 	* Log - prints a message to all the log outputs with a specific color
 	* @param Level {@see ELogLevel} affects color of log

@@ -1,6 +1,5 @@
 #include "DamageInflictorComponent.h"
 
-#include "AttackComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Swd/Character/SwdCharacter.h"
 #include "Swd/Utils/Logger.h"
@@ -18,7 +17,8 @@ void UDamageInflictorComponent::BeginPlay()
 }
 
 
-void UDamageInflictorComponent::InflictDamage(AActor* DamagedActor, float Damage, TSubclassOf<UDamageType> DamageType)
+void UDamageInflictorComponent::InflictDamage(AActor* DamagedActor, float Damage, const FHitResult& HitResult,
+                                              TSubclassOf<UDamageType> DamageType)
 {
 	if (auto Owner = Cast<ASwdCharacter>(GetOwner()))
 	{
@@ -29,6 +29,10 @@ void UDamageInflictorComponent::InflictDamage(AActor* DamagedActor, float Damage
 			Owner,
 			DamageType
 		);
+	}
+	if (auto DamagedCharacter = Cast<ASwdCharacter>(DamagedActor))
+	{
+		DamagedCharacter->HitReaction(HitResult);
 	}
 	else ULogger::Log(ELogLevel::ERROR, TEXT("Damage Inflictor Component does not have an owner"));
 }

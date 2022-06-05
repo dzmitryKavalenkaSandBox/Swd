@@ -52,6 +52,7 @@ void UEquipmentComponent::EquipWeapon()
 	{
 		ActualWeaponOnTheHip->WeaponState.StartInteraction();
 		PlayDataTableAnimation(GetCharacter(), EquipSwordAnimMontageDataTable, true, AnimAction::Equip);
+		GetCharacter()->ManageCombatState(true);
 	}
 }
 
@@ -61,6 +62,7 @@ void UEquipmentComponent::SheathWeapon()
 	{
 		WeaponInHands->WeaponState.StartInteraction();
 		PlayDataTableAnimation(GetCharacter(), EquipSwordAnimMontageDataTable, true, AnimAction::Sheath);
+		GetCharacter()->ManageCombatState(false);
 	}
 }
 

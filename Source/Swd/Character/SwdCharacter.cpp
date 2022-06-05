@@ -3,6 +3,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "Kismet/GameplayStatics.h"
@@ -39,18 +40,24 @@ ASwdCharacter::ASwdCharacter()
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("Attack Component"));
 	DamageInflictorComponent = CreateDefaultSubobject<UDamageInflictorComponent>(TEXT("Damage Inflictor Component"));
 	LeftLegCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Left Leg Collosing Box"));
+	LeftLegEndTrace = CreateDefaultSubobject<USphereComponent>(TEXT("Left Leg End Trace"));
 	LeftLegCollisionBox->SetupAttachment(RootComponent);
+	LeftLegEndTrace->SetupAttachment(RootComponent);
 	LeftLegCollisionBox->SetCollisionProfileName(CollisionProfile::NoCollision);
 	LeftLegCollisionBox->SetRelativeLocation(FVector(18.7f, -19.62f, -86.f));
 	LeftLegCollisionBox->SetRelativeRotation(FRotator(0.f, -85.f, 0.f));
 	LeftLegCollisionBox->SetRelativeScale3D(FVector(0.1875f, 0.4375f, 0.125f));
+	LeftLegEndTrace->SetRelativeScale3D(FVector(0.2, 0.2, 0.2));
 
 	RightLegCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Leg Collosing Box"));
+	RightLegEndTrace = CreateDefaultSubobject<USphereComponent>(TEXT("Right Leg End Trace"));
 	RightLegCollisionBox->SetupAttachment(RootComponent);
+	RightLegEndTrace->SetupAttachment(RootComponent);
 	RightLegCollisionBox->SetCollisionProfileName(CollisionProfile::NoCollision);
 	RightLegCollisionBox->SetRelativeLocation(FVector(-14.204f, 16.37f, -86.f));
 	RightLegCollisionBox->SetRelativeRotation(FRotator(0.f, -40.f, 0.f));
 	RightLegCollisionBox->SetRelativeScale3D(FVector(0.1875f, 0.4375f, 0.125f));
+	RightLegEndTrace->SetRelativeScale3D(FVector(0.2, 0.2, 0.2));
 }
 
 void ASwdCharacter::BeginPlay()
@@ -61,6 +68,8 @@ void ASwdCharacter::BeginPlay()
 		GetMesh()->SetSkeletalMesh(CharacterData->SkeletalMesh);
 		Faction = CharacterData->Faction;
 		GetMesh()->SetAnimInstanceClass(CharacterData->AnimInstanceClass);
+		SetupPhysicalAnimation();
+		GetMesh()->SetSimulatePhysics(true);
 	}
 	const FAttachmentTransformRules AttachmentRules(
 		EAttachmentRule::SnapToTarget,
@@ -69,9 +78,11 @@ void ASwdCharacter::BeginPlay()
 		false
 	);
 	LeftLegCollisionBox->AttachToComponent(GetMesh(), AttachmentRules, BoneSockets::LeftFoodKickSocket);
+	LeftLegEndTrace->AttachToComponent(GetMesh(), AttachmentRules, BoneSockets::LeftFootKickEndTraceSocket);
 	RightLegCollisionBox->AttachToComponent(GetMesh(), AttachmentRules, BoneSockets::RightFoodKickSocket);
-	RightLegCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ASwdCharacter::OnKickOverlapBegin);
-	LeftLegCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ASwdCharacter::OnKickOverlapBegin);
+	RightLegEndTrace->AttachToComponent(GetMesh(), AttachmentRules, BoneSockets::RightFootKickEndTraceSocket);
+	// RightLegCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ASwdCharacter::OnKickOverlapBegin);
+	// LeftLegCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ASwdCharacter::OnKickOverlapBegin);
 }
 
 void ASwdCharacter::Tick(float DeltaSeconds)
@@ -84,17 +95,18 @@ void ASwdCharacter::Tick(float DeltaSeconds)
 	}
 }
 
-void ASwdCharacter::OnKickOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-                                       const FHitResult& SweepResult)
-{
-	if (OtherActor != this)
-	{
-		DamageInflictorComponent->InflictDamage(
-			OtherActor, 10.f * AttackComponent->GetCurrentAttack()->GetAttackDamageFactor()
-		);
-	}
-}
+//
+// void ASwdCharacter::OnKickOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+//                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+//                                        const FHitResult& SweepResult)
+// {
+// 	if (OtherActor != this)
+// 	{
+// 		DamageInflictorComponent->InflictDamage(
+// 			OtherActor, 10.f * AttackComponent->GetCurrentAttack()->GetAttackDamageFactor(), SweepResult
+// 		);
+// 	}
+// }
 
 
 void ASwdCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)

@@ -11,6 +11,11 @@ void ULogger::Log(ELogLevel Level, FString Message)
 	Log(Level, Message, ELogOutput::ALL);
 }
 
+void ULogger::LogError(FString Message)
+{
+	Log(ELogLevel::ERROR, Message, ELogOutput::ALL);
+}
+
 void ULogger::Log(ELogLevel Level, FString Message, ELogOutput LogOutput)
 {
 	// only print when screen is selected and the GEngine object is available
