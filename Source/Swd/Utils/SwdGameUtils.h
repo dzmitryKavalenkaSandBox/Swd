@@ -20,6 +20,8 @@ public:
 	static float PlayAnimMontage(ASwdCharacter* AnimationOwner, FPlayerAnimMontage* AnimMontage,
 	                             float InPlayRate = 1.f,
 	                             FName StartSectionName = FName("Default"));
+	static float PlayAnimMontage(ASwdCharacter* AnimationOwner, UAnimMontage* AnimMontage, float InPlayRate,
+	                      FName StartSectionName);
 
 	static AActor* GetClosestActor(FVector SourceLocation, TArray<AActor*> Actors);
 

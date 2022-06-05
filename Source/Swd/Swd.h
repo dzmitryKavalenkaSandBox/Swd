@@ -89,3 +89,13 @@ enum class EAnimationState : uint8
 	Combat UMETA(DisplayName = "Combat"),
 	Sprinting UMETA(DisplayName = "Sprinting"),
 };
+
+UENUM(BlueprintType)
+enum class EAttackSource: uint8
+{
+	NONE UMETA(DisplayName = "NONE"),
+	RIGHT_LEG UMETA(DisplayName = "Right Leg"),
+	LEFT_LEG UMETA(DisplayName = "Left Leg"),
+	BLADE UMETA(DisplayName = "Blade"),
+	POMMEL UMETA(DisplayName = "Pommel"),
+};

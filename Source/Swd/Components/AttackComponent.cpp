@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Modular/Stamina/StaminaComponent.h"
 #include "Swd/Swd.h"
+#include "Swd/DataAssets/Attack/AttackData.h"
 #include "Swd/Utils/Logger.h"
 #include "Swd/Weapons/Sword.h"
 
@@ -22,7 +23,7 @@ void UAttackComponent::PerformAttackAnimation()
 	{
 		if (AttackToPreform)
 		{
-			AttackToPreform->PerformAttack(Character);
+			AttackToPreform->PerformAttackAnimation(Character);
 		}
 	}
 }
@@ -40,11 +41,11 @@ void UAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	AttackTraceOnTickAndHandleHitResult();
 }
 
-void UAttackComponent::SetAttackToPerform(TSubclassOf<UAttackBase> Attack)
+void UAttackComponent::SetAttackToPerform(UAttackData* Attack)
 {
 	if (Attack)
 	{
-		AttackToPreform = Attack.GetDefaultObject();
+		AttackToPreform = Attack;
 		AttackToPreform->Attacker = Cast<ASwdCharacter>(GetOwner());
 	}
 }
@@ -58,10 +59,10 @@ void UAttackComponent::AttackStart()
 void UAttackComponent::AttackEnd()
 {
 	SetComponentTickEnabled(false);
-	GetCharacter()->StaminaComponent->DrainStamina(GetCurrentAttack()->GetAttackStaminaFactor());
+	GetCharacter()->StaminaComponent->DrainStamina(GetCurrentAttack()->AttackStaminaFactor);
 }
 
-UAttackBase* UAttackComponent::GetCurrentAttack()
+UAttackData* UAttackComponent::GetCurrentAttack()
 {
 	return AttackToPreform;
 }
@@ -111,7 +112,7 @@ void UAttackComponent::HandleTraceHit(FHitResult HitResult, float BaseDamage)
 		{
 			if (auto Attack = GetCharacter()->AttackComponent->GetCurrentAttack())
 			{
-				float DamageToInflict = BaseDamage * Attack->GetAttackDamageFactor();
+				float DamageToInflict = BaseDamage * Attack->AttackDamageFactor;
 				GetCharacter()->DamageInflictorComponent->InflictDamage(HitResult.GetActor(), DamageToInflict,
 				                                                        HitResult);
 			}
@@ -182,7 +183,7 @@ void UAttackComponent::AttackTraceOnTickAndHandleHitResult()
 				break;
 			}
 		default: ULogger::Log(ELogLevel::ERROR, FString("Attack '") +
-		                      AttackToPreform->AttackName() + FString("' has non AttackSource set"));
+		                      AttackToPreform->AnimSectionName + FString("' has non AttackSource set"));
 			break;
 		}
 	}

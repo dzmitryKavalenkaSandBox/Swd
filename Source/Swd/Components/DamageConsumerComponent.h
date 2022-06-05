@@ -23,6 +23,4 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
-public:
 };

@@ -19,6 +19,17 @@ float USwdGameUtils::PlayAnimMontage(ASwdCharacter* AnimationOwner, FPlayerAnimM
 	return 0.f;
 }
 
+float USwdGameUtils::PlayAnimMontage(ASwdCharacter* AnimationOwner, UAnimMontage* AnimMontage,
+                                     float InPlayRate,
+                                     FName StartSectionName)
+{
+	if (AnimationOwner && AnimMontage)
+	{
+		return AnimationOwner->PlayAnimMontage(AnimMontage, InPlayRate, StartSectionName);
+	}
+	return 0.f;
+}
+
 AActor* USwdGameUtils::GetClosestActor(FVector SourceLocation, TArray<AActor*> Actors)
 {
 	if (Actors.Num() <= 0)

@@ -8,6 +8,7 @@
 
 class UAttackBase;
 class UProgressBar;
+class UAttackData;
 
 UCLASS()
 class SWD_API UHUDWidget : public UUserWidget
@@ -56,11 +57,11 @@ private:
 	ASwdCharacter* OwningPlayer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
-	TSubclassOf<UAttackBase> LeftLegKickAttack;
+	UAttackData* LeftLegKickAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
-	TSubclassOf<UAttackBase> RightLegKickAttack;
+	UAttackData* RightLegKickAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
-	TSubclassOf<UAttackBase> RightHandAttack;
+	UAttackData* RightHandAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
-	TSubclassOf<UAttackBase> PommelAttack;
+	UAttackData* PommelAttack;
 };
