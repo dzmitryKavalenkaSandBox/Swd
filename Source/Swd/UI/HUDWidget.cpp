@@ -8,7 +8,7 @@ void UHUDWidget::OnRightElbowPressed()
 	if (OwningPlayer)
 	{
 		OwningPlayer->AttackComponent->SetAttackToPerform(PommelAttack);
-		OwningPlayer->AttackComponent->Attack();
+		OwningPlayer->AttackComponent->PerformAttackAnimation();
 	}
 }
 
@@ -17,7 +17,7 @@ void UHUDWidget::OnLeftLegPressed()
 	if (OwningPlayer)
 	{
 		OwningPlayer->AttackComponent->SetAttackToPerform(LeftLegKickAttack);
-		OwningPlayer->AttackComponent->Attack();
+		OwningPlayer->AttackComponent->PerformAttackAnimation();
 	}
 }
 
@@ -26,7 +26,7 @@ void UHUDWidget::OnRightLegPressed()
 	if (OwningPlayer)
 	{
 		OwningPlayer->AttackComponent->SetAttackToPerform(RightLegKickAttack);
-		OwningPlayer->AttackComponent->Attack();
+		OwningPlayer->AttackComponent->PerformAttackAnimation();
 	}
 }
 
@@ -35,7 +35,7 @@ void UHUDWidget::OnRightHandPressed()
 	if (OwningPlayer)
 	{
 		OwningPlayer->AttackComponent->SetAttackToPerform(RightHandAttack);
-		OwningPlayer->AttackComponent->Attack();
+		OwningPlayer->AttackComponent->PerformAttackAnimation();
 	}
 }
 

@@ -16,7 +16,7 @@ public:
 	UAttackComponent();
 
 	UFUNCTION(BlueprintCallable)
-	void Attack();
+	void PerformAttackAnimation();
 
 	UFUNCTION(BlueprintCallable)
 	void SetAttackToPerform(TSubclassOf<UAttackBase> Attack);
@@ -37,18 +37,13 @@ private:
 	UPROPERTY()
 	UAttackBase* AttackToPreform = nullptr;
 
-	UFUNCTION()
-	void SwitchCollisionProfile(FName CollisionProfileName);
-	
-	UBoxComponent* GetAttackSourceCollisionBox();
-	
 	ASwdCharacter* GetCharacter();
 	
-	FHitResult SwingForAttack(FVector TraceStart, FVector TraceEnd, FCollisionQueryParams CollisionParams);
+	FHitResult CastAttackTrace(FVector TraceStart, FVector TraceEnd, FCollisionQueryParams CollisionParams);
 	
 	void DrawDebugTraceLine(FVector TraceStart, FVector TraceEnd);
 	
 	void HandleTraceHit(FHitResult HitResult, float BaseDamage);
 	
-	void DoAttackTrace();
+	void AttackTraceOnTickAndHandleHitResult();
 };

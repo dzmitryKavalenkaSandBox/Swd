@@ -41,6 +41,10 @@ void UDamageConsumerComponent::ConsumeDamage(AActor* DamagedActor, float Damage,
 				}
 			}
 		}
+		if (HitAnimMontageDataTable)
+		{
+			PlayDataTableAnimation(Owner, HitAnimMontageDataTable, false, FString("HitTorsoFront"));
+		}
 	}
 	else ULogger::Log(ELogLevel::ERROR, TEXT("Damage Inflictor Component does not have an owner"));
 }

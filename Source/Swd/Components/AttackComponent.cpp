@@ -16,7 +16,7 @@ UAttackComponent::UAttackComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UAttackComponent::Attack()
+void UAttackComponent::PerformAttackAnimation()
 {
 	if (auto Character = Cast<ASwdCharacter>(GetOwner()))
 	{
@@ -37,7 +37,7 @@ void UAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                      FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	DoAttackTrace();
+	AttackTraceOnTickAndHandleHitResult();
 }
 
 void UAttackComponent::SetAttackToPerform(TSubclassOf<UAttackBase> Attack)
@@ -53,77 +53,12 @@ void UAttackComponent::AttackStart()
 {
 	ULogger::Log(ELogLevel::INFO, __FUNCTION__);
 	SetComponentTickEnabled(true);
-	SwitchCollisionProfile(CollisionProfile::Weapon);
-
-	// if (auto CollisionBox = GetAttackSourceCollisionBox())
-	// {
-	// 	CollisionBox->SetNotifyRigidBodyCollision(true);
-	// 	CollisionBox->SetGenerateOverlapEvents(true);
-	// }
 }
 
 void UAttackComponent::AttackEnd()
 {
 	SetComponentTickEnabled(false);
-
-	// SwitchCollisionProfile(CollisionProfile::NoCollision);
-	// if (auto CollisionBox = GetAttackSourceCollisionBox())
-	// {
-	// 	CollisionBox->SetNotifyRigidBodyCollision(false);
-	// 	CollisionBox->SetGenerateOverlapEvents(false);
-	// }
 	GetCharacter()->StaminaComponent->DrainStamina(GetCurrentAttack()->GetAttackStaminaFactor());
-}
-
-void UAttackComponent::SwitchCollisionProfile(FName CollisionProfileName)
-{
-	if (auto CollisionBox = GetAttackSourceCollisionBox())
-	{
-		CollisionBox->SetCollisionProfileName(CollisionProfileName);
-	}
-}
-
-UBoxComponent* UAttackComponent::GetAttackSourceCollisionBox()
-{
-	auto Character = GetCharacter();
-	if (Character && AttackToPreform)
-	{
-		switch (AttackToPreform->AttackSource)
-		{
-		case EAttackSource::LEFT_LEG:
-			{
-				return Character->LeftLegCollisionBox;
-			}
-		case EAttackSource::RIGHT_LEG:
-			{
-				return Character->RightLegCollisionBox;
-			}
-		case EAttackSource::BLADE:
-			{
-				if (Character->EquipmentComponent->WeaponInHands)
-				{
-					// return Character->EquipmentComponent->WeaponInHands->CollisionBox;
-				}
-				ULogger::Log(ELogLevel::ERROR,
-				             TEXT("Trying to perfrom attach with weapon having no Weapon in Hands"));
-				return nullptr;
-			}
-		case EAttackSource::POMMEL:
-			{
-				if (auto Sword = Cast<ASword>(Character->EquipmentComponent->WeaponInHands))
-				{
-					return Sword->PommelCollisionBox;
-				}
-				ULogger::Log(ELogLevel::ERROR,
-				             TEXT("Trying to perfrom attach with sword having no Sword in Hands"));
-				return nullptr;
-			}
-		default: ULogger::Log(ELogLevel::ERROR, FString("Attack '") +
-		                      AttackToPreform->AttackName() + FString("' has non AttackSource set"));
-			break;
-		}
-	}
-	return nullptr;
 }
 
 UAttackBase* UAttackComponent::GetCurrentAttack()
@@ -136,7 +71,8 @@ ASwdCharacter* UAttackComponent::GetCharacter()
 	return Cast<ASwdCharacter>(GetOwner());
 }
 
-FHitResult UAttackComponent::SwingForAttack(FVector TraceStart, FVector TraceEnd, FCollisionQueryParams CollisionParams)
+FHitResult UAttackComponent::CastAttackTrace(FVector TraceStart, FVector TraceEnd,
+                                             FCollisionQueryParams CollisionParams)
 {
 	FHitResult OutHit;
 	CollisionParams.AddIgnoredActor(GetOwner());
@@ -184,7 +120,7 @@ void UAttackComponent::HandleTraceHit(FHitResult HitResult, float BaseDamage)
 	}
 }
 
-void UAttackComponent::DoAttackTrace()
+void UAttackComponent::AttackTraceOnTickAndHandleHitResult()
 {
 	auto Character = GetCharacter();
 	if (Character && AttackToPreform)
@@ -199,7 +135,7 @@ void UAttackComponent::DoAttackTrace()
 					FVector TraceEnd = Weapon->BladeDamagePointEnd->GetComponentLocation();
 					FCollisionQueryParams CollisionQueryParams;
 					CollisionQueryParams.AddIgnoredComponent(Weapon->WeaponSkeletalMesh);
-					FHitResult HitResult = SwingForAttack(TraceStart, TraceEnd, CollisionQueryParams);
+					FHitResult HitResult = CastAttackTrace(TraceStart, TraceEnd, CollisionQueryParams);
 					HandleTraceHit(HitResult, Weapon->GetWeaponBaseDamage());
 				}
 				else
@@ -214,7 +150,7 @@ void UAttackComponent::DoAttackTrace()
 			{
 				FVector TraceStart = Character->GetActorLocation();
 				FVector TraceEnd = Character->LeftLegEndTrace->GetComponentLocation();
-				FHitResult HitResult = SwingForAttack(TraceStart, TraceEnd, FCollisionQueryParams());
+				FHitResult HitResult = CastAttackTrace(TraceStart, TraceEnd, FCollisionQueryParams());
 				HandleTraceHit(HitResult, Character->KickBaseDamage);
 				break;
 			}
@@ -222,7 +158,7 @@ void UAttackComponent::DoAttackTrace()
 			{
 				FVector TraceStart = Character->GetActorLocation();
 				FVector TraceEnd = Character->RightLegEndTrace->GetComponentLocation();
-				FHitResult HitResult = SwingForAttack(TraceStart, TraceEnd, FCollisionQueryParams());
+				FHitResult HitResult = CastAttackTrace(TraceStart, TraceEnd, FCollisionQueryParams());
 				HandleTraceHit(HitResult, Character->KickBaseDamage);
 				break;
 			}
@@ -234,7 +170,7 @@ void UAttackComponent::DoAttackTrace()
 					FVector TraceEnd = Sword->PommelAttackTraceEnd->GetComponentLocation();
 					FCollisionQueryParams CollisionQueryParams;
 					CollisionQueryParams.AddIgnoredComponent(Sword->WeaponSkeletalMesh);
-					FHitResult HitResult = SwingForAttack(TraceStart, TraceEnd, CollisionQueryParams);
+					FHitResult HitResult = CastAttackTrace(TraceStart, TraceEnd, CollisionQueryParams);
 					HandleTraceHit(HitResult, Sword->PommelBaseDamage);
 				}
 				else
