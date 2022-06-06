@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Engine/DataTable.h"
 #include "Swd/Character/SwdCharacter.h"
 #include "SwdGameUtils.generated.h"
 
@@ -24,6 +25,9 @@ public:
 	                      FName StartSectionName);
 
 	static AActor* GetClosestActor(FVector SourceLocation, TArray<AActor*> Actors);
+	
+	static void PlayDataTableAnimation(ASwdCharacter* Character, UDataTable* DataTable, bool HasBlendedAnim,
+	                            FString AnimActionName);
 
 	// static UAnimMontage* GetRandomMontage(class UDataTable* DataTable, FName RowName, FString AnimAction);
 };

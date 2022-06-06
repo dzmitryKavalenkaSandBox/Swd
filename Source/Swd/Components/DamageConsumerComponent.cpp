@@ -7,6 +7,7 @@
 #include "Swd/Character/AICharacterBase.h"
 #include "Swd/Character/SwdCharacter.h"
 #include "Swd/Utils/Logger.h"
+#include "Swd/Utils/SwdGameUtils.h"
 
 
 UDamageConsumerComponent::UDamageConsumerComponent()
@@ -43,7 +44,8 @@ void UDamageConsumerComponent::ConsumeDamage(AActor* DamagedActor, float Damage,
 		}
 		if (HitAnimMontageDataTable)
 		{
-			PlayDataTableAnimation(Owner, HitAnimMontageDataTable, false, FString("HitTorsoFront"));
+			ULogger::Log(ELogLevel::INFO, TEXT("SHOULD PLAY HIT ANIMATION"));
+			USwdGameUtils::PlayDataTableAnimation(Owner, HitAnimMontageDataTable, false, FString("HitTorsoFront"));
 		}
 	}
 	else ULogger::Log(ELogLevel::ERROR, TEXT("Damage Inflictor Component does not have an owner"));

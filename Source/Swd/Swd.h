@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/DataTable.h"
+#include "Swd.generated.h"
 
 namespace CollisionProfile
 {
@@ -98,4 +100,16 @@ enum class EAttackSource: uint8
 	LEFT_LEG UMETA(DisplayName = "Left Leg"),
 	BLADE UMETA(DisplayName = "Blade"),
 	POMMEL UMETA(DisplayName = "Pommel"),
+};
+
+USTRUCT(BlueprintType)
+struct FPlayerAnimMontage : public FTableRowBase
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UAnimMontage* Montage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 AnimSectionCount;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString Description;
 };

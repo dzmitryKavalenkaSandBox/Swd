@@ -6,6 +6,7 @@
 #include "Swd/Animations/Animinstances/AnimInstanceBase.h"
 #include "Swd/DataAssets/CharacterData.h"
 #include "Swd/Utils/Logger.h"
+#include "Swd/Utils/SwdGameUtils.h"
 
 UEquipmentComponent::UEquipmentComponent()
 {
@@ -51,7 +52,7 @@ void UEquipmentComponent::EquipWeapon()
 	if (CanEquipWeapon())
 	{
 		ActualWeaponOnTheHip->WeaponState.StartInteraction();
-		PlayDataTableAnimation(GetCharacter(), EquipSwordAnimMontageDataTable, true, AnimAction::Equip);
+		USwdGameUtils::PlayDataTableAnimation(GetCharacter(), EquipSwordAnimMontageDataTable, true, AnimAction::Equip);
 		GetCharacter()->ManageCombatState(true);
 	}
 }
@@ -61,7 +62,7 @@ void UEquipmentComponent::SheathWeapon()
 	if (CanSheathWeapon())
 	{
 		WeaponInHands->WeaponState.StartInteraction();
-		PlayDataTableAnimation(GetCharacter(), EquipSwordAnimMontageDataTable, true, AnimAction::Sheath);
+		USwdGameUtils::PlayDataTableAnimation(GetCharacter(), EquipSwordAnimMontageDataTable, true, AnimAction::Sheath);
 		GetCharacter()->ManageCombatState(false);
 	}
 }

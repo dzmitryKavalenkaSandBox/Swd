@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Swd/Components/DamageConsumerComponent.h"
 #include "Swd/Components/Modular/Stamina/Fatiguable.h"
 #include "Swd/Interfacces/Killable.h"
 #include "SwdCharacter.generated.h"
@@ -19,7 +20,7 @@ public:
 	class UEquipmentComponent* EquipmentComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UDamageConsumerComponent* DamageConsumerComponent;
+	UDamageConsumerComponent* DamageConsumerComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaminaComponent* StaminaComponent;

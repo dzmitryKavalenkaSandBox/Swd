@@ -2,13 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Swd/Interfacces/DataTableAnimated.h"
 #include "AttackComponent.generated.h"
 
 class UAttackData;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class SWD_API UAttackComponent : public UActorComponent, public IDataTableAnimated
+class SWD_API UAttackComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -38,7 +37,7 @@ private:
 	UPROPERTY()
 	UAttackData* AttackToPreform = nullptr;
 
-	ASwdCharacter* GetCharacter();
+	class ASwdCharacter* GetCharacter();
 
 	FHitResult CastAttackTrace(FVector TraceStart, FVector TraceEnd, FCollisionQueryParams CollisionParams);
 
