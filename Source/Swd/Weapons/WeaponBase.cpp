@@ -9,7 +9,8 @@
 
 AWeaponBase::AWeaponBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	// PrimaryActorTick.bCanEverTick = false;
+	bAllowTickBeforeBeginPlay = true;
 
 	WeaponSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	WeaponSkeletalMesh->SetupAttachment(RootComponent);
@@ -72,10 +73,10 @@ void AWeaponBase::BeginPlay()
 	// );
 }
 
-void AWeaponBase::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-}
+// void AWeaponBase::Tick(float DeltaSeconds)
+// {
+	// Super::Tick(DeltaSeconds);
+// }
 
 void AWeaponBase::OnInteractionSphereOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,

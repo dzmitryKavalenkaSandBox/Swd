@@ -7,7 +7,7 @@
 
 ASword::ASword()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	// PrimaryActorTick.bCanEverTick = false;
 
 	PommelCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Pommel Collision Box"));
 	PommelAttackTraceEnd = CreateDefaultSubobject<USphereComponent>(TEXT("Pommel Attack Trace End"));

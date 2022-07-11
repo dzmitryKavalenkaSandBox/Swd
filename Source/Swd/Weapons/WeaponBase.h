@@ -105,7 +105,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void Tick(float DeltaSeconds) override;
+	// virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION()
 	void OnInteractionSphereOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
